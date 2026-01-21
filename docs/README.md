@@ -25,8 +25,8 @@ See [specs/001-clarity-council-mcp/quickstart.md](specs/001-clarity-council-mcp/
 
 ## Policies
 - Depth: brief 2–3, standard 5–7, deep 10+
-- Discovery: MCP listing and explicit prefixes (e.g., /council.consult)
-- Overrides: workspace-level `.council/personas.json` (no secrets)
+- Discovery: MCP listing and explicit prefixes (e.g., /council.consult, /persona.consult)
+- Overrides: workspace-level `.council/personas.json` (no secrets). Allowed fields per persona: soul, focus, constraints. See `.council/personas.json.example` for a template.
 
 ## Run
 ```bash

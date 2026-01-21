@@ -100,6 +100,10 @@ description: "Task list for Clarity Council MCP Tool Suite"
 - [ ] T034 [P] [US2] Unit: Validate `persona.consult` output schema in `tests/unit/persona.output.spec.ts`
 - [ ] T035 [P] [US2] Integration: MCP request/response flow in `tests/integration/persona.consult.spec.ts`
 - [ ] T036 [P] [US2] Golden: Persona tone/structure alignment in `tests/golden/persona.tone.spec.ts`
+- [X] T033 [P] [US2] Unit: Validate `persona.consult` input schema in `tests/unit/persona.input.spec.ts`
+- [X] T034 [P] [US2] Unit: Validate `persona.consult` output schema in `tests/unit/persona.output.spec.ts`
+- [X] T035 [P] [US2] Integration: MCP request/response flow in `tests/integration/persona.consult.spec.ts`
+- [X] T036 [P] [US2] Golden: Persona tone/structure alignment in `tests/golden/persona.tone.spec.ts`
 
 ### Implementation for User Story 2
 
@@ -109,6 +113,11 @@ description: "Task list for Clarity Council MCP Tool Suite"
 - [ ] T040 [US2] Wire depth scaling & confidence into persona path in `server/src/utils/depth.ts` and `confidence.ts`
 - [ ] T041 [US2] Register tool with MCP and logging hooks in `server/src/index.ts`
 - [ ] T042 [US2] Update docs with explicit chat prefixes for `persona.consult` in `docs/README.md`
+- [X] T037 [P] [US2] Implement `server/src/tools/persona.consult.ts` input parsing and validation
+- [X] T038 [US2] Implement single-persona response generator in `server/src/personas/generators.ts`
+- [X] T039 [US2] Add invalid `persona_name` error handling in `server/src/utils/errors.ts`
+- [X] T040 [US2] Wire depth scaling & confidence into persona path in `server/src/utils/depth.ts` and `confidence.ts`
+- [X] T041 [US2] Register tool with MCP and logging hooks in `server/src/index.ts`
 
 **Checkpoint**: User Story 2 fully functional and independently testable
 
@@ -126,6 +135,10 @@ description: "Task list for Clarity Council MCP Tool Suite"
 - [ ] T044 [P] [US3] Unit: Validate `council.define_personas` output schema in `tests/unit/define.output.spec.ts`
 - [ ] T045 [P] [US3] Integration: Overrides applied via workspace config in `tests/integration/overrides.spec.ts`
 - [ ] T046 [P] [US3] Golden: Transparency and permission matrix outputs in `tests/golden/persona.contracts.spec.ts`
+- [X] T043 [P] [US3] Unit: Validate `council.define_personas` input schema in `tests/unit/define.input.spec.ts`
+- [X] T044 [P] [US3] Unit: Validate `council.define_personas` output schema in `tests/unit/define.output.spec.ts`
+- [X] T045 [P] [US3] Integration: Overrides applied via workspace config in `tests/integration/overrides.spec.ts`
+- [X] T046 [P] [US3] Golden: Transparency and permission matrix outputs in `tests/golden/persona.contracts.spec.ts`
 
 ### Implementation for User Story 3
 
@@ -135,6 +148,12 @@ description: "Task list for Clarity Council MCP Tool Suite"
 - [ ] T050 [US3] Register tool with MCP and logging hooks in `server/src/index.ts`
 - [ ] T051 [US3] Update docs: persona matrix and override policy in `docs/README.md`
 - [ ] T052 [US3] Add example overrides file: `.council/personas.json.example` at repo root
+- [X] T047 [P] [US3] Implement `server/src/tools/council.define_personas.ts` input parsing and validation
+- [X] T048 [US3] Implement overrides application in `server/src/utils/workspaceConfig.ts` (validate allowed fields only)
+- [X] T049 [US3] Return current contracts + permission matrix in `server/src/personas/contracts.ts`
+- [X] T050 [US3] Register tool with MCP and logging hooks in `server/src/index.ts`
+- [X] T051 [US3] Update docs: persona matrix and override policy in `docs/README.md`
+- [X] T052 [US3] Add example overrides file: `.council/personas.json.example` at repo root
 
 **Checkpoint**: All user stories independently functional
 
