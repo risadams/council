@@ -6,6 +6,7 @@ import { getPersona, PersonaName } from "../personas/contracts.js";
 import { Depth } from "../utils/depth.js";
 import { ConsultInput, generateDevilsAdvocateDraft, generatePersonaDraft } from "../personas/generators.js";
 import { formatPersonaDraft } from "../utils/personaFormatter.js";
+import { withRequest, logRequestComplete } from "../utils/logger.js";
 
 const inputSchema = loadSchema("persona.consult.input.schema.json");
 const outputSchema = loadSchema("persona.consult.output.schema.json");
@@ -18,12 +19,20 @@ export async function registerPersonaConsult(server: Server) {
     inputSchema,
     outputSchema,
     handler: async (input) => {
-      const { valid, errors } = validate(inputSchema, input);
-      if (!valid) return toError("validation", "Invalid input", errors);
+      const ctx = withRequest();
+      try {
+        const { valid, errors } = validate(inputSchema, input);
+        if (!valid) {
+          logRequestComplete(ctx, "persona.consult", false, "validation");
+          return toError("validation", "Invalid input", errors);
+        }
 
-      const personaName = (input as any).persona_name as PersonaName;
-      const persona = getPersona(personaName);
-      if (!persona) return toError("validation", "Unknown persona_name", { personaName });
+        const personaName = (input as any).persona_name as PersonaName;
+        const persona = getPersona(personaName);
+        if (!persona) {
+          logRequestComplete(ctx, "persona.consult", false, "validation");
+          return toError("validation", "Unknown persona_name", { personaName });
+        }
 
         const depth = ((input as any).depth ?? "standard") as Depth;
         const consultInput: ConsultInput = {
@@ -35,11 +44,16 @@ export async function registerPersonaConsult(server: Server) {
         };
 
         const draft =
-          persona.name === "Devil’s Advocate"
+          persona.name === "Devil's Advocate"
             ? generateDevilsAdvocateDraft(consultInput)
             : generatePersonaDraft(persona, consultInput);
 
+        logRequestComplete(ctx, "persona.consult", true);
         return formatPersonaDraft(draft);
+      } catch (err: any) {
+        logRequestComplete(ctx, "persona.consult", false, "server_error");
+        return toError("server_error", "Unexpected error", { message: err.message });
+      }
     }
   });
 }

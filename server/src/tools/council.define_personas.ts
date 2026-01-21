@@ -4,6 +4,7 @@ import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
 import { PERSONA_CONTRACTS, PersonaContract } from "../personas/contracts.js";
 import { readOverrides, writeOverrides, Overrides, validateOverrides } from "../utils/workspaceConfig.js";
+import { withRequest, logRequestComplete } from "../utils/logger.js";
 
 const inputSchema = loadSchema("council.define_personas.input.schema.json");
 const outputSchema = loadSchema("council.define_personas.output.schema.json");
@@ -16,34 +17,45 @@ export async function registerDefinePersonas(server: Server) {
     inputSchema,
     outputSchema,
     handler: async (input) => {
-      const { valid, errors } = validate(inputSchema, input ?? {});
-      if (!valid) return toError("validation", "Invalid input", errors);
-
-      const incomingOverrides = ((input as any).overrides ?? {}) as Overrides;
-      const existingOverrides = readOverrides();
-      const mergedOverrides = { ...existingOverrides, ...incomingOverrides };
-
+      const ctx = withRequest();
       try {
-        validateOverrides(mergedOverrides, PERSONA_CONTRACTS.map((p) => p.name));
+        const { valid, errors } = validate(inputSchema, input ?? {});
+        if (!valid) {
+          logRequestComplete(ctx, "council.define_personas", false, "validation");
+          return toError("validation", "Invalid input", errors);
+        }
+
+        const incomingOverrides = ((input as any).overrides ?? {}) as Overrides;
+        const existingOverrides = readOverrides();
+        const mergedOverrides = { ...existingOverrides, ...incomingOverrides };
+
+        try {
+          validateOverrides(mergedOverrides, PERSONA_CONTRACTS.map((p) => p.name));
+        } catch (err: any) {
+          logRequestComplete(ctx, "council.define_personas", false, "validation");
+          return toError("validation", err.message ?? "Invalid overrides");
+        }
+
+        // Apply overrides onto base contracts (only allowed fields)
+        const personas: PersonaContract[] = PERSONA_CONTRACTS.map((base) => {
+          const o = mergedOverrides[base.name] ?? {};
+          const focus = o.focus ?? base.focus;
+          const constraints = o.constraints ?? base.constraints;
+          const soul = o.soul ?? base.soul;
+          return { ...base, focus, constraints, soul };
+        });
+
+        // Persist new overrides if provided
+        if (Object.keys(incomingOverrides).length > 0) {
+          writeOverrides(mergedOverrides);
+        }
+
+        logRequestComplete(ctx, "council.define_personas", true);
+        return { personas };
       } catch (err: any) {
-        return toError("validation", err.message ?? "Invalid overrides");
+        logRequestComplete(ctx, "council.define_personas", false, "server_error");
+        return toError("server_error", "Unexpected error", { message: err.message });
       }
-
-      // Apply overrides onto base contracts (only allowed fields)
-      const personas: PersonaContract[] = PERSONA_CONTRACTS.map((base) => {
-        const o = mergedOverrides[base.name] ?? {};
-        const focus = o.focus ?? base.focus;
-        const constraints = o.constraints ?? base.constraints;
-        const soul = o.soul ?? base.soul;
-        return { ...base, focus, constraints, soul };
-      });
-
-      // Persist new overrides if provided
-      if (Object.keys(incomingOverrides).length > 0) {
-        writeOverrides(mergedOverrides);
-      }
-
-      return { personas };
     }
   });
 }
