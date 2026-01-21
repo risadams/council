@@ -113,7 +113,56 @@ npm run start
 
 ## Tests (30+ Coverage)
 ```bash
-npm run test
+npm test -- --run
 ```
 
 Covers unit (inputs/outputs), integration (tool handlers), golden (persona contracts/tone), and error cases.
+
+## Workflow Examples
+
+### Quick Decision Validation (Brief Mode)
+```
+/council.consult user_problem:"Should we pause the current product roadmap for a 2-week security audit?" context:"5-person team, critical vulnerability discovered" desired_outcome:"Timeline clarity" depth:brief
+```
+→ Fast consensus check; 6 persona summaries + synthesis in 30s.
+
+### Strategic Growth Planning (Deep Mode)
+```
+/council.consult user_problem:"Transition from B2B SaaS to multi-tenant marketplace" context:"$2M ARR, 50 enterprise customers, 20-person company" desired_outcome:"Successful migration strategy" depth:deep
+```
+→ Detailed analysis; synthesis flags strategic vs. pragmatic conflicts; Devil's Advocate surfaces execution risks.
+
+### Cross-Functional Perspective (Specific Persona)
+```
+/persona.consult persona_name:"Ops Architect" user_problem:"Migrate infrastructure to Kubernetes" depth:standard
+```
+→ Single-track operational guidance with architectural constraints.
+
+### Workspace Customization (Define Personas)
+```
+/council.define_personas overrides:{"Financial Officer":{"soul":"Growth-minded CFO","focus":["revenue optimization","cash efficiency"]}}
+```
+→ Persist custom persona profiles to `.council/personas.json` for team consistency.
+
+## Release Notes (v0.1.0)
+
+**Initial Release**: Clarity Council MCP Tool Suite
+- ✅ Three production-ready tools: `council.consult`, `persona.consult`, `council.define_personas`
+- ✅ Six personas with transparent contracts (Growth Strategist, Financial Officer, Devil's Advocate, Ops Architect, Customer Advocate, Culture Lead)
+- ✅ Depth-scaled responses (brief/standard/deep)
+- ✅ Synthesis with agreements, conflicts, and risks
+- ✅ Workspace-level persona overrides (`.council/personas.json`)
+- ✅ 34+ comprehensive tests (unit, integration, golden, error)
+- ✅ Structured observability (request IDs, timing, error categories)
+- ✅ Full TypeScript support with strict validation (Ajv 2020-12)
+
+**Features**:
+- Multi-persona consensus & conflict identification
+- Devil's Advocate automatic risk/tradeoff generation
+- Confidence scoring tied to depth
+- MCP tool discovery + explicit prefix support (`/council.consult`, etc.)
+- No network dependencies; offline-first design
+- Production logging with pino + structured JSON format
+
+**Getting Started**:
+See [specs/001-clarity-council-mcp/quickstart.md](../specs/001-clarity-council-mcp/quickstart.md).

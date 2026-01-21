@@ -10,11 +10,10 @@ This guide helps you run the MCP server locally and use the tools in VS Code.
 ## Setup
 
 ```bash
-# From repository root
+# From server directory
 cd server
-npm init -y
-npm install typescript @modelcontextprotocol/sdk ajv pino vitest
-npx tsc --init
+npm install
+npm run build
 ```
 
 ## Project Layout
@@ -30,32 +29,56 @@ npx tsc --init
 - Stores only persona contract overrides (Soul, Focus, Constraints, allowed_tools).
 - No secrets or user conversations.
 
-## Run Locally (placeholder)
-Implement the MCP server bootstrap and tools per the contracts, then run:
+## Run Locally
 
 ```bash
-# Run tests (once implemented)
-npm run test
+cd server
 
-# Start server (once implemented)
+# Build TypeScript
+npm run build
+
+# Start MCP server
 npm run start
+```
+
+## Run Tests
+
+```bash
+cd server
+
+# Run full test suite (34+ tests)
+npm test -- --run
 ```
 
 ## Using in VS Code
 - Tools are discoverable via MCP tool listing.
 - Explicit chat prefixes also supported (e.g., `/council.consult`).
-- Example prompt:
 
+### Example Prompts
+
+**Council Consult** (multi-persona synthesis):
 ```
-/council.consult user_problem:"We need to grow MRR by 30% in 2 quarters" constraints:["budget 100k","no layoffs"] depth:standard
+/council.consult user_problem:"We need to grow MRR by 30% in 2 quarters" context:"B2B SaaS, 100 customers" desired_outcome:"Sustainable growth" depth:standard
+```
+
+**Persona Consult** (single persona):
+```
+/persona.consult persona_name:"Financial Officer" user_problem:"Launch premium tier" depth:brief
+```
+
+**Define Personas** (view/override contracts):
+```
+/council.define_personas overrides:{"Growth Strategist":{"focus":["product-led growth"]}}
 ```
 
 ## Testing Guidance
-- Unit tests: schema validation, error mapping, persona formatter.
-- Integration tests: VS Code MCP request/response flows.
-- Golden tests: persona tone/structure and challenge checks (Devil’s Advocate counterpoints).
+- **Unit tests**: Schema validation (inputs/outputs), error mapping, persona formatter.
+- **Integration tests**: Tool handlers (council.consult, persona.consult, define_personas), override merging.
+- **Golden tests**: Persona tone/structure consistency, Devil's Advocate counterpoints.
+- **Error tests**: Invalid inputs, malformed overrides, unknown personas, extra fields.
 
-## Notes
-- No network calls by default.
-- No conversation persistence; only workspace-level persona overrides.
-- Observability: use correlation IDs, timing, failure categories.
+## Observability
+- **Request IDs**: Correlation IDs in all tool logs (pino structured logs).
+- **Timing**: Request start/duration tracked in milliseconds.
+- **Error Categories**: validation, server_error tagged per failure.
+- **Logs**: JSON structured format with requestId, tool, success, duration, errorCategory.
