@@ -22,14 +22,14 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create `server/` project folder with initial layout
-- [ ] T002 [P] Create `server/src/index.ts` MCP server bootstrap scaffold
-- [ ] T003 [P] Create `server/src/tools/` directory
-- [ ] T004 [P] Create `server/src/personas/` directory
-- [ ] T005 [P] Create `server/src/schemas/` directory (copy baseline from `specs/001-clarity-council-mcp/contracts/`)
-- [ ] T006 [P] Create `server/src/utils/` directory
-- [ ] T007 Initialize `server/package.json` with scripts (`build`, `start`, `test`) and dependencies
-- [ ] T008 Create `server/tsconfig.json` aligned with TypeScript 5.x and Node 20 targets
+- [X] T001 Create `server/` project folder with initial layout
+- [X] T002 [P] Create `server/src/index.ts` MCP server bootstrap scaffold
+- [X] T003 [P] Create `server/src/tools/` directory
+- [X] T004 [P] Create `server/src/personas/` directory
+- [X] T005 [P] Create `server/src/schemas/` directory (copy baseline from `specs/001-clarity-council-mcp/contracts/`)
+- [X] T006 [P] Create `server/src/utils/` directory
+- [X] T007 Initialize `server/package.json` with scripts (`build`, `start`, `test`) and dependencies
+- [X] T008 Create `server/tsconfig.json` aligned with TypeScript 5.x and Node 20 targets
 
 ---
 
@@ -39,18 +39,18 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T009 Implement JSON Schema loader in `server/src/utils/schemaLoader.ts` (uses `ajv`)
-- [ ] T010 [P] Setup structured logging with correlation IDs in `server/src/utils/logger.ts` (uses `pino`)
-- [ ] T011 [P] Implement validation helpers in `server/src/utils/validation.ts` (wrap `ajv` compile/validate)
-- [ ] T012 Implement error mapping (validation/permission/internal) in `server/src/utils/errors.ts`
-- [ ] T013 [P] Implement depth scaling utility in `server/src/utils/depth.ts` (brief 2–3, standard 5–7, deep 10+)
-- [ ] T014 Implement workspace config manager in `server/src/utils/workspaceConfig.ts` (path: `.council/personas.json`)
-- [ ] T015 [P] Copy/align input/output schemas to `server/src/schemas/` (from `specs/001-clarity-council-mcp/contracts/`)
-- [ ] T016 Implement persona contracts registry in `server/src/personas/contracts.ts` per `data-model.md`
-- [ ] T017 [P] Create Devil’s Advocate constraints and counterpoint rules in `server/src/personas/devilsAdvocate.ts`
-- [ ] T018 Implement MCP server boot in `server/src/index.ts` (register tools, logging, lifecycle)
-- [ ] T019 [P] Add README scaffold in `docs/README.md` referencing quickstart and persona matrix
-- [ ] T020 Configure project tasks: `tests/` folders (`unit`, `integration`, `golden`)
+- [X] T009 Implement JSON Schema loader in `server/src/utils/schemaLoader.ts` (uses `ajv`)
+- [X] T010 [P] Setup structured logging with correlation IDs in `server/src/utils/logger.ts` (uses `pino`)
+- [X] T011 [P] Implement validation helpers in `server/src/utils/validation.ts` (wrap `ajv` compile/validate)
+- [X] T012 Implement error mapping (validation/permission/internal) in `server/src/utils/errors.ts`
+- [X] T013 [P] Implement depth scaling utility in `server/src/utils/depth.ts` (brief 2–3, standard 5–7, deep 10+)
+- [X] T014 Implement workspace config manager in `server/src/utils/workspaceConfig.ts` (path: `.council/personas.json`)
+- [X] T015 [P] Copy/align input/output schemas to `server/src/schemas/` (from `specs/001-clarity-council-mcp/contracts/`)
+- [X] T016 Implement persona contracts registry in `server/src/personas/contracts.ts` per `data-model.md`
+- [X] T017 [P] Create Devil’s Advocate constraints and counterpoint rules in `server/src/personas/devilsAdvocate.ts`
+- [X] T018 Implement MCP server boot in `server/src/index.ts` (register tools, logging, lifecycle)
+- [X] T019 [P] Add README scaffold in `docs/README.md` referencing quickstart and persona matrix
+- [X] T020 Configure project tasks: `tests/` folders (`unit`, `integration`, `golden`)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -68,17 +68,21 @@ description: "Task list for Clarity Council MCP Tool Suite"
 - [ ] T022 [P] [US1] Unit: Validate `council.consult` output schema in `tests/unit/council.output.spec.ts`
 - [ ] T023 [P] [US1] Integration: MCP request/response roundtrip in `tests/integration/council.consult.spec.ts`
 - [ ] T024 [P] [US1] Golden: Distinct persona tone/structure & Devil’s Advocate counterpoints in `tests/golden/council.personas.spec.ts`
+- [X] T021 [P] [US1] Unit: Validate `council.consult` input schema in `tests/unit/council.input.spec.ts`
+- [X] T022 [P] [US1] Unit: Validate `council.consult` output schema in `tests/unit/council.output.spec.ts`
+- [X] T023 [P] [US1] Integration: MCP request/response roundtrip in `tests/integration/council.consult.spec.ts`
+- [X] T024 [P] [US1] Golden: Distinct persona tone/structure & Devil’s Advocate counterpoints in `tests/golden/council.personas.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T025 [P] [US1] Implement `server/src/tools/council.consult.ts` input parsing and validation
-- [ ] T026 [P] [US1] Implement persona response formatter in `server/src/utils/personaFormatter.ts`
-- [ ] T027 [US1] Implement persona generators in `server/src/personas/generators.ts` (Soul/Focus/Constraints aware)
-- [ ] T028 [US1] Implement Devil’s Advocate response generator in `server/src/personas/devilsAdvocate.ts` (counterpoints/risks)
-- [ ] T029 [US1] Implement synthesis builder in `server/src/utils/synthesis.ts` (agreements/conflicts/risks_tradeoffs/next_steps)
-- [ ] T030 [US1] Wire depth scaling across summary/advice/next_steps in `server/src/utils/depth.ts`
-- [ ] T031 [US1] Add confidence calculation with rationale in `server/src/utils/confidence.ts`
-- [ ] T032 [US1] Register tool with MCP and logging hooks in `server/src/index.ts`
+- [X] T025 [P] [US1] Implement `server/src/tools/council.consult.ts` input parsing and validation
+- [X] T026 [P] [US1] Implement persona response formatter in `server/src/utils/personaFormatter.ts`
+- [X] T027 [US1] Implement persona generators in `server/src/personas/generators.ts` (Soul/Focus/Constraints aware)
+- [X] T028 [US1] Implement Devil’s Advocate response generator in `server/src/personas/devilsAdvocate.ts` (counterpoints/risks)
+- [X] T029 [US1] Implement synthesis builder in `server/src/utils/synthesis.ts` (agreements/conflicts/risks_tradeoffs/next_steps)
+- [X] T030 [US1] Wire depth scaling across summary/advice/next_steps in `server/src/utils/depth.ts`
+- [X] T031 [US1] Add confidence calculation with rationale in `server/src/utils/confidence.ts`
+- [X] T032 [US1] Register tool with MCP and logging hooks in `server/src/index.ts`
 
 **Checkpoint**: User Story 1 fully functional and independently testable
 
