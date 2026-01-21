@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/contracts/council.define_personas.output.schema.json",
+  "title": "council.define_personas output",
+  "type": "object",
+  "required": ["personas"],
+  "properties": {
+    "personas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "soul", "focus", "constraints", "allowed_tools"],
+        "properties": {
+          "name": { "type": "string" },
+          "soul": { "type": "string" },
+          "focus": { "type": "array", "items": { "type": "string" } },
+          "constraints": { "type": "array", "items": { "type": "string" } },
+          "allowed_tools": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

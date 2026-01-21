@@ -18,6 +18,9 @@
   - Tested independently
   - Deployed independently
   - Demonstrated to users independently
+
+  If persona output tone/format is material to value, include references to
+  golden-output tests and VS Code request/response interaction patterns.
 -->
 
 ### User Story 1 - [Brief Title] (Priority: P1)
