@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+dist
+.git
+.gitignore
+.vscode
+.council
+.specify
+.github
+tests
+specs
+docs
+WORKBOOK_AI_BoA-v1.pdf
+.DS_Store

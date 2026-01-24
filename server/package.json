@@ -7,6 +7,7 @@
     "build": "tsc && npm run copy-schemas",
     "copy-schemas": "mkdir -p dist/schemas && cp -R src/schemas/* dist/schemas/",
     "start": "npm run build && node dist/index.js",
+    "start:https": "npm run build && node dist/https-server.js",
     "dev": "ts-node --esm src/index.ts",
     "test": "vitest"
   },

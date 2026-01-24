@@ -54,6 +54,4 @@ out/
 *.crt
 secrets/
 
-.council/
-
 *.pdf

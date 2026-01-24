@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  clarity-council:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clarity-council-mcp
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount certificates directory for persistent HTTPS certs
+      - ./certs:/app/certs
+      # Mount local personas configuration (optional)
+      - ./.council:/app/.council
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      HTTPS_PORT: 8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "const https = require('https'); const options = {hostname: 'localhost', port: 8000, path: '/', method: 'GET', rejectUnauthorized: false}; https.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => { process.exit(1); }).end();"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  clarity-council-data:

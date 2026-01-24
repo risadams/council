@@ -1,0 +1,10 @@
+{
+  "Growth Strategist": {
+    "soul": "Founder-led growth with PLG bias",
+    "focus": ["product-led growth", "expansion revenue"],
+    "constraints": ["avoid vanity metrics", "ship experiments weekly"]
+  },
+  "Financial Officer": {
+    "focus": ["unit economics", "cash conservation"]
+  }
+}
