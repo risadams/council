@@ -1,4 +1,4 @@
-import { PersonaContract } from "./contracts.js";
+import { PersonaContract } from "./contracts";
 
 export const DEVILS_ADVOCATE: PersonaContract = {
   name: "Devil’s Advocate",

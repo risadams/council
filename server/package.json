@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo 'TypeScript code ready for ts-node - skip compilation due to SDK type issues'",
-    "start": "ts-node --esm src/index.ts",
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
     "dev": "ts-node --esm src/index.ts",
     "test": "vitest"
   },
