@@ -1,4 +1,4 @@
-import type { Server } from "@modelcontextprotocol/sdk";
+import type { Server } from "@modelcontextprotocol/sdk/server";
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -16,7 +16,7 @@ export async function registerDefinePersonas(server: Server) {
       "Return current persona contracts and apply validated workspace-level overrides.",
     inputSchema,
     outputSchema,
-    handler: async (input) => {
+    handler: async (input: Record<string, unknown> | undefined) => {
       const ctx = withRequest();
       try {
         const { valid, errors } = validate(inputSchema, input ?? {});
@@ -53,8 +53,8 @@ export async function registerDefinePersonas(server: Server) {
         logRequestComplete(ctx, "council.define_personas", true);
         return { personas };
       } catch (err: any) {
-        logRequestComplete(ctx, "council.define_personas", false, "server_error");
-        return toError("server_error", "Unexpected error", { message: err.message });
+        logRequestComplete(ctx, "council.define_personas", false, "internal");
+        return toError("internal", "Unexpected error", { message: err.message });
       }
     }
   });

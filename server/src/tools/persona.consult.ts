@@ -1,4 +1,4 @@
-import type { Server } from "@modelcontextprotocol/sdk";
+import type { Server } from "@modelcontextprotocol/sdk/server";
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -18,7 +18,7 @@ export async function registerPersonaConsult(server: Server) {
       "Consult a single persona returning structured advice, assumptions, questions, next_steps, and confidence.",
     inputSchema,
     outputSchema,
-    handler: async (input) => {
+    handler: async (input: Record<string, unknown>) => {
       const ctx = withRequest();
       try {
         const { valid, errors } = validate(inputSchema, input);
@@ -44,15 +44,15 @@ export async function registerPersonaConsult(server: Server) {
         };
 
         const draft =
-          persona.name === "Devil's Advocate"
+          (persona.name as string) === "Devil's Advocate"
             ? generateDevilsAdvocateDraft(consultInput)
             : generatePersonaDraft(persona, consultInput);
 
         logRequestComplete(ctx, "persona.consult", true);
         return formatPersonaDraft(draft);
       } catch (err: any) {
-        logRequestComplete(ctx, "persona.consult", false, "server_error");
-        return toError("server_error", "Unexpected error", { message: err.message });
+        logRequestComplete(ctx, "persona.consult", false, "internal");
+        return toError("internal", "Unexpected error", { message: err.message });
       }
     }
   });

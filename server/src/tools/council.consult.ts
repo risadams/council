@@ -1,4 +1,4 @@
-import type { Server } from "@modelcontextprotocol/sdk";
+import type { Server } from "@modelcontextprotocol/sdk/server";
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -24,7 +24,7 @@ export async function registerCouncilConsult(server: Server) {
       "Consult multiple personas and produce a synthesis (agreements, conflicts, risks/tradeoffs, next_steps).",
     inputSchema,
     outputSchema,
-    handler: async (input) => {
+    handler: async (input: Record<string, unknown>) => {
       const ctx = withRequest();
       try {
         const { valid, errors } = validate(inputSchema, input);
@@ -45,7 +45,7 @@ export async function registerCouncilConsult(server: Server) {
 
         const active = selectPersonas(selected);
         const drafts = active.map((persona) =>
-          persona.name === "Devil's Advocate"
+          (persona.name as string) === "Devil's Advocate"
             ? generateDevilsAdvocateDraft(consultInput)
             : generatePersonaDraft(persona, consultInput)
         );
@@ -56,8 +56,8 @@ export async function registerCouncilConsult(server: Server) {
         logRequestComplete(ctx, "council.consult", true);
         return { responses, synthesis };
       } catch (err: any) {
-        logRequestComplete(ctx, "council.consult", false, "server_error");
-        return toError("server_error", "Unexpected error", { message: err.message });
+        logRequestComplete(ctx, "council.consult", false, "internal");
+        return toError("internal", "Unexpected error", { message: err.message });
       }
     }
   });

@@ -1,4 +1,4 @@
-import { createServer } from "@modelcontextprotocol/sdk";
+import { Server } from "@modelcontextprotocol/sdk/server";
 import { createLogger } from "./utils/logger.js";
 
 import { registerCouncilConsult } from "./tools/council.consult.js";
@@ -8,7 +8,7 @@ import { registerDefinePersonas } from "./tools/council.define_personas.js";
 const logger = createLogger();
 
 async function main() {
-  const server = createServer({ logger });
+  const server = new Server({ name: "clarity-council", version: "0.1.0" }, { logger });
 
   await registerCouncilConsult(server);
   await registerPersonaConsult(server);

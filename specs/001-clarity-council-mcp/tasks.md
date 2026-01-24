@@ -64,10 +64,7 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 ### Tests for User Story 1
 
-- [ ] T021 [P] [US1] Unit: Validate `council.consult` input schema in `tests/unit/council.input.spec.ts`
-- [ ] T022 [P] [US1] Unit: Validate `council.consult` output schema in `tests/unit/council.output.spec.ts`
-- [ ] T023 [P] [US1] Integration: MCP request/response roundtrip in `tests/integration/council.consult.spec.ts`
-- [ ] T024 [P] [US1] Golden: Distinct persona tone/structure & Devil’s Advocate counterpoints in `tests/golden/council.personas.spec.ts`
+
 - [X] T021 [P] [US1] Unit: Validate `council.consult` input schema in `tests/unit/council.input.spec.ts`
 - [X] T022 [P] [US1] Unit: Validate `council.consult` output schema in `tests/unit/council.output.spec.ts`
 - [X] T023 [P] [US1] Integration: MCP request/response roundtrip in `tests/integration/council.consult.spec.ts`
@@ -96,10 +93,6 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 ### Tests for User Story 2
 
-- [ ] T033 [P] [US2] Unit: Validate `persona.consult` input schema in `tests/unit/persona.input.spec.ts`
-- [ ] T034 [P] [US2] Unit: Validate `persona.consult` output schema in `tests/unit/persona.output.spec.ts`
-- [ ] T035 [P] [US2] Integration: MCP request/response flow in `tests/integration/persona.consult.spec.ts`
-- [ ] T036 [P] [US2] Golden: Persona tone/structure alignment in `tests/golden/persona.tone.spec.ts`
 - [X] T033 [P] [US2] Unit: Validate `persona.consult` input schema in `tests/unit/persona.input.spec.ts`
 - [X] T034 [P] [US2] Unit: Validate `persona.consult` output schema in `tests/unit/persona.output.spec.ts`
 - [X] T035 [P] [US2] Integration: MCP request/response flow in `tests/integration/persona.consult.spec.ts`
@@ -107,17 +100,12 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 ### Implementation for User Story 2
 
-- [ ] T037 [P] [US2] Implement `server/src/tools/persona.consult.ts` input parsing and validation
-- [ ] T038 [US2] Implement single-persona response generator in `server/src/personas/generators.ts`
-- [ ] T039 [US2] Add invalid `persona_name` error handling in `server/src/utils/errors.ts`
-- [ ] T040 [US2] Wire depth scaling & confidence into persona path in `server/src/utils/depth.ts` and `confidence.ts`
-- [ ] T041 [US2] Register tool with MCP and logging hooks in `server/src/index.ts`
-- [ ] T042 [US2] Update docs with explicit chat prefixes for `persona.consult` in `docs/README.md`
 - [X] T037 [P] [US2] Implement `server/src/tools/persona.consult.ts` input parsing and validation
 - [X] T038 [US2] Implement single-persona response generator in `server/src/personas/generators.ts`
 - [X] T039 [US2] Add invalid `persona_name` error handling in `server/src/utils/errors.ts`
 - [X] T040 [US2] Wire depth scaling & confidence into persona path in `server/src/utils/depth.ts` and `confidence.ts`
 - [X] T041 [US2] Register tool with MCP and logging hooks in `server/src/index.ts`
+- [X] T042 [US2] Update docs with explicit chat prefixes for `persona.consult` in `docs/README.md`
 
 **Checkpoint**: User Story 2 fully functional and independently testable
 
@@ -131,10 +119,6 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 ### Tests for User Story 3
 
-- [ ] T043 [P] [US3] Unit: Validate `council.define_personas` input schema in `tests/unit/define.input.spec.ts`
-- [ ] T044 [P] [US3] Unit: Validate `council.define_personas` output schema in `tests/unit/define.output.spec.ts`
-- [ ] T045 [P] [US3] Integration: Overrides applied via workspace config in `tests/integration/overrides.spec.ts`
-- [ ] T046 [P] [US3] Golden: Transparency and permission matrix outputs in `tests/golden/persona.contracts.spec.ts`
 - [X] T043 [P] [US3] Unit: Validate `council.define_personas` input schema in `tests/unit/define.input.spec.ts`
 - [X] T044 [P] [US3] Unit: Validate `council.define_personas` output schema in `tests/unit/define.output.spec.ts`
 - [X] T045 [P] [US3] Integration: Overrides applied via workspace config in `tests/integration/overrides.spec.ts`
@@ -142,12 +126,6 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 ### Implementation for User Story 3
 
-- [ ] T047 [P] [US3] Implement `server/src/tools/council.define_personas.ts` input parsing and validation
-- [ ] T048 [US3] Implement overrides application in `server/src/utils/workspaceConfig.ts` (validate allowed fields only)
-- [ ] T049 [US3] Return current contracts + permission matrix in `server/src/personas/contracts.ts`
-- [ ] T050 [US3] Register tool with MCP and logging hooks in `server/src/index.ts`
-- [ ] T051 [US3] Update docs: persona matrix and override policy in `docs/README.md`
-- [ ] T052 [US3] Add example overrides file: `.council/personas.json.example` at repo root
 - [X] T047 [P] [US3] Implement `server/src/tools/council.define_personas.ts` input parsing and validation
 - [X] T048 [US3] Implement overrides application in `server/src/utils/workspaceConfig.ts` (validate allowed fields only)
 - [X] T049 [US3] Return current contracts + permission matrix in `server/src/personas/contracts.ts`
@@ -163,14 +141,14 @@ description: "Task list for Clarity Council MCP Tool Suite"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T053 [P] Documentation updates in `docs/README.md` (examples, prefixes, synthesis conflicts)
-- [ ] T054 Code cleanup and refactoring across `server/src/`
-- [ ] T055 Performance tuning for depth `deep` outputs (progressive status messaging)
-- [ ] T056 [P] Additional unit tests in `tests/unit/` (error mapping, edge cases)
-- [ ] T057 Security hardening (no secrets; validate overrides strictly)
-- [ ] T058 Observability: add timing metrics and failure categories in logs
-- [ ] T059 [P] Quickstart validation against README and scripts in `specs/001-clarity-council-mcp/quickstart.md`
-- [ ] T060 Release prep: example prompts and tool discovery notes in `docs/README.md`
+- [X] T053 [P] Documentation updates in `docs/README.md` (examples, prefixes, synthesis conflicts)
+- [X] T054 Code cleanup and refactoring across `server/src/`
+- [X] T055 Performance tuning for depth `deep` outputs (progressive status messaging)
+- [X] T056 [P] Additional unit tests in `tests/unit/` (error mapping, edge cases)
+- [X] T057 Security hardening (no secrets; validate overrides strictly)
+- [X] T058 Observability: add timing metrics and failure categories in logs
+- [X] T059 [P] Quickstart validation against README and scripts in `specs/001-clarity-council-mcp/quickstart.md`
+- [X] T060 Release prep: example prompts and tool discovery notes in `docs/README.md`
 
 ---
 
