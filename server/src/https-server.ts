@@ -87,6 +87,16 @@ async function startServer() {
   const servers: Array<{ close: (cb: () => void) => void }> = [];
   const tools: ToolDefinition[] = [];
 
+  // Add global error handlers to prevent silent crashes
+  process.on("unhandledRejection", (reason, promise) => {
+    logger.error({ reason, promise }, "Unhandled promise rejection");
+  });
+
+  process.on("uncaughtException", (err) => {
+    logger.error({ err }, "Uncaught exception");
+    process.exit(1);
+  });
+
   const registrar: ToolRegistrar = {
     registerTool: (tool) => {
       tools.push(tool);
@@ -107,11 +117,17 @@ async function startServer() {
     }));
 
   const callTool = async (name: string, args: Record<string, unknown>) => {
-    const tool = tools.find((t) => t.name === name);
-    if (!tool) {
-      throw new Error(`Tool not found: ${name}`);
+    try {
+      const tool = tools.find((t) => t.name === name);
+      if (!tool) {
+        throw new Error(`Tool not found: ${name}`);
+      }
+      const result = await Promise.resolve(tool.handler(args || {}));
+      return result;
+    } catch (err: any) {
+      logger.error({ tool: name, err, args }, "Tool execution error");
+      throw err;
     }
-    return tool.handler(args || {});
   };
 
   const handleRpc = async (req: JsonRpcRequest): Promise<JsonRpcResponse> => {
