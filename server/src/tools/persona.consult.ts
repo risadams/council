@@ -1,4 +1,3 @@
-import type { Server } from "@modelcontextprotocol/sdk/server";
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -7,11 +6,16 @@ import { Depth } from "../utils/depth.js";
 import { ConsultInput, generateDevilsAdvocateDraft, generatePersonaDraft } from "../personas/generators.js";
 import { formatPersonaDraft } from "../utils/personaFormatter.js";
 import { withRequest, logRequestComplete } from "../utils/logger.js";
+import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
-const inputSchema = loadSchema("persona.consult.input.schema.json");
-const outputSchema = loadSchema("persona.consult.output.schema.json");
+const defaultInputSchema = loadSchema("persona.consult.input.schema.json");
+const defaultOutputSchema = loadSchema("persona.consult.output.schema.json");
 
-export async function registerPersonaConsult(server: Server) {
+type SchemaOverrides = { inputSchema?: unknown; outputSchema?: unknown };
+
+export async function registerPersonaConsult(server: ToolRegistrar, schemas?: SchemaOverrides) {
+  const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
+  const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;
   server.registerTool({
     name: "persona.consult",
     description:

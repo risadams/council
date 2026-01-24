@@ -1,4 +1,3 @@
-import type { Server } from "@modelcontextprotocol/sdk/server";
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -13,11 +12,16 @@ import { formatPersonaDraft } from "../utils/personaFormatter.js";
 import { buildSynthesis } from "../utils/synthesis.js";
 import { Depth } from "../utils/depth.js";
 import { withRequest, logRequestComplete } from "../utils/logger.js";
+import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
-const inputSchema = loadSchema("council.consult.input.schema.json");
-const outputSchema = loadSchema("council.consult.output.schema.json");
+const defaultInputSchema = loadSchema("council.consult.input.schema.json");
+const defaultOutputSchema = loadSchema("council.consult.output.schema.json");
 
-export async function registerCouncilConsult(server: Server) {
+type SchemaOverrides = { inputSchema?: unknown; outputSchema?: unknown };
+
+export async function registerCouncilConsult(server: ToolRegistrar, schemas?: SchemaOverrides) {
+  const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
+  const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;
   server.registerTool({
     name: "council.consult",
     description:
