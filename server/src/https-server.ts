@@ -164,9 +164,12 @@ async function startServer() {
           };
         }
         try {
+          logger.info({ toolName, argsKeys: Object.keys(toolArgs) }, "Calling tool");
           const result = await callTool(toolName, toolArgs);
+          logger.info({ toolName, resultType: typeof result }, "Tool completed successfully");
           return { jsonrpc: "2.0", id, result };
         } catch (err: any) {
+          logger.error({ toolName, err, message: err?.message }, "Tool invocation failed");
           return {
             jsonrpc: "2.0",
             id,
@@ -209,12 +212,15 @@ async function startServer() {
           try {
             const parsed = body.length ? JSON.parse(body) : {};
             const requests = Array.isArray(parsed) ? parsed : [parsed];
+            logger.info({ requestCount: requests.length, methods: requests.map((r: any) => r.method) }, "Processing requests");
             const responses = await Promise.all(requests.map((r) => handleRpc(r)));
             const payload = Array.isArray(parsed) ? responses : responses[0];
+            logger.info({ responseCount: responses.length, payloadSize: JSON.stringify(payload).length }, "Sending response");
             res.writeHead(200, { "Content-Type": "application/json" });
             res.end(JSON.stringify(payload));
+            logger.info("Response sent successfully");
           } catch (err: any) {
-            logger.error({ err }, "POST handler error");
+            logger.error({ err, message: err?.message, stack: err?.stack }, "POST handler error");
             if (!res.headersSent) {
               res.writeHead(400, { "Content-Type": "application/json" });
               res.end(
