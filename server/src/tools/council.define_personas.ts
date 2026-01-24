@@ -15,7 +15,7 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
   const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
   const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;
   server.registerTool({
-    name: "council.define_personas",
+    name: "council_define_personas",
     description:
       "Return current persona contracts and apply validated workspace-level overrides.",
     inputSchema,

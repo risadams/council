@@ -23,7 +23,7 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
   const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
   const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;
   server.registerTool({
-    name: "council.consult",
+    name: "council_consult",
     description:
       "Consult multiple personas and produce a synthesis (agreements, conflicts, risks/tradeoffs, next_steps).",
     inputSchema,

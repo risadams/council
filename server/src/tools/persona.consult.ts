@@ -17,7 +17,7 @@ export async function registerPersonaConsult(server: ToolRegistrar, schemas?: Sc
   const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
   const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;
   server.registerTool({
-    name: "persona.consult",
+    name: "persona_consult",
     description:
       "Consult a single persona returning structured advice, assumptions, questions, next_steps, and confidence.",
     inputSchema,
