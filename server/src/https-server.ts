@@ -165,52 +165,71 @@ async function startServer() {
 
   // Shared request handler for health and JSON-RPC over HTTP/HTTPS
   const requestHandler: http.RequestListener = (req, res) => {
-    if (req.url === "/" && req.method === "GET") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          status: "healthy",
-          service: "clarity-council-mcp",
-          version: "0.1.0",
-          message: "Connect via MCP client to access tools"
-        })
-      );
-      return;
-    }
+    try {
+      if (req.url === "/" && req.method === "GET") {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            status: "healthy",
+            service: "clarity-council-mcp",
+            version: "0.1.0",
+            message: "Connect via MCP client to access tools"
+          })
+        );
+        return;
+      }
 
-    if (req.url === "/" && req.method === "POST") {
-      let body = "";
-      req.on("data", (chunk) => {
-        body += chunk;
-      });
-      req.on("end", async () => {
-        try {
-          const parsed = body.length ? JSON.parse(body) : {};
-          const requests = Array.isArray(parsed) ? parsed : [parsed];
-          const responses = await Promise.all(requests.map((r) => handleRpc(r)));
-          const payload = Array.isArray(parsed) ? responses : responses[0];
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify(payload));
-        } catch (err: any) {
+      if (req.url === "/" && req.method === "POST") {
+        let body = "";
+        req.on("data", (chunk) => {
+          body += chunk;
+        });
+        req.on("error", (err) => {
+          logger.error({ err }, "Request error");
           res.writeHead(400, { "Content-Type": "application/json" });
-          res.end(
-            JSON.stringify({
-              jsonrpc: "2.0",
-              id: null,
-              error: { code: -32700, message: "Parse error", data: err?.message }
-            })
-          );
-        }
-      });
-      return;
-    }
+          res.end(JSON.stringify({ error: "Request error" }));
+        });
+        req.on("end", async () => {
+          try {
+            const parsed = body.length ? JSON.parse(body) : {};
+            const requests = Array.isArray(parsed) ? parsed : [parsed];
+            const responses = await Promise.all(requests.map((r) => handleRpc(r)));
+            const payload = Array.isArray(parsed) ? responses : responses[0];
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(payload));
+          } catch (err: any) {
+            logger.error({ err }, "POST handler error");
+            if (!res.headersSent) {
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: null,
+                  error: { code: -32700, message: "Parse error", data: err?.message }
+                })
+              );
+            }
+          }
+        });
+        return;
+      }
 
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Not Found" }));
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Not Found" }));
+    } catch (err: any) {
+      logger.error({ err }, "Unhandled request handler error");
+      if (!res.headersSent) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+      }
+    }
   };
 
   // Create HTTPS server
   const httpsServer = https.createServer(options, requestHandler);
+  httpsServer.on("error", (err) => {
+    logger.error({ err }, "HTTPS server error");
+  });
   httpsServer.listen(PORT, "0.0.0.0", () => {
     logger.info(
       { port: PORT, certPath, keyPath },
@@ -222,6 +241,9 @@ async function startServer() {
   // Optional HTTP server for local, non-TLS access
   if (HTTP_ENABLED) {
     const httpServer = http.createServer(requestHandler);
+    httpServer.on("error", (err) => {
+      logger.error({ err }, "HTTP server error");
+    });
     httpServer.listen(HTTP_PORT, "0.0.0.0", () => {
       logger.info({ port: HTTP_PORT }, `Clarity Council MCP HTTP server started on http://localhost:${HTTP_PORT}`);
     });
