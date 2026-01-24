@@ -8,6 +8,10 @@ const SCHEMA_DIR = join(__dirname, "..", "schemas");
 
 export function loadSchema(name: string) {
   const schemaPath = join(SCHEMA_DIR, name);
-  const text = readFileSync(schemaPath, "utf-8");
-  return JSON.parse(text);
+  try {
+    const text = readFileSync(schemaPath, "utf-8");
+    return JSON.parse(text);
+  } catch (err: any) {
+    throw new Error(`Failed to load schema "${name}": ${err.message}`);
+  }
 }

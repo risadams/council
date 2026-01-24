@@ -2,7 +2,7 @@ import { describe, expect, beforeEach, afterEach, it } from "vitest";
 import { rmSync, existsSync } from "fs";
 import { join } from "path";
 import { registerDefinePersonas } from "../../server/src/tools/council.define_personas.js";
-import { loadSchema } from "../../server/src/utils/schemaLoader.js";
+
 import { validate } from "../../server/src/utils/validation.js";
 
  type RegisteredTool = {

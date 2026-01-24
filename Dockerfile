@@ -30,8 +30,7 @@ COPY server/package*.json ./
 # Install production dependencies only
 RUN npm ci --omit=dev
 
-# Copy built application from builder
-COPY --from=builder /app/dist ./dist
+# Copy built application from builder\r\nCOPY --from=builder /app/dist ./dist\r\n\r\n# Copy healthcheck script\r\nCOPY server/healthcheck.js ./healthcheck.js
 
 # Create directory for HTTPS certificates
 RUN mkdir -p /app/certs
@@ -49,3 +48,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 # Start the MCP server with the prebuilt HTTPS bundle (no dev deps needed at runtime)
 CMD ["node", "dist/https-server.js"]
+

@@ -28,3 +28,4 @@ services:
 
 volumes:
   clarity-council-data:
+

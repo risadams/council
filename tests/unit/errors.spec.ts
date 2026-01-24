@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { registerCouncilConsult } from "../../server/src/tools/council.consult.js";
 import { registerPersonaConsult } from "../../server/src/tools/persona.consult.js";
 import { registerDefinePersonas } from "../../server/src/tools/council.define_personas.js";
-import { loadSchema } from "../../server/src/utils/schemaLoader.js";
+
 import { validate } from "../../server/src/utils/validation.js";
 
 type RegisteredTool = {

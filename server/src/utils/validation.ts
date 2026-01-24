@@ -25,8 +25,12 @@ export function validate(
 
   let validateFn = cache.get(schema);
   if (!validateFn) {
-    validateFn = ajv.compile(schema as any);
-    cache.set(schema, validateFn);
+    try {
+      validateFn = ajv.compile(schema as any);
+      cache.set(schema, validateFn);
+    } catch (err: any) {
+      return { valid: false, errors: [{ message: `Schema compilation failed: ${err.message}` }] };
+    }
   }
   const valid = validateFn(data);
   return { valid: Boolean(valid), errors: (validateFn.errors ?? []) as ErrorObject[] };

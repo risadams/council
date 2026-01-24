@@ -330,41 +330,33 @@ View or override persona definitions.
 
 ## 👥 Persona Suite
 
-The Clarity Council ships with **8 default personas** dedicated to software/devops development:
+The Clarity Council ships with **6 default personas** for business decision-making:
 
 ### Default Personas
 
-1. **Product Owner** (SAFe Agile Expert)
-   - Focus: roadmap, user stories, backlog prioritization, SAFe PI planning
-   - Constraints: Alignment with business goals
+1. **Growth Strategist** (Expansion & Market Strategy)
+   - Focus: market opportunities, user acquisition, product-market fit, growth experiments
+   - Constraints: Sustainable growth and competitive positioning
 
-2. **Scrum Master** (SAFe Agile Facilitator)
-   - Focus: team velocity, sprint ceremonies, impediment removal, release train coordination
-   - Constraints: Team health and predictability
+2. **Financial Officer** (Budget & ROI Focus)
+   - Focus: revenue, costs, burn rate, unit economics, financial sustainability
+   - Constraints: Fiscal responsibility and profitability
 
-3. **Senior Developer** (Code Quality & Technical Excellence)
-   - Focus: system design, code quality, testing strategy, technical debt, mentoring
-   - Constraints: Maintainability and scalability
+3. **Devil's Advocate** (Risk & Critical Analysis)
+   - Focus: challenging assumptions, identifying risks, stress-testing plans
+   - Constraints: Constructive skepticism and risk mitigation
 
-4. **Senior Architect** (System Design & Scalability)
-   - Focus: system architecture, technology selection, API design, design patterns
-   - Constraints: Cross-team alignment
+4. **Ops Architect** (Execution & Scalability)
+   - Focus: operational processes, systems thinking, scalability, resource planning
+   - Constraints: Operational excellence and team efficiency
 
-5. **DevOps Engineer** (Kubernetes/Docker Specialist)
-   - Focus: containerization, orchestration, CI/CD, infrastructure-as-code, reliability
-   - Constraints: Operational excellence and deployment safety
+5. **Customer Advocate** (User Experience & Satisfaction)
+   - Focus: customer needs, user feedback, product usability, customer success
+   - Constraints: Customer-centricity and retention
 
-6. **Security Expert** (Compliance & Threat Mitigation)
-   - Focus: threat modeling, vulnerability assessment, compliance, authentication, data protection
-   - Constraints: Defense-in-depth
-
-7. **QA Engineer** (Testing & Reliability)
-   - Focus: test strategy, coverage, end-to-end testing, performance testing, UAV
-   - Constraints: Zero undetected regressions
-
-8. **Tech Lead** (Technical Strategy & Team Growth)
-   - Focus: technical strategy, code review quality, technology decisions, production reliability
-   - Constraints: Team technical growth and sustainable delivery
+6. **Culture Lead** (Team Health & Values)
+   - Focus: team morale, company culture, hiring, retention, organizational values
+   - Constraints: Sustainable team dynamics and alignment
 
 ### Custom Personas
 
@@ -572,7 +564,7 @@ All tools use JSON Schema for contracts. Schemas are in `server/src/schemas/`:
 
 ### Code Style
 
-- TypeScript strict mode enabled
+- TypeScript with ES modules
 - Prettier + ESLint (via npm scripts)
 - 80-char line width for readability
 
