@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/contracts/council.consult.input.schema.json",
+  "title": "council.consult input",
+  "type": "object",
+  "required": ["user_problem"],
+  "properties": {
+    "user_problem": { "type": "string", "minLength": 1 },
+    "context": { "type": "string" },
+    "desired_outcome": { "type": "string" },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "selected_personas": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Growth Strategist",
+          "Financial Officer",
+          "Devil’s Advocate",
+          "Ops Architect",
+          "Customer Advocate",
+          "Culture Lead"
+        ]
+      }
+    },
+    "depth": { "type": "string", "enum": ["brief", "standard", "deep"], "default": "standard" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/contracts/persona.consult.input.schema.json",
+  "title": "persona.consult input",
+  "type": "object",
+  "required": ["persona_name", "user_problem"],
+  "properties": {
+    "persona_name": {
+      "type": "string",
+      "enum": [
+        "Growth Strategist",
+        "Financial Officer",
+        "Devil’s Advocate",
+        "Ops Architect",
+        "Customer Advocate",
+        "Culture Lead"
+      ]
+    },
+    "user_problem": { "type": "string", "minLength": 1 },
+    "context": { "type": "string" },
+    "desired_outcome": { "type": "string" },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "depth": { "type": "string", "enum": ["brief", "standard", "deep"], "default": "standard" }
+  },
+  "additionalProperties": false
+}

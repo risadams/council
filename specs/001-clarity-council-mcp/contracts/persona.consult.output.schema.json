@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/contracts/persona.consult.output.schema.json",
+  "title": "persona.consult output",
+  "type": "object",
+  "required": ["persona", "summary", "advice", "assumptions", "questions", "next_steps", "confidence"],
+  "properties": {
+    "persona": { "type": "string" },
+    "summary": { "type": "string" },
+    "advice": { "type": "string" },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "questions": { "type": "array", "items": { "type": "string" } },
+    "next_steps": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+    "confidence_rationale": { "type": "string" }
+  },
+  "additionalProperties": false
+}

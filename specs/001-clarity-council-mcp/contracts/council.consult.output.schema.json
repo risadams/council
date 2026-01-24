@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/contracts/council.consult.output.schema.json",
+  "title": "council.consult output",
+  "type": "object",
+  "required": ["responses", "synthesis"],
+  "properties": {
+    "responses": {
+      "type": "array",
+      "items": { "$ref": "./persona.consult.output.schema.json" },
+      "minItems": 1
+    },
+    "synthesis": {
+      "type": "object",
+      "required": ["agreements", "conflicts", "risks_tradeoffs", "next_steps"],
+      "properties": {
+        "agreements": { "type": "array", "items": { "type": "string" } },
+        "conflicts": { "type": "array", "items": { "type": "string" } },
+        "risks_tradeoffs": { "type": "array", "items": { "type": "string" } },
+        "next_steps": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

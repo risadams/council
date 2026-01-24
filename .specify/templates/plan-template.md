@@ -31,7 +31,17 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+The following gates are derived from the constitution and MUST be satisfied:
+- Persona-first UX: outputs identify acting persona and rationale.
+- Tool scope: one job per tool; stable, versioned schemas.
+- Determinism: predictable outputs; any nondeterminism explicitly disclosed.
+- Performance: progressive results or status updates for long-running actions.
+- Idempotency: write operations support dry-run, pre-change summary, and diff.
+- Observability: structured logs with correlation IDs, timing, failure categories.
+- Security: data minimization; no secret logging; bounded timeouts/retries; fail-closed.
+- Testing: unit, integration, and golden persona-output tests where tone/format matters.
+- Documentation: tool examples, failure modes, latency class; persona one-pager + permissions matrix.
+- PR checklist: tests + docs updated; no breaking schemas without versioning; rollback path present.
 
 ## Project Structure
 

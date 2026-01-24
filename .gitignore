@@ -1,0 +1,58 @@
+# Node/TypeScript
+node_modules/
+dist/
+build/
+*.log
+.env*
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+# Test/coverage
+coverage/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Rust
+target/
+debug/
+release/
+*.rs.bk
+*.rlib
+*.prof*
+
+# Kotlin/Java
+build/
+out/
+.gradle/
+*.class
+*.jar
+*.iml
+
+# C/C++
+bin/
+obj/
+out/
+*.o
+*.so
+*.a
+*.exe
+*.dll
+
+# Universal secrets
+*.key
+*.crt
+certs/
+secrets/
+
+*.pdf
