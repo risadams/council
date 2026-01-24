@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import http from "http";
 import https from "https";
 import fs from "fs";
 import path from "path";
@@ -18,6 +19,8 @@ const __dirname = path.dirname(__filename);
 const logger = createLogger();
 
 const PORT = parseInt(process.env.HTTPS_PORT || "8000", 10);
+const HTTP_ENABLED = (process.env.HTTP_ENABLED || "true").toLowerCase() !== "false";
+const HTTP_PORT = parseInt(process.env.HTTP_PORT || "8080", 10);
 const CERT_DIR = process.env.CERT_DIR || path.join(__dirname, "..", "certs");
 
 function ensureCertificates() {
@@ -67,6 +70,8 @@ const options = {
 };
 
 async function startServer() {
+  const servers: Array<{ close: (cb: () => void) => void }> = [];
+
   const server = new McpServer({
     name: "clarity-council-mcp",
     version: "0.1.0"
@@ -79,9 +84,8 @@ async function startServer() {
   await registerPersonaConsult(registrar);
   await registerDefinePersonas(registrar);
 
-  // Create HTTPS server
-  const httpsServer = https.createServer(options, (req, res) => {
-    // Simple health check endpoint
+  // Shared request handler for health endpoint
+  const requestHandler: http.RequestListener = (req, res) => {
     if (req.url === "/" && req.method === "GET") {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(
@@ -92,25 +96,49 @@ async function startServer() {
           message: "Connect via MCP client to access tools"
         })
       );
-    } else {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Not Found" }));
+      return;
     }
-  });
 
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Not Found" }));
+  };
+
+  // Create HTTPS server
+  const httpsServer = https.createServer(options, requestHandler);
   httpsServer.listen(PORT, "0.0.0.0", () => {
     logger.info(
       { port: PORT, certPath, keyPath },
       `Clarity Council MCP HTTPS server started on https://localhost:${PORT}`
     );
   });
+  servers.push(httpsServer);
+
+  // Optional HTTP server for local, non-TLS access
+  if (HTTP_ENABLED) {
+    const httpServer = http.createServer(requestHandler);
+    httpServer.listen(HTTP_PORT, "0.0.0.0", () => {
+      logger.info({ port: HTTP_PORT }, `Clarity Council MCP HTTP server started on http://localhost:${HTTP_PORT}`);
+    });
+    servers.push(httpServer);
+  }
 
   // Handle graceful shutdown
   process.on("SIGINT", () => {
-    logger.info("Shutting down HTTPS server...");
-    httpsServer.close(() => {
-      logger.info("HTTPS server closed");
+    logger.info("Shutting down servers...");
+    let remaining = servers.length;
+
+    if (remaining === 0) {
       process.exit(0);
+    }
+
+    servers.forEach((srv) => {
+      srv.close(() => {
+        remaining -= 1;
+        if (remaining === 0) {
+          logger.info("All servers closed");
+          process.exit(0);
+        }
+      });
     });
   });
 }

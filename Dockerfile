@@ -40,8 +40,8 @@ RUN mkdir -p /app/certs
 RUN openssl req -x509 -newkey rsa:2048 -keyout /app/certs/key.pem -out /app/certs/cert.pem \
     -days 365 -nodes -subj "/CN=localhost"
 
-# Expose HTTPS port
-EXPOSE 8000
+# Expose HTTPS and HTTP ports
+EXPOSE 8000 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
