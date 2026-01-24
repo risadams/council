@@ -40,7 +40,9 @@ The MCP server will start and output connection details.
 docker-compose up -d
 ```
 
-The HTTPS server will be available at `https://localhost:8000`.
+The server will be available at:
+- **HTTP** (local, no TLS): `http://localhost:8080/`
+- **HTTPS** (production): `https://localhost:8000/`
 
 ---
 
@@ -165,23 +167,69 @@ docker-compose up -d
 
 ### 4. Use in VS Code
 
-In the MCP command palette or chat:
+Once connected, tools are available in the chat:
 
 ```
-/council.consult user_problem:"Grow MRR by 30%" depth:standard
+@Clarity-Council council_consult: What should we prioritize for Q2 growth?
 ```
 
-Or via Claude with the MCP extension:
+**Alternatively, configure for HTTP (avoids cert warnings)**:
 
-```
-@council-consult: What should we prioritize for Q2 growth?
+```json
+{
+  "mcpServers": {
+    "clarity-council": {
+      "url": "http://localhost:8080"
+    }
+  }
+}
 ```
 
 ---
 
 ## 🎯 Tools
 
-### `council.consult`
+### Calling Tools via HTTP/HTTPS
+
+Tools are exposed via JSON-RPC 2.0 over HTTP POST to `/`:
+
+#### Example: Call `council_consult` via cURL
+
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "council_consult",
+      "arguments": {
+        "user_problem": "We need to grow MRR by 30%",
+        "context": "B2B SaaS, 100 customers, $50K ARR",
+        "desired_outcome": "Sustainable growth without burning runway",
+        "constraints": ["Cannot reduce customer support", "Must maintain 99.9% uptime"],
+        "depth": "standard"
+      }
+    }
+  }'
+```
+
+#### Example: List Available Tools
+
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/list"
+  }'
+```
+
+---
+
+### `council_consult`
 
 Gather perspectives from multiple personas and produce a synthesis.
 
@@ -229,14 +277,14 @@ Gather perspectives from multiple personas and produce a synthesis.
 
 ---
 
-### `persona.consult`
+### `persona_consult`
 
 Get structured advice from a single persona.
 
 **Input**:
 ```json
 {
-  "persona_name": "Financial Officer",
+  "persona_name": "Growth Strategist",
   "user_problem": "Launch premium tier",
   "context": "Current ARPU: $500/year, growth target: 50% YoY",
   "desired_outcome": "Increase revenue without high CAC",
@@ -248,7 +296,7 @@ Get structured advice from a single persona.
 
 ---
 
-### `council.define_personas`
+### `council_define_personas`
 
 View or override persona definitions.
 
