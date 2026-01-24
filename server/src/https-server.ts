@@ -4,6 +4,7 @@ import https from "https";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { spawnSync } from "child_process";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createLogger } from "./utils/logger.js";
 import { registerCouncilConsult } from "./tools/council.consult.js";
@@ -19,13 +20,46 @@ const logger = createLogger();
 const PORT = parseInt(process.env.HTTPS_PORT || "8000", 10);
 const CERT_DIR = process.env.CERT_DIR || path.join(__dirname, "..", "certs");
 
-// Ensure certificates exist
-const certPath = path.join(CERT_DIR, "cert.pem");
-const keyPath = path.join(CERT_DIR, "key.pem");
+function ensureCertificates() {
+  fs.mkdirSync(CERT_DIR, { recursive: true });
 
-if (!fs.existsSync(certPath) || !fs.existsSync(keyPath)) {
-  logger.warn({ certPath, keyPath }, "HTTPS certificates not found. Using self-signed certificates.");
+  const certPath = path.join(CERT_DIR, "cert.pem");
+  const keyPath = path.join(CERT_DIR, "key.pem");
+
+  const hasCerts = fs.existsSync(certPath) && fs.existsSync(keyPath);
+
+  if (!hasCerts) {
+    logger.warn({ certPath, keyPath }, "HTTPS certificates not found. Generating self-signed certificates.");
+
+    const result = spawnSync(
+      "openssl",
+      [
+        "req",
+        "-x509",
+        "-newkey",
+        "rsa:2048",
+        "-keyout",
+        keyPath,
+        "-out",
+        certPath,
+        "-days",
+        "365",
+        "-nodes",
+        "-subj",
+        "/CN=localhost"
+      ],
+      { stdio: "inherit" }
+    );
+
+    if (result.status !== 0) {
+      throw new Error(`Failed to generate self-signed certificates with openssl (exit code ${result.status ?? "unknown"}).`);
+    }
+  }
+
+  return { certPath, keyPath };
 }
+
+const { certPath, keyPath } = ensureCertificates();
 
 const options = {
   key: fs.readFileSync(keyPath),

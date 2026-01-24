@@ -47,5 +47,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD node -e "const https = require('https'); const options = {hostname: 'localhost', port: 8000, path: '/', method: 'GET', rejectUnauthorized: false}; https.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => { process.exit(1); }).end();" || exit 1
 
-# Start the MCP server with HTTPS
-CMD ["npm", "run", "start:https"]
+# Start the MCP server with the prebuilt HTTPS bundle (no dev deps needed at runtime)
+CMD ["node", "dist/https-server.js"]
