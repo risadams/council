@@ -126,22 +126,22 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### File Watcher & Hot-Reload Infrastructure
 
-- [ ] T052 [P] [US3] Implement `server/src/utils/fileWatcher.ts` class `PersonaConfigWatcher` with methods: `loadPersonaOverrides()`, `watchForChanges()`, `applyOverrides()`, `reloadOnChange()`
-- [ ] T053 [P] [US3] Implement `loadPersonaOverrides()`: read `/.council/personas.overrides.json` (from WORKSPACE_DIR), parse JSON, validate against [contracts/persona-overrides.schema.json](contracts/persona-overrides.schema.json)
-- [ ] T054 [P] [US3] Add error handling for malformed files: if JSON parse fails, log error, use previous config, don't crash server (fault tolerance per Q4)
-- [ ] T055 [P] [US3] Implement `watchForChanges()`: use `chokidar` library to watch `personas.overrides.json` file, trigger reload on any change event
-- [ ] T056 [P] [US3] Implement `reloadOnChange()`: on file change detected, call `loadPersonaOverrides()`, apply to persona definitions in memory, emit structured log (file change timestamp, affected persona count, success/failure)
-- [ ] T057 [US3] Integrate file watcher into `server/src/index.ts`: on startup, load initial overrides, start file watcher, log initial persona config state
-- [ ] T058 [US3] Update `council_define_personas.ts` tool handler: when persona overrides are modified via tool, write to `/.council/personas.overrides.json` atomically (write to temp file, rename), file watcher detects and reloads
+- [x] T052 [P] [US3] Implement `server/src/utils/fileWatcher.ts` class `PersonaConfigWatcher` with methods: `loadPersonaOverrides()`, `watchForChanges()`, `applyOverrides()`, `reloadOnChange()`
+- [x] T053 [P] [US3] Implement `loadPersonaOverrides()`: read `/.council/personas.overrides.json` (from WORKSPACE_DIR), parse JSON, validate against [contracts/persona-overrides.schema.json](contracts/persona-overrides.schema.json)
+- [x] T054 [P] [US3] Add error handling for malformed files: if JSON parse fails, log error, use previous config, don't crash server (fault tolerance per Q4)
+- [x] T055 [P] [US3] Implement `watchForChanges()`: use `chokidar` library to watch `personas.overrides.json` file, trigger reload on any change event
+- [x] T056 [P] [US3] Implement `reloadOnChange()`: on file change detected, call `loadPersonaOverrides()`, apply to persona definitions in memory, emit structured log (file change timestamp, affected persona count, success/failure)
+- [x] T057 [US3] Integrate file watcher into `server/src/index.ts`: on startup, load initial overrides, start file watcher, log initial persona config state
+- [x] T058 [US3] Update `council_define_personas.ts` tool handler: when persona overrides are modified via tool, write to `/.council/personas.overrides.json` atomically (write to temp file, rename), file watcher detects and reloads
 
 ### Persona Override Data Model
 
-- [ ] T059 [US3] Create `server/src/types/personaOverrides.ts` TypeScript interface matching [contracts/persona-overrides.schema.json](contracts/persona-overrides.schema.json): version, lastModified, overrides map with enabled/customSoul/customFocus/customConstraints fields
-- [ ] T060 [US3] Implement override application logic: for each overridden persona, replace soul/focus/constraints if provided, keep original if not provided, merge with existing persona definition
-- [ ] T061 [US3] Add override validation: customSoul ≤500 chars, customFocus items ≤100 chars, customConstraints items ≤200 chars (per data-model.md)
-- [ ] T062 [US3] Create `tests/unit/file-watcher.spec.ts` unit tests: load valid overrides file, load malformed JSON, detect file changes, apply overrides, test fallback on error
-- [ ] T063 [US3] Create `tests/integration/persona-hotreload.spec.ts` integration test: start server with overrides file, call council_consult (verify override applied), modify file externally, wait for reload, call council_consult again (verify new override applied)
-- [ ] T064 [US3] Create golden test `tests/golden/persona-override-tone.spec.ts`: override a persona's soul, call person_consult, verify output tone/content reflects override
+- [x] T059 [US3] Create `server/src/types/personaOverrides.ts` TypeScript interface matching [contracts/persona-overrides.schema.json](contracts/persona-overrides.schema.json): version, lastModified, overrides map with enabled/customSoul/customFocus/customConstraints fields
+- [x] T060 [US3] Implement override application logic: for each overridden persona, replace soul/focus/constraints if provided, keep original if not provided, merge with existing persona definition
+- [x] T061 [US3] Add override validation: customSoul ≤500 chars, customFocus items ≤100 chars, customConstraints items ≤200 chars (per data-model.md)
+- [x] T062 [US3] Create `tests/unit/file-watcher.spec.ts` unit tests: load valid overrides file, load malformed JSON, detect file changes, apply overrides, test fallback on error
+- [x] T063 [US3] Create `tests/integration/persona-hotreload.spec.ts` integration test: start server with overrides file, call council_consult (verify override applied), modify file externally, wait for reload, call council_consult again (verify new override applied)
+- [x] T064 [US3] Create golden test `tests/golden/persona-override-tone.spec.ts`: override a persona's soul, call person_consult, verify output tone/content reflects override
 
 ---
 

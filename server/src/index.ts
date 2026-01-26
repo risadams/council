@@ -4,11 +4,13 @@ import * as z from "zod";
 import { getLogConfig, getRootLogger } from "./utils/logger.js";
 import { loadConfig } from "./utils/config.js";
 import { DockerRegistration } from "./utils/dockerRegistration.js";
+import { PersonaConfigWatcher } from "./utils/fileWatcher.js";
 
 import { registerCouncilConsult } from "./tools/council.consult.js";
 import { registerPersonaConsult } from "./tools/persona.consult.js";
 import { registerDefinePersonas } from "./tools/council.define_personas.js";
 import { createMcpToolRegistrar } from "./utils/mcpAdapter.js";
+import { setGlobalPersonaWatcher } from "./utils/personaWatcherGlobal.js";
 
 const logger = getRootLogger();
 const logConfig = getLogConfig();
@@ -24,6 +26,10 @@ const dockerRegistration = new DockerRegistration({
   httpsPort: config.httpsEnabled ? config.httpsPort : undefined,
   workspaceDir: config.workspaceDir
 });
+
+// Initialize persona config watcher
+const personaWatcher = new PersonaConfigWatcher(config.workspaceDir, logger);
+setGlobalPersonaWatcher(personaWatcher);
 
 const personaNames = [
   "Growth Strategist",
@@ -127,6 +133,29 @@ async function main() {
   await mcpServer.connect(transport);
   logger.info({ event: "server_started" }, "Clarity Council MCP server started");
 
+  // Load initial persona overrides and start watcher
+  const initialOverrides = personaWatcher.loadPersonaOverrides();
+  logger.info(
+    {
+      event: "persona.config.init",
+      hasOverrides: initialOverrides !== null,
+      personaCount: initialOverrides ? Object.keys(initialOverrides.overrides).length : 0
+    },
+    `Persona configuration initialized with ${initialOverrides ? Object.keys(initialOverrides.overrides).length : 0} overrides`
+  );
+
+  personaWatcher.watchForChanges((updatedOverrides) => {
+    logger.info(
+      {
+        event: "persona.config.reloaded",
+        personaCount: Object.keys(updatedOverrides.overrides).length,
+        timestamp: updatedOverrides.lastModified,
+        affectedPersonas: Object.keys(updatedOverrides.overrides)
+      },
+      `Persona configuration reloaded with ${Object.keys(updatedOverrides.overrides).length} overrides`
+    );
+  });
+
   // Register with Docker Desktop MCP
   const registration = await dockerRegistration.registerService();
   if (registration) {
@@ -148,6 +177,9 @@ async function main() {
       },
       `Shutdown signal received: ${signal}`
     );
+
+    // Stop file watcher
+    personaWatcher.stop();
 
     try {
       logger.info({ event: "shutdown.deregister.start" }, "Starting service deregistration");

@@ -3,7 +3,8 @@ import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
 import { PERSONA_CONTRACTS, PersonaContract } from "../personas/contracts.js";
 import { readOverrides, writeOverrides, Overrides, validateOverrides } from "../utils/workspaceConfig.js";
-import { logToolError, logToolStart, logToolSuccess } from "../utils/logger.js";
+import { logToolError, logToolStart, logToolSuccess, getRootLogger } from "../utils/logger.js";
+import { getGlobalPersonaWatcher } from "../utils/personaWatcherGlobal.js";
 import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
 const defaultInputSchema = loadSchema("council.define_personas.input.schema.json");
@@ -22,6 +23,8 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
     outputSchema,
     handler: async (input: Record<string, unknown> | undefined) => {
       const ctx = logToolStart("council.define_personas", input ?? {});
+      const logger = getRootLogger();
+
       try {
         const { valid, errors } = validate(inputSchema, input ?? {});
         if (!valid) {
@@ -51,7 +54,39 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
 
         // Persist new overrides if provided
         if (Object.keys(incomingOverrides).length > 0) {
-          writeOverrides(mergedOverrides);
+          try {
+            // Try to use persona watcher for atomic saves (if initialized)
+            const watcher = getGlobalPersonaWatcher();
+            const personaOverridesFile = {
+              version: "1.0" as const,
+              lastModified: new Date().toISOString(),
+              overrides: Object.entries(mergedOverrides).reduce(
+                (acc, [personaName, override]) => {
+                  acc[personaName] = {
+                    enabled: true,
+                    customSoul: override.soul,
+                    customFocus: override.focus,
+                    customConstraints: override.constraints
+                  };
+                  return acc;
+                },
+                {} as Record<string, any>
+              )
+            };
+
+            const saved = watcher.savePersonaOverrides(personaOverridesFile);
+            if (!saved) {
+              logger.warn({ event: "define_personas.save.fallback" }, "Watcher save failed, using fallback");
+              writeOverrides(mergedOverrides);
+            }
+          } catch (err: any) {
+            // Fallback to direct write if watcher not available
+            logger.debug(
+              { event: "define_personas.save.direct", reason: err?.message },
+              "Using direct override write (watcher not available)"
+            );
+            writeOverrides(mergedOverrides);
+          }
         }
 
         const result = { personas };
