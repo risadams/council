@@ -29,9 +29,11 @@ export function validate(
       validateFn = ajv.compile(schema as any);
       cache.set(schema, validateFn);
     } catch (err: any) {
-      return { valid: false, errors: [{ message: `Schema compilation failed: ${err.message}` }] };
+      return { valid: false, errors: [{ message: "AJV schema compilation failed", keyword: "compile", instancePath: "", schemaPath: "#", params: {} } as any] };
     }
   }
   const valid = validateFn(data);
   return { valid: Boolean(valid), errors: (validateFn.errors ?? []) as ErrorObject[] };
 }
+
+
