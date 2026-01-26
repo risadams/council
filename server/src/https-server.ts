@@ -132,9 +132,14 @@ async function startServer() {
 
   const handleRpc = async (req: JsonRpcRequest): Promise<JsonRpcResponse> => {
     const id = req.id ?? null;
+    const startTime = Date.now();
+
+    logger.debug({ request: req }, "RPC request received");
 
     if (!req.method) {
-      return { jsonrpc: "2.0", id, error: { code: -32600, message: "Invalid Request" } };
+      const errResponse = { jsonrpc: "2.0" as const, id, error: { code: -32600, message: "Invalid Request" } };
+      logger.warn({ response: errResponse, method: req.method }, "Invalid RPC request");
+      return errResponse;
     }
 
     switch (req.method) {
@@ -157,19 +162,34 @@ async function startServer() {
         const toolName = params.name || params.tool || params.method;
         const toolArgs = params.arguments || params.args || params.input || {};
         if (typeof toolName !== "string") {
-          return {
-            jsonrpc: "2.0",
+          const errResponse = {
+            jsonrpc: "2.0" as const,
             id,
             error: { code: -32602, message: "Tool name missing" }
           };
+          logger.warn({ params }, "Tool name missing in request");
+          return errResponse;
         }
         try {
-          logger.info({ toolName, argsKeys: Object.keys(toolArgs) }, "Calling tool");
+          const argKeys = Object.keys(toolArgs);
+          logger.info({ toolName, argKeys, numArgs: argKeys.length }, "Calling tool");
+          const toolStartTime = Date.now();
           const result = await callTool(toolName, toolArgs);
-          logger.info({ toolName, resultType: typeof result }, "Tool completed successfully");
-          const contentText = (result as any)?.formatted || JSON.stringify(result, null, 2); return { jsonrpc: "2.0", id, result: { content: [{ type: "text", text: contentText }] } };
+          const toolDuration = Date.now() - toolStartTime;
+          logger.info({ toolName, duration: toolDuration, resultType: typeof result }, "Tool completed successfully");
+          const contentText = (result as any)?.formatted || JSON.stringify(result, null, 2);
+          const response = { jsonrpc: "2.0" as const, id, result: { content: [{ type: "text", text: contentText }] } };
+          logger.debug({ toolName, responseContentLength: contentText.length }, "Tool response content");
+          return response;
         } catch (err: any) {
-          logger.error({ toolName, err, message: err?.message }, "Tool invocation failed");
+          const errorDuration = Date.now() - startTime;
+          logger.error({
+            toolName,
+            duration: errorDuration,
+            error: err?.message,
+            stack: err?.stack,
+            errorName: err?.name
+          }, "Tool invocation failed");
           return {
             jsonrpc: "2.0",
             id,
@@ -178,7 +198,9 @@ async function startServer() {
         }
       }
       default:
-        return { jsonrpc: "2.0", id, error: { code: -32601, message: `Method not found: ${req.method}` } };
+        const errResponse = { jsonrpc: "2.0" as const, id, error: { code: -32601, message: `Method not found: ${req.method}` } };
+        logger.warn({ method: req.method }, "Unknown RPC method");
+        return errResponse;
     }
   };
 
@@ -209,18 +231,40 @@ async function startServer() {
           res.end(JSON.stringify({ error: "Request error" }));
         });
         req.on("end", async () => {
+          const requestStartTime = Date.now();
           try {
             const parsed = body.length ? JSON.parse(body) : {};
             const requests = Array.isArray(parsed) ? parsed : [parsed];
-            logger.info({ requestCount: requests.length, methods: requests.map((r: any) => r.method) }, "Processing requests");
+            const methods = requests.map((r: any) => r.method);
+            logger.info({
+              requestCount: requests.length,
+              methods,
+              bodySize: body.length
+            }, "HTTP POST received - Processing RPC requests");
+            logger.debug({ requestBody: body }, "Full request body");
             const responses = await Promise.all(requests.map((r) => handleRpc(r)));
             const payload = Array.isArray(parsed) ? responses : responses[0];
-            logger.info({ responseCount: responses.length, payloadSize: JSON.stringify(payload).length }, "Sending response");
+            const payloadJson = JSON.stringify(payload);
+            const requestDuration = Date.now() - requestStartTime;
+            logger.info({
+              requestDuration,
+              responseCount: responses.length,
+              payloadSize: payloadJson.length,
+              hasErrors: Array.isArray(responses) ? responses.some((r: any) => r.error) : (payload as any)?.error
+            }, "Sending HTTP response");
+            logger.debug({ responseBody: payloadJson }, "Full response body");
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify(payload));
-            logger.info("Response sent successfully");
+            res.end(payloadJson);
+            logger.info({ requestDuration, statusCode: 200 }, "HTTP response sent successfully");
           } catch (err: any) {
-            logger.error({ err, message: err?.message, stack: err?.stack }, "POST handler error");
+            const errorDuration = Date.now() - requestStartTime;
+            logger.error({
+              duration: errorDuration,
+              error: err?.message,
+              stack: err?.stack,
+              errorName: err?.name,
+              body: body.substring(0, 500)
+            }, "POST handler error");
             if (!res.headersSent) {
               res.writeHead(400, { "Content-Type": "application/json" });
               res.end(
