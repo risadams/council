@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as z from "zod";
 import { createLogger } from "./utils/logger.js";
+import { DockerRegistration } from "./utils/dockerRegistration.js";
 
 import { registerCouncilConsult } from "./tools/council.consult.js";
 import { registerPersonaConsult } from "./tools/persona.consult.js";
@@ -94,6 +95,7 @@ const definePersonasOutputSchema = z
 async function main() {
   const mcpServer = new McpServer({ name: "clarity-council", version: "0.1.0" });
   const toolRegistrar = createMcpToolRegistrar(mcpServer);
+  const dockerRegistration = new DockerRegistration();
 
   await registerCouncilConsult(toolRegistrar, {
     inputSchema: councilConsultInputSchema,
@@ -111,6 +113,25 @@ async function main() {
   const transport = new StdioServerTransport();
   await mcpServer.connect(transport);
   logger.info({ event: "server_started" }, "Clarity Council MCP server started");
+
+   // Register with Docker Desktop MCP (stub; real payload to be added later)
+  dockerRegistration
+    .registerService()
+    .catch((err) => logger.warn({ err }, "Docker registration stub failed"));
+
+  const shutdown = async (signal: string) => {
+    logger.info({ event: "shutdown", signal }, "Shutting down Clarity Council MCP server");
+    try {
+      await dockerRegistration.deregisterService();
+    } catch (err) {
+      logger.warn({ err }, "Docker deregistration stub failed");
+    } finally {
+      process.exit(0);
+    }
+  };
+
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
 main().catch((err) => {

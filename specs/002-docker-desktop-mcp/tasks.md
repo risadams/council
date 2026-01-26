@@ -21,14 +21,14 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### Setup Infrastructure
 
-- [ ] T001 Initialize Docker registration utilities directory structure in `server/src/utils/` (create dockerRegistration.ts, healthCheck.ts, fileWatcher.ts, logger.ts)
-- [ ] T002 Update `server/package.json` to add dependencies: `chokidar@^3.6.0` (file watcher), `uuid@^9.0.0` (correlation IDs)
-- [ ] T003 Update `server/package.json` npm scripts: add `npm run build:utils` (build utilities TypeScript) separate from main build
-- [ ] T004 Create `server/src/types/docker.ts` with TypeScript interfaces for MCP Service Registration, Health Check Result, Persona Overrides (align with data-model.md)
-- [ ] T005 Update `Dockerfile` to include optional environment variables: `HTTP_PORT`, `HTTPS_PORT`, `LOG_LEVEL`, `LOG_FORMAT`, `WORKSPACE_DIR`, `AUTH_ENABLED` (set defaults)
-- [ ] T006 Update `docker-compose.yml` to add volume mounts: `/.council/` → `./council-workspace/`, `/certs/` → `./certs/` (read-only)
-- [ ] T007 Create `server/scripts/docker-register.cjs` entry point script (registers service on container startup)
-- [ ] T008 Update `server/src/index.ts` to call registration on startup and handle SIGTERM/SIGINT signals for graceful shutdown
+- [x] T001 Initialize Docker registration utilities directory structure in `server/src/utils/` (create dockerRegistration.ts, healthCheck.ts, fileWatcher.ts, logger.ts)
+- [x] T002 Update `server/package.json` to add dependencies: `chokidar@^3.6.0` (file watcher), `uuid@^9.0.0` (correlation IDs)
+- [x] T003 Update `server/package.json` npm scripts: add `npm run build:utils` (build utilities TypeScript) separate from main build
+- [x] T004 Create `server/src/types/docker.ts` with TypeScript interfaces for MCP Service Registration, Health Check Result, Persona Overrides (align with data-model.md)
+- [x] T005 Update `Dockerfile` to include optional environment variables: `HTTP_PORT`, `HTTPS_PORT`, `LOG_LEVEL`, `LOG_FORMAT`, `WORKSPACE_DIR`, `AUTH_ENABLED` (set defaults)
+- [x] T006 Update `docker-compose.yml` to add volume mounts: `/.council/` → `./council-workspace/`, `/certs/` → `./certs/` (read-only)
+- [x] T007 Create `server/scripts/docker-register.cjs` entry point script (registers service on container startup)
+- [x] T008 Update `server/src/index.ts` to call registration on startup and handle SIGTERM/SIGINT signals for graceful shutdown
 
 ---
 

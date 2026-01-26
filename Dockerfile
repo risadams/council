@@ -22,6 +22,18 @@ FROM node:25-bookworm-slim
 
 WORKDIR /app
 
+# Default runtime configuration (overridable via Docker Desktop env vars)
+ENV HTTP_ENABLED=true \
+  HTTP_PORT=8080 \
+  HTTPS_ENABLED=true \
+  HTTPS_PORT=8000 \
+  LOG_LEVEL=info \
+  LOG_FORMAT=json \
+  WORKSPACE_DIR=/.council \
+  AUTH_ENABLED=false \
+  CERT_DIR=/app/certs \
+  HEALTH_CHECK_INTERVAL_MS=30000
+
 # Install openssl for HTTPS certificate generation
 RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 

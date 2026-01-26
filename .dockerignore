@@ -10,5 +10,7 @@ dist
 tests
 specs
 docs
+coverage
+.env*
 WORKBOOK_AI_BoA-v1.pdf
 .DS_Store
