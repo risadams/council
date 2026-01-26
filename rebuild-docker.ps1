@@ -15,9 +15,10 @@ param(
     [switch]$NoCache,
     [switch]$Verbose,
     [switch]$SkipMcp,
+    [switch]$SkipClient,
     [string]$ImageTag = "risadams/clarity-council:1.0.0",
     [string]$ServerName = "clarity-council",
-    [string]$CatalogName = "clarity-council"
+    [string]$CatalogName = "risadams"
 )
 
 $ErrorActionPreference = "Stop"
@@ -53,7 +54,6 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "`n[2/6] Removing old images..." -ForegroundColor Yellow
 $candidateImages = @(
     $ImageTag,
-    "clarity-council:latest",
     "clarity-council-mcp",
     "$defaultProject-clarity-council",
     "${defaultProject}_clarity-council"
@@ -78,10 +78,12 @@ $sourceImage = $composeImages | Where-Object { $_ -match "clarity-council" } | S
 if (-not $sourceImage) { $sourceImage = "$defaultProject-clarity-council" }
 
 if (docker images -q $sourceImage) {
-    docker tag $sourceImage $ImageTag
-    docker tag $sourceImage "clarity-council:latest"
-    Write-Host "Retagged $sourceImage -> $ImageTag" -ForegroundColor Green
-    Write-Host "Retagged $sourceImage -> clarity-council:latest" -ForegroundColor Green
+    if ($sourceImage -ne $ImageTag) {
+        docker tag $sourceImage $ImageTag
+        Write-Host "Retagged $sourceImage -> $ImageTag" -ForegroundColor Green
+    } else {
+        Write-Host "Image already tagged as $ImageTag" -ForegroundColor Green
+    }
 } else {
     Write-Host "Warning: could not find built image '$sourceImage' to retag." -ForegroundColor Yellow
 }
@@ -131,35 +133,52 @@ if (-not $SkipMcp) {
     }
 
     if ($mcpAvailable -and (Test-Path $serverYamlPath)) {
-        # Ensure catalog exists
+        # Check if catalog exists
         $catalogs = @()
         try {
             $catalogs = (& docker @("mcp", "catalog", "ls") 2>$null) | Where-Object { $_ }
         } catch {
             $catalogs = @()
         }
+
         $catalogExists = $catalogs -and ($catalogs -match "^${CatalogName}:\s")
         if (-not $catalogExists) {
+            Write-Host "Creating catalog: $CatalogName" -ForegroundColor Cyan
             & docker @("mcp", "catalog", "create", $CatalogName)
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "Catalog created: $CatalogName" -ForegroundColor Green
+            } else {
+                Write-Host "Warning: failed to create catalog $CatalogName" -ForegroundColor Yellow
             }
+        } else {
+            Write-Host "Catalog already exists: $CatalogName" -ForegroundColor DarkGray
         }
 
-        # Add/overwrite server entry into catalog
+        # Add server to catalog
+        Write-Host "Adding server to catalog: $CatalogName/$ServerName" -ForegroundColor Cyan
         & docker @("mcp", "catalog", "add", $CatalogName, $ServerName, $serverYamlPath, "--force")
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "Catalog entry added: $CatalogName/$ServerName" -ForegroundColor Green
+            Write-Host "Server added to catalog: $CatalogName/$ServerName" -ForegroundColor Green
         } else {
-            Write-Host "Warning: catalog add failed (check Docker Desktop MCP support)." -ForegroundColor Yellow
+            Write-Host "Error: Failed to add server to catalog. Check 'docker mcp catalog show $CatalogName'" -ForegroundColor Red
         }
 
         # Enable server
+        Write-Host "Enabling server: $ServerName" -ForegroundColor Cyan
         & docker @("mcp", "server", "enable", $ServerName)
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "Server enabled in MCP: $ServerName" -ForegroundColor Green
+            Write-Host "Server enabled: $ServerName" -ForegroundColor Green
         } else {
-            Write-Host "Warning: server enable failed. Check 'docker mcp catalog show $CatalogName' then enable manually with 'docker mcp server enable $ServerName'." -ForegroundColor Yellow
+            Write-Host "Error: Failed to enable server. Check 'docker mcp server ls' and enable manually with 'docker mcp server enable $ServerName'" -ForegroundColor Red
+        }
+
+        if (-not $SkipClient) {
+            & docker @("mcp", "client", "connect", "vscode")
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "VS Code connected to Docker MCP Toolkit (restart VS Code if not detected)." -ForegroundColor Green
+            } else {
+                Write-Host "Warning: failed to connect VS Code client. You can run: docker mcp client connect vscode" -ForegroundColor Yellow
+            }
         }
     } elseif (-not $mcpAvailable) {
         Write-Host "MCP CLI not available. Skipping catalog import. (Install Docker Desktop with MCP Toolkit.)" -ForegroundColor Yellow
