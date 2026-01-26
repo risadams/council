@@ -38,20 +38,20 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### Structured JSON Logging
 
-- [ ] T009 Implement `server/src/utils/logger.ts` with structured JSON logging: timestamps, request IDs, correlation IDs, log levels (debug/info/warn/error), metadata fields (no secrets)
-- [ ] T010 Add logger initialization in `server/src/index.ts` before server startup (set log level from `LOG_LEVEL` env var)
-- [ ] T011 Update all MCP tool handlers (`council_consult.ts`, `persona_consult.ts`, `council_define_personas.ts`) to emit structured logs on invocation start/end, including input character count, output character count, duration, and tool name
-- [ ] T012 Add structured error logging to all error paths: tool failures, schema validation errors, registration failures (include error category, message, stack trace)
-- [ ] T013 Add `LOG_FORMAT` env var support: if `LOG_FORMAT=json` (default), output structured JSON; if `LOG_FORMAT=text`, pretty-print for local development
-- [ ] T014 Create `tests/unit/logger.spec.ts` unit tests: validate JSON output format, test all log levels, verify no secrets in logs, test correlation ID generation
+- [x] T009 Implement `server/src/utils/logger.ts` with structured JSON logging: timestamps, request IDs, correlation IDs, log levels (debug/info/warn/error), metadata fields (no secrets)
+- [x] T010 Add logger initialization in `server/src/index.ts` before server startup (set log level from `LOG_LEVEL` env var)
+- [x] T011 Update all MCP tool handlers (`council_consult.ts`, `persona_consult.ts`, `council_define_personas.ts`) to emit structured logs on invocation start/end, including input character count, output character count, duration, and tool name
+- [x] T012 Add structured error logging to all error paths: tool failures, schema validation errors, registration failures (include error category, message, stack trace)
+- [x] T013 Add `LOG_FORMAT` env var support: if `LOG_FORMAT=json` (default), output structured JSON; if `LOG_FORMAT=text`, pretty-print for local development
+- [x] T014 Create `tests/unit/logger.spec.ts` unit tests: validate JSON output format, test all log levels, verify no secrets in logs, test correlation ID generation
 - [ ] T015 Add request-scoped correlation ID to MCP request context: generate on tool invocation, include in all logs for that request, return in response metadata (if MCP spec supports)
 
 ### Environment Configuration
 
-- [ ] T016 Create `server/src/utils/config.ts` to load and validate startup configuration from environment variables: `HTTP_PORT`, `HTTPS_PORT`, `HTTP_ENABLED`, `HTTPS_ENABLED`, `LOG_LEVEL`, `WORKSPACE_DIR`, `AUTH_ENABLED`, `CERT_DIR`
-- [ ] T017 Add configuration validation: port range (1024-65535), directory existence, certificate file checks (if HTTPS enabled), conflicts between ports
-- [ ] T018 Implement `validateConfig()` function that exits with code 1 and logs clear error message if configuration is invalid (prevent container startup with bad config)
-- [ ] T019 Create `tests/unit/config.spec.ts` unit tests: valid config parsing, invalid port handling, missing cert detection, port conflict detection
+- [x] T016 Create `server/src/utils/config.ts` to load and validate startup configuration from environment variables: `HTTP_PORT`, `HTTPS_PORT`, `HTTP_ENABLED`, `HTTPS_ENABLED`, `LOG_LEVEL`, `WORKSPACE_DIR`, `AUTH_ENABLED`, `CERT_DIR`
+- [x] T017 Add configuration validation: port range (1024-65535), directory existence, certificate file checks (if HTTPS enabled), conflicts between ports
+- [x] T018 Implement `validateConfig()` function that exits with code 1 and logs clear error message if configuration is invalid (prevent container startup with bad config)
+- [x] T019 Create `tests/unit/config.spec.ts` unit tests: valid config parsing, invalid port handling, missing cert detection, port conflict detection
 
 ---
 

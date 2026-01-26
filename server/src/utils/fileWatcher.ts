@@ -1,6 +1,6 @@
 import path from "path";
 import { PersonaOverrides } from "../types/docker.js";
-import { createLogger } from "./logger.js";
+import { getRootLogger } from "./logger.js";
 
 const EMPTY_OVERRIDES: PersonaOverrides = {
   version: "1.0",
@@ -13,7 +13,7 @@ const EMPTY_OVERRIDES: PersonaOverrides = {
  * `personas.overrides.json` for changes and apply them live.
  */
 export class PersonaConfigWatcher {
-  private readonly logger = createLogger();
+  private readonly logger = getRootLogger().child({ component: "personaWatcher" });
 
   constructor(
     private readonly workspaceDir: string,

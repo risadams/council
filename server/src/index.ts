@@ -1,7 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as z from "zod";
-import { createLogger } from "./utils/logger.js";
+import { getLogConfig, getRootLogger } from "./utils/logger.js";
+import { loadConfig } from "./utils/config.js";
 import { DockerRegistration } from "./utils/dockerRegistration.js";
 
 import { registerCouncilConsult } from "./tools/council.consult.js";
@@ -9,7 +10,10 @@ import { registerPersonaConsult } from "./tools/persona.consult.js";
 import { registerDefinePersonas } from "./tools/council.define_personas.js";
 import { createMcpToolRegistrar } from "./utils/mcpAdapter.js";
 
-const logger = createLogger();
+const logger = getRootLogger();
+const logConfig = getLogConfig();
+logger.info({ event: "logger.init", level: logConfig.level, format: logConfig.format }, "Logger initialized");
+loadConfig({ logger });
 
 const personaNames = [
   "Growth Strategist",

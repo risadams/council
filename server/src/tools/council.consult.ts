@@ -11,7 +11,7 @@ import {
 import { formatPersonaDraft } from "../utils/personaFormatter.js";
 import { buildSynthesis } from "../utils/synthesis.js";
 import { Depth } from "../utils/depth.js";
-import { withRequest, logRequestComplete } from "../utils/logger.js";
+import { logToolError, logToolStart, logToolSuccess } from "../utils/logger.js";
 import { formatCouncilConsultAsMarkdown } from "../utils/councilFormatter.js";
 import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
@@ -30,11 +30,11 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
     inputSchema,
     outputSchema,
     handler: async (input: Record<string, unknown>) => {
-      const ctx = withRequest();
+      const ctx = logToolStart("council.consult", input);
       try {
         const { valid, errors } = validate(inputSchema, input);
         if (!valid) {
-          logRequestComplete(ctx, "council.consult", false, "validation");
+          logToolError(ctx, "council.consult", "validation", new Error("Invalid input"));
           return toError("validation", "Invalid input", errors);
         }
 
@@ -58,20 +58,21 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
         const responses = drafts.map(formatPersonaDraft);
         const synthesis = buildSynthesis(responses, depth, consultInput);
 
-        logRequestComplete(ctx, "council.consult", true);
         // Return both structured data and formatted markdown for better display
         const markdown = formatCouncilConsultAsMarkdown(
           responses,
           synthesis,
           (input as any).user_problem
         );
-        return {
+        const result = {
           responses,
           synthesis,
           formatted: markdown
         };
+        logToolSuccess(ctx, "council.consult", result);
+        return result;
       } catch (err: any) {
-        logRequestComplete(ctx, "council.consult", false, "internal");
+        logToolError(ctx, "council.consult", "internal", err);
         return toError("internal", "Unexpected error", { message: err.message });
       }
     }

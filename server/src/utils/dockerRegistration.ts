@@ -1,12 +1,12 @@
 import { ServiceRegistration, ServiceStatus } from "../types/docker.js";
-import { createLogger } from "./logger.js";
+import { getRootLogger } from "./logger.js";
 
 /**
  * Stub implementation for Docker Desktop MCP registration.
  * Will be expanded with real gateway/catalog calls in later tasks.
  */
 export class DockerRegistration {
-  private logger = createLogger();
+  private logger = getRootLogger().child({ component: "dockerRegistration" });
 
   async registerService(_payload?: Partial<ServiceRegistration>): Promise<void> {
     this.logger.info({ event: "docker_registration.stub" }, "Docker registration not yet implemented");

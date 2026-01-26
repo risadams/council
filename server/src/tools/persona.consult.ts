@@ -5,7 +5,7 @@ import { getPersona, PersonaName } from "../personas/contracts.js";
 import { Depth } from "../utils/depth.js";
 import { ConsultInput, generateDevilsAdvocateDraft, generatePersonaDraft } from "../personas/generators.js";
 import { formatPersonaDraft } from "../utils/personaFormatter.js";
-import { withRequest, logRequestComplete } from "../utils/logger.js";
+import { logToolError, logToolStart, logToolSuccess } from "../utils/logger.js";
 import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
 const defaultInputSchema = loadSchema("persona.consult.input.schema.json");
@@ -23,18 +23,18 @@ export async function registerPersonaConsult(server: ToolRegistrar, schemas?: Sc
     inputSchema,
     outputSchema,
     handler: async (input: Record<string, unknown>) => {
-      const ctx = withRequest();
+      const ctx = logToolStart("persona.consult", input);
       try {
         const { valid, errors } = validate(inputSchema, input);
         if (!valid) {
-          logRequestComplete(ctx, "persona.consult", false, "validation");
+          logToolError(ctx, "persona.consult", "validation", new Error("Invalid input"));
           return toError("validation", "Invalid input", errors);
         }
 
         const personaName = (input as any).persona_name as PersonaName;
         const persona = getPersona(personaName);
         if (!persona) {
-          logRequestComplete(ctx, "persona.consult", false, "validation");
+          logToolError(ctx, "persona.consult", "validation", new Error("Unknown persona_name"));
           return toError("validation", "Unknown persona_name", { personaName });
         }
 
@@ -52,10 +52,11 @@ export async function registerPersonaConsult(server: ToolRegistrar, schemas?: Sc
             ? generateDevilsAdvocateDraft(consultInput)
             : generatePersonaDraft(persona, consultInput);
 
-        logRequestComplete(ctx, "persona.consult", true);
-        return formatPersonaDraft(draft);
+        const result = formatPersonaDraft(draft);
+        logToolSuccess(ctx, "persona.consult", result);
+        return result;
       } catch (err: any) {
-        logRequestComplete(ctx, "persona.consult", false, "internal");
+        logToolError(ctx, "persona.consult", "internal", err);
         return toError("internal", "Unexpected error", { message: err.message });
       }
     }

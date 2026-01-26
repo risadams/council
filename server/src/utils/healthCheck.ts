@@ -1,12 +1,12 @@
 import { HealthCheckResult } from "../types/docker.js";
-import { createLogger } from "./logger.js";
+import { getRootLogger } from "./logger.js";
 
 /**
  * Stub health checker. Real implementation will probe HTTP/HTTPS endpoints,
  * MCP tool invocation, schema validation, disk and memory metrics.
  */
 export class HealthChecker {
-  private readonly logger = createLogger();
+  private readonly logger = getRootLogger().child({ component: "healthCheck" });
 
   async performHealthCheck(): Promise<HealthCheckResult> {
     this.logger.warn({ event: "health_check.stub" }, "Health check not yet implemented");

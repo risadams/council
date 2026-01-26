@@ -3,7 +3,7 @@ import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
 import { PERSONA_CONTRACTS, PersonaContract } from "../personas/contracts.js";
 import { readOverrides, writeOverrides, Overrides, validateOverrides } from "../utils/workspaceConfig.js";
-import { withRequest, logRequestComplete } from "../utils/logger.js";
+import { logToolError, logToolStart, logToolSuccess } from "../utils/logger.js";
 import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
 const defaultInputSchema = loadSchema("council.define_personas.input.schema.json");
@@ -21,11 +21,11 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
     inputSchema,
     outputSchema,
     handler: async (input: Record<string, unknown> | undefined) => {
-      const ctx = withRequest();
+      const ctx = logToolStart("council.define_personas", input ?? {});
       try {
         const { valid, errors } = validate(inputSchema, input ?? {});
         if (!valid) {
-          logRequestComplete(ctx, "council.define_personas", false, "validation");
+          logToolError(ctx, "council.define_personas", "validation", new Error("Invalid input"));
           return toError("validation", "Invalid input", errors);
         }
 
@@ -36,7 +36,7 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
         try {
           validateOverrides(mergedOverrides, PERSONA_CONTRACTS.map((p) => p.name));
         } catch (err: any) {
-          logRequestComplete(ctx, "council.define_personas", false, "validation");
+          logToolError(ctx, "council.define_personas", "validation", err);
           return toError("validation", err.message ?? "Invalid overrides");
         }
 
@@ -54,10 +54,11 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
           writeOverrides(mergedOverrides);
         }
 
-        logRequestComplete(ctx, "council.define_personas", true);
-        return { personas };
+        const result = { personas };
+        logToolSuccess(ctx, "council.define_personas", result);
+        return result;
       } catch (err: any) {
-        logRequestComplete(ctx, "council.define_personas", false, "internal");
+        logToolError(ctx, "council.define_personas", "internal", err);
         return toError("internal", "Unexpected error", { message: err.message });
       }
     }
