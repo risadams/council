@@ -49,6 +49,11 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
         };
 
         const active = selectPersonas(selected);
+        ctx.logger.debug(
+          { event: "council.personas_selected", count: active.length, personas: active.map((p) => p.name) },
+          `Selected ${active.length} personas for consultation`
+        );
+
         const drafts = active.map((persona) =>
           (persona.name as string) === "Devil's Advocate"
             ? generateDevilsAdvocateDraft(consultInput)

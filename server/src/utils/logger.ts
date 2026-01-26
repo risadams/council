@@ -80,19 +80,20 @@ function sanitizeMeta(meta: unknown): Record<string, unknown> {
   if (!meta || typeof meta !== "object") return {};
   const entries = Array.isArray(meta) ? meta.entries() : Object.entries(meta as Record<string, unknown>);
   const sanitized: Record<string, unknown> = {};
-  for (const [key, value] of entries as Iterable<[string, unknown]>) {
+  for (const [key, value] of entries as Iterable<[string | number, unknown]>) {
+    const keyStr = String(key);
     if (value && typeof value === "object") {
-      sanitized[key] = sanitizeMeta(value);
-    } else if (isSecretKey(key)) {
-      sanitized[key] = "[REDACTED]";
+      sanitized[keyStr] = sanitizeMeta(value);
+    } else if (isSecretKey(keyStr)) {
+      sanitized[keyStr] = "[REDACTED]";
     } else if (value instanceof Error) {
-      sanitized[key] = {
+      sanitized[keyStr] = {
         name: value.name,
         message: value.message,
         stack: value.stack
       };
     } else {
-      sanitized[key] = value as unknown;
+      sanitized[keyStr] = value as unknown;
     }
   }
   return sanitized;

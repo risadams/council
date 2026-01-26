@@ -151,23 +151,23 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### Structured Logging for Diagnostics
 
-- [ ] T065 [US4] Enhance structured logging: add request ID to all tool invocation logs, include input/output summaries, include persona count in council_consult logs, include tool execution duration
-- [ ] T066 [US4] Add filtered log endpoints (if Docker supports): `/logs?level=error` (return last N error logs), `/logs?tool=council_consult` (return tool-specific logs) - optional if Docker UI doesn't support
-- [ ] T067 [US4] Create structured error responses for failures: include error category (validation, network, timeout), error message, request ID, suggestion for recovery
-- [ ] T068 [US4] Add health check metadata to /health endpoint: include memory usage (MB), disk space (MB), uptime (seconds), last check timestamp (allows Docker Desktop to display trends)
+- [x] T065 [US4] Enhance structured logging: add request ID to all tool invocation logs, include input/output summaries, include persona count in council_consult logs, include tool execution duration
+- [x] T066 [US4] Add filtered log endpoints (if Docker supports): `/logs?level=error` (return last N error logs), `/logs?tool=council_consult` (return tool-specific logs) - optional if Docker UI doesn't support
+- [x] T067 [US4] Create structured error responses for failures: include error category (validation, network, timeout), error message, request ID, suggestion for recovery
+- [x] T068 [US4] Add health check metadata to /health endpoint: include memory usage (MB), disk space (MB), uptime (seconds), last check timestamp (allows Docker Desktop to display trends)
 
 ### Metrics & Resource Monitoring
 
-- [ ] T069 [P] [US4] Add memory usage tracking: in health check, compute process memory via `process.memoryUsage().heapUsed`, log if memory > 80MB (warning threshold)
-- [ ] T070 [P] [US4] Add disk space tracking: in health check, compute available disk in workspace directory, log if < 1GB (warning threshold)
-- [ ] T071 [US4] Add uptime tracking: record container start time at startup, compute uptime in health check, include in /health response
-- [ ] T072 [US4] Create `tests/unit/health-check-metrics.spec.ts` unit tests: validate memory computation, validate disk space computation, validate uptime calculation
+- [x] T069 [P] [US4] Add memory usage tracking: in health check, compute process memory via `process.memoryUsage().heapUsed`, log if memory > 80MB (warning threshold)
+- [x] T070 [P] [US4] Add disk space tracking: in health check, compute available disk in workspace directory, log if < 1GB (warning threshold)
+- [x] T071 [US4] Add uptime tracking: record container start time at startup, compute uptime in health check, include in /health response
+- [x] T072 [US4] Create `tests/unit/health-check-metrics.spec.ts` unit tests: validate memory computation, validate disk space computation, validate uptime calculation
 
 ### Diagnostics Documentation
 
-- [ ] T073 [US4] Create `docs/setup-docker-desktop.md` setup guide: step-by-step Docker Desktop configuration, environment variables, volume mounts, health check behavior, troubleshooting section
-- [ ] T074 [US4] Create `docs/docker-troubleshooting.md` diagnostics guide: common issues (port conflicts, registration failures, hot-reload failures), how to interpret logs, how to collect logs for support
-- [ ] T075 [US4] Update `docs/personas.md`: add note about persona overrides and how to customize via `/.council/personas.overrides.json`
+- [x] T073 [US4] Create `docs/setup-docker-desktop.md` setup guide: step-by-step Docker Desktop configuration, environment variables, volume mounts, health check behavior, troubleshooting section
+- [x] T074 [US4] Create `docs/docker-troubleshooting.md` diagnostics guide: common issues (port conflicts, registration failures, hot-reload failures), how to interpret logs, how to collect logs for support
+- [x] T075 [US4] Update `docs/personas.md`: add note about persona overrides and how to customize via `/.council/personas.overrides.json`
 
 ---
 
