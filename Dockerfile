@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:25-bookworm-slim AS builder
 
 WORKDIR /app
 
@@ -9,23 +9,25 @@ COPY server/package*.json ./
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and build scripts
 COPY server/src ./src
 COPY server/tsconfig.json ./
+COPY server/scripts ./scripts
 
 # Build the project
 RUN npm run build
 
 # Runtime stage
-FROM node:20-alpine
+FROM node:25-bookworm-slim
 
 WORKDIR /app
 
 # Install openssl for HTTPS certificate generation
-RUN apk add --no-cache openssl
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 
-# Copy package files
+# Copy package files and scripts needed for build
 COPY server/package*.json ./
+COPY server/scripts ./scripts
 
 # Install production dependencies only
 RUN npm ci --omit=dev

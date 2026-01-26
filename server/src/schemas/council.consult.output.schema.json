@@ -10,6 +10,10 @@
       "items": { "$ref": "./persona.consult.output.schema.json" },
       "minItems": 1
     },
+    "formatted": {
+      "type": "string",
+      "description": "Human-readable Markdown rendering of the council consultation"
+    },
     "synthesis": {
       "type": "object",
       "required": ["agreements", "conflicts", "risks_tradeoffs", "next_steps"],
