@@ -31,7 +31,7 @@ docker run -d \
   -p 8080:8080 \
   -p 8000:8000 \
   -e LOG_LEVEL=info \
-  clarity-council:1.0.0
+  risadams/clarity-council:1.0.0
 ```
 
 ### Check Health

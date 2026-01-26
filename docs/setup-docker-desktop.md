@@ -10,6 +10,51 @@ This guide walks through configuring and running Clarity Council as a Model Cont
 docker build -t clarity-council:latest .
 ```
 
+### Docker Desktop MCP Toolkit ("My Servers")
+
+1. Build the image locally (or pull from your registry):
+
+  ```bash
+  docker build -t risadams/clarity-council:1.0.0 .
+  ```
+
+1. Start the container (ports, workspace, certs mounted):
+
+   ```bash
+   docker run -d \
+     --name clarity-council \
+     -p 8080:8080 \
+     -p 8000:8000 \
+     -v "$PWD/workspace:/.council" \
+     -v "$PWD/certs:/app/certs" \
+     -e LOG_LEVEL=info \
+     risadams/clarity-council:1.0.0
+   ```
+
+1. Import the catalog entry so Docker Desktop can list it:
+
+   ```bash
+   # From repo root (Windows PowerShell):
+   docker mcp catalog import .\servers\clarity-council\server.yaml
+   # Linux/macOS:
+   docker mcp catalog import ./servers/clarity-council/server.yaml
+   ```
+
+1. Enable the server in Docker MCP:
+
+   ```bash
+   docker mcp server enable clarity-council
+   docker mcp server list   # should show clarity-council enabled
+   ```
+
+1. Open Docker Desktop → MCP Toolkit → My Servers. You should now see **Clarity Council**. If not visible, click refresh in the MCP Toolkit panel or restart Docker Desktop.
+
+If the server still does not appear:
+
+- Verify the catalog entry exists: `docker mcp catalog list`
+- Verify the server is enabled: `docker mcp server list`
+- Ensure the container is running and healthy: `docker ps` and `curl http://localhost:8080/health`
+
 ### 2. Run the Container
 
 ```bash
@@ -39,7 +84,7 @@ All configuration is done via environment variables. Set these when running the 
 ### Network Configuration
 
 | Variable | Default | Description | Example |
-|----------|---------|-------------|---------|
+| -------- | ------- | ----------- | ------- |
 | `HTTP_ENABLED` | `true` | Enable HTTP listener | `true` or `false` |
 | `HTTP_PORT` | `8080` | HTTP port (1024-65535) | `8080`, `3000` |
 | `HTTPS_ENABLED` | `true` | Enable HTTPS listener | `true` or `false` |
@@ -50,11 +95,12 @@ All configuration is done via environment variables. Set these when running the 
 ### Logging Configuration
 
 | Variable | Default | Description | Example |
-|----------|---------|-------------|---------|
+| -------- | ------- | ----------- | ------- |
 | `LOG_LEVEL` | `info` | Log verbosity level | `debug`, `info`, `warn`, `error` |
 | `LOG_FORMAT` | `json` | Log output format | `json`, `text` |
 
 **Examples:**
+
 - `LOG_LEVEL=debug` - Verbose logging (development)
 - `LOG_FORMAT=text` - Human-readable logs (local testing)
 - `LOG_FORMAT=json` - Structured logs (production, Docker Desktop)
@@ -62,7 +108,7 @@ All configuration is done via environment variables. Set these when running the 
 ### Workspace & Certificates
 
 | Variable | Default | Description | Example |
-|----------|---------|-------------|---------|
+| -------- | ------- | ----------- | ------- |
 | `WORKSPACE_DIR` | `/.council` | Directory for persona overrides and config | `/app/workspace`, `/home/user/.council` |
 | `CERT_DIR` | `/app/certs` | Directory containing `cert.pem` and `key.pem` | `/app/certs`, `/etc/ssl/certs` |
 
@@ -71,7 +117,7 @@ All configuration is done via environment variables. Set these when running the 
 ### Authentication (Prepared for Future Use)
 
 | Variable | Default | Description | Example |
-|----------|---------|-------------|---------|
+| -------- | ------- | ----------- | ------- |
 | `AUTH_ENABLED` | `false` | Enable authentication (currently not enforced) | `true` or `false` |
 | `AUTH_TOKEN` | (empty) | Bearer token for authentication (future) | `sk-abc123xyz` |
 
@@ -80,11 +126,13 @@ All configuration is done via environment variables. Set these when running the 
 ## Port Validation
 
 Ports must meet these requirements:
+
 - **Range:** 1024 - 65535 (cannot use privileged ports below 1024)
 - **Uniqueness:** HTTP and HTTPS ports cannot be the same if both are enabled
 - **Availability:** Port must not be in use by another service
 
-**Example: Detecting Port Conflicts**
+### Example: Detecting Port Conflicts
+
 ```bash
 # Check if port is in use
 lsof -i :8080
@@ -108,7 +156,7 @@ docker run -d \
 ```
 
 | Mount Path | Host Path | Purpose |
-|-----------|----------|---------|
+| --------- | -------- | ------- |
 | `/.council` | `$WORKSPACE_DIR` | Persona overrides (`personas.overrides.json`) |
 | `/app/certs` | `$CERT_DIR` | TLS certificates (`cert.pem`, `key.pem`) |
 

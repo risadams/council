@@ -374,7 +374,7 @@ ENV HEALTH_CHECK_INTERVAL_MS=30000
 ```yaml
 services:
   clarity-council:
-    image: clarity-council:1.0.0
+    image: risadams/clarity-council:1.0.0
     ports:
       - "8080:8080"
       - "8000:8000"

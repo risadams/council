@@ -30,7 +30,6 @@ ENV HTTP_ENABLED=true \
   LOG_LEVEL=info \
   LOG_FORMAT=json \
   WORKSPACE_DIR=/.council \
-  AUTH_ENABLED=false \
   CERT_DIR=/app/certs \
   HEALTH_CHECK_INTERVAL_MS=30000
 

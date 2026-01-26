@@ -1,5 +1,5 @@
 name: clarity-council
-image: clarity-council:1.0.0
+image: risadams/clarity-council:1.0.0
 type: server
 meta:
   category: ai
@@ -13,7 +13,7 @@ about:
   description: Multi-persona AI consultation tool for strategic decision-making and problem-solving
   icon: https://avatars.githubusercontent.com/u/1?s=200&v=4
 source:
-  project: https://github.com/your-username/council
+  project: https://github.com/risadams/council
   commit: latest
 config:
   description: Configure Clarity Council MCP Server
