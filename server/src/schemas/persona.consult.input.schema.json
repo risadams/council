@@ -13,7 +13,15 @@
         "Devil’s Advocate",
         "Ops Architect",
         "Customer Advocate",
-        "Culture Lead"
+        "Culture Lead",
+        "Product Owner",
+        "Scrum Master",
+        "Senior Developer",
+        "Senior Architect",
+        "DevOps Engineer",
+        "Security Expert",
+        "QA Engineer",
+        "Tech Lead"
       ]
     },
     "user_problem": { "type": "string", "minLength": 1 },
