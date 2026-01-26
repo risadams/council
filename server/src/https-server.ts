@@ -8,6 +8,7 @@ import process from "process";
 import { fileURLToPath } from "url";
 import { getLogConfig, getRootLogger } from "./utils/logger.js";
 import { loadConfig } from "./utils/config.js";
+import { HealthChecker } from "./utils/healthCheck.js";
 import { registerCouncilConsult } from "./tools/council.consult.js";
 import { registerPersonaConsult } from "./tools/persona.consult.js";
 import { registerDefinePersonas } from "./tools/council.define_personas.js";
@@ -48,6 +49,7 @@ type JsonRpcResponse = {
 async function startServer() {
   const servers: Array<{ close: (cb: () => void) => void }> = [];
   const tools: ToolDefinition[] = [];
+  const healthChecker = new HealthChecker(config.httpPort, config.httpsPort, config.workspaceDir);
 
   // Add global error handlers to prevent silent crashes
   process.on("unhandledRejection", (reason, promise) => {
@@ -169,6 +171,48 @@ async function startServer() {
   // Shared request handler for health and JSON-RPC over HTTP/HTTPS
   const requestHandler: http.RequestListener = (req, res) => {
     try {
+      if (req.url === "/health" && req.method === "GET") {
+        logger.debug({ event: "request.health_check", path: req.url }, "Health check request");
+        healthChecker.performHealthCheck().then((healthStatus) => {
+          const statusCode = healthStatus.status === "healthy" ? 200 : 503;
+          res.writeHead(statusCode, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(healthStatus));
+        });
+        return;
+      }
+
+      if (req.url === "/mcp-metadata" && req.method === "GET") {
+        logger.debug({ event: "request.mcp_metadata", path: req.url }, "MCP metadata request");
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            name: "Clarity Council",
+            version: "0.1.0",
+            description: "Multi-persona AI consultation tool for decision-making",
+            endpoint: {
+              protocol: config.httpsEnabled ? "https" : "http",
+              host: "localhost",
+              port: config.httpsEnabled ? config.httpsPort : config.httpPort
+            },
+            tools: [
+              {
+                name: "council_consult",
+                description: "Consult multiple personas and produce a synthesis (agreements, conflicts, risks/tradeoffs, next_steps)."
+              },
+              {
+                name: "persona_consult",
+                description: "Consult a single persona returning structured advice, assumptions, questions, next_steps, and confidence."
+              },
+              {
+                name: "council_define_personas",
+                description: "Return current persona contracts and apply validated workspace-level overrides."
+              }
+            ]
+          })
+        );
+        return;
+      }
+
       if (req.url === "/" && req.method === "GET") {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(

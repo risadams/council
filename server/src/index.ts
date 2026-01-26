@@ -13,7 +13,17 @@ import { createMcpToolRegistrar } from "./utils/mcpAdapter.js";
 const logger = getRootLogger();
 const logConfig = getLogConfig();
 logger.info({ event: "logger.init", level: logConfig.level, format: logConfig.format }, "Logger initialized");
-loadConfig({ logger });
+const config = loadConfig({ logger });
+
+const dockerRegistration = new DockerRegistration({
+  serviceId: "clarity-council-docker-0.1.0",
+  name: "Clarity Council",
+  version: "0.1.0",
+  description: "Multi-persona AI consultation tool for decision-making",
+  httpPort: config.httpEnabled ? config.httpPort : undefined,
+  httpsPort: config.httpsEnabled ? config.httpsPort : undefined,
+  workspaceDir: config.workspaceDir
+});
 
 const personaNames = [
   "Growth Strategist",
@@ -99,7 +109,6 @@ const definePersonasOutputSchema = z
 async function main() {
   const mcpServer = new McpServer({ name: "clarity-council", version: "0.1.0" });
   const toolRegistrar = createMcpToolRegistrar(mcpServer);
-  const dockerRegistration = new DockerRegistration();
 
   await registerCouncilConsult(toolRegistrar, {
     inputSchema: councilConsultInputSchema,
@@ -118,17 +127,23 @@ async function main() {
   await mcpServer.connect(transport);
   logger.info({ event: "server_started" }, "Clarity Council MCP server started");
 
-   // Register with Docker Desktop MCP (stub; real payload to be added later)
-  dockerRegistration
-    .registerService()
-    .catch((err) => logger.warn({ err }, "Docker registration stub failed"));
+  // Register with Docker Desktop MCP
+  const registration = await dockerRegistration.registerService();
+  if (registration) {
+    logger.info(
+      { event: "docker_registration.success", serviceId: registration.serviceId },
+      "Service registered with Docker Desktop MCP"
+    );
+  } else {
+    logger.error({ event: "docker_registration.failed" }, "Failed to register with Docker Desktop MCP after retries");
+  }
 
   const shutdown = async (signal: string) => {
     logger.info({ event: "shutdown", signal }, "Shutting down Clarity Council MCP server");
     try {
       await dockerRegistration.deregisterService();
     } catch (err) {
-      logger.warn({ err }, "Docker deregistration stub failed");
+      logger.warn({ err }, "Docker deregistration failed");
     } finally {
       process.exit(0);
     }

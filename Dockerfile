@@ -1,5 +1,5 @@
 # Build stage
-FROM node:25-bookworm-slim AS builder
+FROM dhi.io/node AS builder
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ COPY server/scripts ./scripts
 RUN npm run build
 
 # Runtime stage
-FROM node:25-bookworm-slim
+FROM dhi.io/node
 
 WORKDIR /app
 

@@ -61,23 +61,23 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### MCP Service Registration
 
-- [ ] T020 [P] [US1] Implement `server/src/utils/dockerRegistration.ts` class `DockerRegistration` with methods: `registerService()`, `deregisterService()`, `updateServiceStatus()`
-- [ ] T021 [P] [US1] Implement `registerService()`: build MCP Service Registration payload (serviceId, name, version, endpoint from config, tools list, healthCheckUrl, timestamp)
-- [ ] T022 [P] [US1] Implement service payload to match [contracts/mcp-registration.schema.json](contracts/mcp-registration.schema.json): all required fields, correct enum values, valid JSON structure
+- [x] T020 [P] [US1] Implement `server/src/utils/dockerRegistration.ts` class `DockerRegistration` with methods: `registerService()`, `deregisterService()`, `updateServiceStatus()`
+- [x] T021 [P] [US1] Implement `registerService()`: build MCP Service Registration payload (serviceId, name, version, endpoint from config, tools list, healthCheckUrl, timestamp)
+- [x] T022 [P] [US1] Implement service payload to match [contracts/mcp-registration.schema.json](contracts/mcp-registration.schema.json): all required fields, correct enum values, valid JSON structure
 - [ ] T023 [P] [US1] Add Docker MCP Gateway integration: call `docker mcp gateway register` command (or HTTP POST if API available) with registration payload
-- [ ] T024 [P] [US1] Add error handling for registration failures: log error with category (network, validation, timeout), retry logic with exponential backoff (up to 3 attempts), exit container if fatal
-- [ ] T025 [US1] Integrate registration into `server/src/index.ts` startup flow: after server listening, call `dockerRegistration.registerService()`, log success/failure
+- [x] T024 [P] [US1] Add error handling for registration failures: log error with category (network, validation, timeout), retry logic with exponential backoff (up to 3 attempts), exit container if fatal
+- [x] T025 [US1] Integrate registration into `server/src/index.ts` startup flow: after server listening, call `dockerRegistration.registerService()`, log success/failure
 - [ ] T026 [US1] Create `server/scripts/docker-register.cjs` to load tool schemas and call registration (used in container startup before Node.js server starts, if Docker requires pre-startup registration)
 
 ### Health Check Endpoint
 
-- [ ] T027 [P] [US1] Implement `server/src/utils/healthCheck.ts` class `HealthChecker` with method `performHealthCheck(): Promise<HealthCheckResult>`
-- [ ] T028 [P] [US1] Implement health check logic: test HTTP endpoint (GET /health-ok), test HTTPS endpoint (GET /health-ok), test MCP protocol (tool invocation), validate schemas, compute memory usage, compute disk space
-- [ ] T029 [P] [US1] Implement health check result structure matching [contracts/health-check.schema.json](contracts/health-check.schema.json): status (healthy/unhealthy), timestamp, all boolean fields, memory/disk fields
-- [ ] T030 [P] [US1] Add `/health` HTTP endpoint in `server/src/https-server.ts` or `server/src/index.ts`: GET /health returns health check result as JSON, status code 200 if healthy, 503 if unhealthy
-- [ ] T031 [US1] Add `/mcp-metadata` HTTP endpoint: returns service metadata (name, version, tools list, endpoint config) for Docker Desktop discovery
-- [ ] T032 [US1] Add health check logging: emit structured log after each health check with result, duration, and any errors detected
-- [ ] T033 [US1] Create `tests/unit/healthCheck.spec.ts` unit tests: validate result format, test endpoint detection, test schema validation, test memory/disk computation
+- [x] T027 [P] [US1] Implement `server/src/utils/healthCheck.ts` class `HealthChecker` with method `performHealthCheck(): Promise<HealthCheckResult>`
+- [x] T028 [P] [US1] Implement health check logic: test HTTP endpoint (GET /health-ok), test HTTPS endpoint (GET /health-ok), test MCP protocol (tool invocation), validate schemas, compute memory usage, compute disk space
+- [x] T029 [P] [US1] Implement health check result structure matching [contracts/health-check.schema.json](contracts/health-check.schema.json): status (healthy/unhealthy), timestamp, all boolean fields, memory/disk fields
+- [x] T030 [P] [US1] Add `/health` HTTP endpoint in `server/src/https-server.ts` or `server/src/index.ts`: GET /health returns health check result as JSON, status code 200 if healthy, 503 if unhealthy
+- [x] T031 [US1] Add `/mcp-metadata` HTTP endpoint: returns service metadata (name, version, tools list, endpoint config) for Docker Desktop discovery
+- [x] T032 [US1] Add health check logging: emit structured log after each health check with result, duration, and any errors detected
+- [x] T033 [US1] Create `tests/unit/healthCheck.spec.ts` unit tests: validate result format, test endpoint detection, test schema validation, test memory/disk computation
 - [ ] T034 [US1] Create `tests/integration/service-discovery.spec.ts` integration test: start server, verify /health endpoint returns healthy status within 5 seconds, verify /mcp-metadata includes all 3 tools
 
 ---
