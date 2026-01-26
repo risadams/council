@@ -167,7 +167,7 @@ async function startServer() {
           logger.info({ toolName, argsKeys: Object.keys(toolArgs) }, "Calling tool");
           const result = await callTool(toolName, toolArgs);
           logger.info({ toolName, resultType: typeof result }, "Tool completed successfully");
-          return { jsonrpc: "2.0", id, result: { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] } };
+          const contentText = (result as any)?.formatted || JSON.stringify(result, null, 2); return { jsonrpc: "2.0", id, result: { content: [{ type: "text", text: contentText }] } };
         } catch (err: any) {
           logger.error({ toolName, err, message: err?.message }, "Tool invocation failed");
           return {
@@ -297,4 +297,5 @@ startServer().catch((err) => {
   logger.error(err, "Failed to start HTTPS server");
   process.exit(1);
 });
+
 

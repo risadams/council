@@ -30,7 +30,14 @@ COPY server/package*.json ./
 # Install production dependencies only
 RUN npm ci --omit=dev
 
-# Copy built application from builder\r\nCOPY --from=builder /app/dist ./dist\r\n\r\n# Copy healthcheck script\r\nCOPY server/healthcheck.js ./healthcheck.js
+# Copy built application from builder
+COPY --from=builder /app/dist ./dist
+
+# Copy schemas
+COPY --from=builder /app/dist/schemas ./dist/schemas
+
+# Copy healthcheck script
+COPY server/healthcheck.js ./healthcheck.js
 
 # Create directory for HTTPS certificates
 RUN mkdir -p /app/certs
@@ -44,7 +51,7 @@ EXPOSE 8000 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "const https = require('https'); const options = {hostname: 'localhost', port: 8000, path: '/', method: 'GET', rejectUnauthorized: false}; https.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => { process.exit(1); }).end();" || exit 1
+  CMD ["node", "/app/healthcheck.js"]
 
 # Start the MCP server with the prebuilt HTTPS bundle (no dev deps needed at runtime)
 CMD ["node", "dist/https-server.js"]

@@ -12,6 +12,7 @@ import { formatPersonaDraft } from "../utils/personaFormatter.js";
 import { buildSynthesis } from "../utils/synthesis.js";
 import { Depth } from "../utils/depth.js";
 import { withRequest, logRequestComplete } from "../utils/logger.js";
+import { formatCouncilConsultAsMarkdown } from "../utils/councilFormatter.js";
 import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
 const defaultInputSchema = loadSchema("council.consult.input.schema.json");
@@ -58,7 +59,17 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
         const synthesis = buildSynthesis(responses, depth, consultInput);
 
         logRequestComplete(ctx, "council.consult", true);
-        return { responses, synthesis };
+        // Return both structured data and formatted markdown for better display
+        const markdown = formatCouncilConsultAsMarkdown(
+          responses,
+          synthesis,
+          (input as any).user_problem
+        );
+        return {
+          responses,
+          synthesis,
+          formatted: markdown
+        };
       } catch (err: any) {
         logRequestComplete(ctx, "council.consult", false, "internal");
         return toError("internal", "Unexpected error", { message: err.message });
