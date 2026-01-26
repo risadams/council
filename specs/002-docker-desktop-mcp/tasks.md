@@ -177,27 +177,27 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### End-to-End Integration Testing
 
-- [ ] T076 [P] Create `tests/integration/e2e-docker-workflow.spec.ts`: full workflow test (start container → register → verify health → call tools → check logs → stop container → deregister)
-- [ ] T077 [P] Create `tests/integration/schema-validation.spec.ts`: verify all MCP requests/responses conform to schemas (council.consult.input/output, persona.consult.input/output, council_define_personas.input/output)
-- [ ] T078 [P] Create `tests/integration/error-handling.spec.ts`: test all error paths (invalid config, registration failure, unhealthy status, malformed overrides file, port conflict)
-- [ ] T079 Create `tests/integration/docker-compose-startup.spec.ts`: start server via docker-compose.yml (with volume mounts, env vars), verify service registrable, health checks working
+- [x] T076 [P] Create `tests/integration/e2e-docker-workflow.spec.ts`: full workflow test (start container → register → verify health → call tools → check logs → stop container → deregister)
+- [x] T077 [P] Create `tests/integration/schema-validation.spec.ts`: verify all MCP requests/responses conform to schemas (council.consult.input/output, persona.consult.input/output, council_define_personas.input/output)
+- [x] T078 [P] Create `tests/integration/error-handling.spec.ts`: test all error paths (invalid config, registration failure, unhealthy status, malformed overrides file, port conflict)
+- [x] T079 Create `tests/integration/docker-compose-startup.spec.ts`: start server via docker-compose.yml (with volume mounts, env vars), verify service registrable, health checks working
 
 ### Cross-Platform Testing
 
-- [ ] T080 [P] Test on Windows: verify paths work with backslashes in Dockerfile and docker-compose.yml, verify file watcher works with Windows file system events
-- [ ] T081 [P] Test on macOS: verify paths work with /Volumes mount points, verify file watcher latency acceptable
-- [ ] T082 [P] Test on Linux: verify paths work with standard Linux mounts, verify Docker daemon interaction correct
-- [ ] T083 Update CI/CD pipeline (if exists): add Docker integration tests to GitHub Actions, test across platforms
+- [x] T080 [P] Test on Windows: verify paths work with backslashes in Dockerfile and docker-compose.yml, verify file watcher works with Windows file system events
+- [x] T081 [P] Test on macOS: verify paths work with /Volumes mount points, verify file watcher latency acceptable
+- [x] T082 [P] Test on Linux: verify paths work with standard Linux mounts, verify Docker daemon interaction correct
+- [x] T083 Update CI/CD pipeline (if exists): add Docker integration tests to GitHub Actions, test across platforms
 
 ### Rollback & Versioning
 
-- [ ] T084 Tag initial Docker image version: `clarity-council:1.0.0` (matching spec version)
-- [ ] T085 Document version compatibility: MCP Protocol version, Docker Desktop MCP Toolkit version requirement, Node.js 22 LTS requirement
-- [ ] T086 Create upgrade guide: document breaking changes (none in 1.0.0), document migration path if persona overrides format changes in future
+- [x] T084 Tag initial Docker image version: `clarity-council:1.0.0` (matching spec version)
+- [x] T085 Document version compatibility: MCP Protocol version, Docker Desktop MCP Toolkit version requirement, Node.js 22 LTS requirement
+- [x] T086 Create upgrade guide: document breaking changes (none in 1.0.0), document migration path if persona overrides format changes in future
 
 ### Code Quality & Polish
 
-- [ ] T087 Run lint checks: `npm run lint` on all new TypeScript files (dockerRegistration, healthCheck, fileWatcher, logger, config)
+- [x] T087 Run lint checks: `npm run lint` on all new TypeScript files (dockerRegistration, healthCheck, fileWatcher, logger, config)
 - [ ] T088 Verify test coverage: aim for >80% coverage on new utilities (coverage report in CI)
 - [ ] T089 Code review checklist: verify all FRs implemented, all SCs testable, all error messages clear, no secrets in logs, no hardcoded paths
 - [ ] T090 Performance validation: verify startup time <10s, health check <1s, file watcher change detection <5s, memory footprint <100MB
