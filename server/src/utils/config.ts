@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { getRootLogger, type AppLogger } from "./logger.js";
 
 export type AppConfig = {
@@ -44,8 +45,15 @@ function parseLogFormat(value: string | undefined): AppConfig["logFormat"] {
 }
 
 function ensureDirectoryExists(dir: string, name: string, errors: string[]) {
-  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
-    errors.push(`${name} directory does not exist: ${dir}`);
+  try {
+    if (!fs.existsSync(dir)) {
+      // Try to create the directory if it doesn't exist
+      fs.mkdirSync(dir, { recursive: true });
+    } else if (!fs.statSync(dir).isDirectory()) {
+      errors.push(`${name} is not a directory: ${dir}`);
+    }
+  } catch (err) {
+    errors.push(`${name} directory cannot be created or accessed: ${dir} (${err instanceof Error ? err.message : String(err)})`);
   }
 }
 
@@ -125,6 +133,37 @@ export function loadConfig(options: { exitOnError?: boolean; logger?: AppLogger 
     // Use AUTH_TOKEN from environment or Docker Secrets
     let authToken = process.env.AUTH_TOKEN || secrets.AUTH_TOKEN;
 
+    // Determine default workspace directory based on environment
+    // In Docker: /.council
+    // Locally on Windows: %TEMP%\.council or AppData
+    // Locally on Unix: ~/.council
+    const defaultWorkspaceDir = process.env.WORKSPACE_DIR || (() => {
+      if (process.platform === "win32") {
+        // Windows: use temp directory
+        return path.join(os.tmpdir(), ".council");
+      }
+      // Unix-like: use home directory or /tmp
+      return process.env.HOME ? path.join(process.env.HOME, ".council") : "/.council";
+    })();
+
+    // Determine default cert directory
+    // In Docker: /certs (mounted from host)
+    // Locally: Look in parent/certs (for development), then current certs, then Docker default
+    const defaultCertDir = process.env.CERT_DIR || (() => {
+      const candidates = [
+        path.join(process.cwd(), "..", "certs"),  // Parent directory (for server/ subdirectory)
+        path.join(process.cwd(), "certs"),        // Current directory
+        "/certs"                                   // Docker default
+      ];
+      for (const candidate of candidates) {
+        if (fs.existsSync(candidate)) {
+          return candidate;
+        }
+      }
+      // Return the first candidate even if it doesn't exist (will be validated later)
+      return candidates[0];
+    })();
+
     const config: AppConfig = {
       httpEnabled: parseBoolean(process.env.HTTP_ENABLED, true),
       httpsEnabled: parseBoolean(process.env.HTTPS_ENABLED, true),
@@ -132,8 +171,8 @@ export function loadConfig(options: { exitOnError?: boolean; logger?: AppLogger 
       httpsPort: parsePort(process.env.HTTPS_PORT, 8000),
       logLevel: parseLogLevel(process.env.LOG_LEVEL),
       logFormat: parseLogFormat(process.env.LOG_FORMAT),
-      workspaceDir: process.env.WORKSPACE_DIR || "/.council",
-      certDir: process.env.CERT_DIR || "/certs",
+      workspaceDir: defaultWorkspaceDir,
+      certDir: defaultCertDir,
       authEnabled: parseBoolean(process.env.AUTH_ENABLED, false),
       authToken,
       secretsDir
