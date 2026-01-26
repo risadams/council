@@ -139,14 +139,46 @@ async function main() {
   }
 
   const shutdown = async (signal: string) => {
-    logger.info({ event: "shutdown", signal }, "Shutting down Clarity Council MCP server");
+    logger.info(
+      {
+        event: "shutdown.signal",
+        signal,
+        timestamp: new Date().toISOString(),
+        currentServiceState: dockerRegistration.getState()
+      },
+      `Shutdown signal received: ${signal}`
+    );
+
     try {
+      logger.info({ event: "shutdown.deregister.start" }, "Starting service deregistration");
       await dockerRegistration.deregisterService();
-    } catch (err) {
-      logger.warn({ err }, "Docker deregistration failed");
-    } finally {
-      process.exit(0);
+      logger.info(
+        {
+          event: "shutdown.deregister.success",
+          timestamp: new Date().toISOString()
+        },
+        "Service deregistered successfully"
+      );
+    } catch (err: any) {
+      logger.warn(
+        {
+          event: "shutdown.deregister.error",
+          error: err?.message,
+          timestamp: new Date().toISOString()
+        },
+        "Service deregistration failed during shutdown"
+      );
     }
+
+    logger.info(
+      {
+        event: "shutdown.complete",
+        timestamp: new Date().toISOString(),
+        exitCode: 0
+      },
+      "Graceful shutdown completed"
+    );
+    process.exit(0);
   };
 
   process.on("SIGTERM", () => shutdown("SIGTERM"));

@@ -88,13 +88,13 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### Service Status Updates & Recovery
 
-- [ ] T035 [P] [US2] Implement periodic health check polling in `server/src/utils/dockerRegistration.ts`: start background task on registration, call health check every 30s, update service status via Docker API
-- [ ] T036 [P] [US2] Implement stale registration recovery logic: if health check fails 2 consecutive times, re-register service fresh (Option C from Q3)
-- [ ] T037 [P] [US2] Add service status state machine: track `registering` → `healthy` → `unhealthy` → `healthy` (with explicit recovery) or `stopped` transitions
-- [ ] T038 [US2] Implement graceful shutdown: catch SIGTERM and SIGINT signals, call `deregisterService()`, close all connections, exit cleanly with code 0
-- [ ] T039 [US2] Add shutdown logging: emit structured log when shutdown signal received, log deregistration success/failure, log graceful shutdown completion
-- [ ] T040 [US2] Create `tests/integration/container-lifecycle.spec.ts` integration test: start server → verify healthy → simulate health check failure → verify unhealthy → recover → verify healthy again
-- [ ] T041 [US2] Create `tests/integration/graceful-shutdown.spec.ts` integration test: start server → send SIGTERM → verify deregistration called → verify clean exit
+- [x] T035 [P] [US2] Implement periodic health check polling in `server/src/utils/dockerRegistration.ts`: start background task on registration, call health check every 30s, update service status via Docker API
+- [x] T036 [P] [US2] Implement stale registration recovery logic: if health check fails 2 consecutive times, re-register service fresh (Option C from Q3)
+- [x] T037 [P] [US2] Add service status state machine: track `registering` → `healthy` → `unhealthy` → `healthy` (with explicit recovery) or `stopped` transitions
+- [x] T038 [US2] Implement graceful shutdown: catch SIGTERM and SIGINT signals, call `deregisterService()`, close all connections, exit cleanly with code 0
+- [x] T039 [US2] Add shutdown logging: emit structured log when shutdown signal received, log deregistration success/failure, log graceful shutdown completion
+- [x] T040 [US2] Create `tests/integration/container-lifecycle.spec.ts` integration test: start server → verify healthy → simulate health check failure → verify unhealthy → recover → verify healthy again
+- [x] T041 [US2] Create `tests/integration/graceful-shutdown.spec.ts` integration test: start server → send SIGTERM → verify deregistration called → verify clean exit
 
 ---
 
