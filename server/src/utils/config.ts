@@ -13,6 +13,7 @@ export type AppConfig = {
   certDir: string;
   authEnabled: boolean;
   authToken?: string;
+  secretsDir: string;
 };
 
 function parseBoolean(value: string | undefined, defaultValue: boolean): boolean {
@@ -46,6 +47,38 @@ function ensureDirectoryExists(dir: string, name: string, errors: string[]) {
   if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
     errors.push(`${name} directory does not exist: ${dir}`);
   }
+}
+
+/**
+ * Load secrets from Docker Secrets directory (/run/secrets).
+ * Supports AUTH_TOKEN and future auth-related secrets.
+ */
+function loadDockerSecrets(secretsDir: string): Record<string, string> {
+  const secrets: Record<string, string> = {};
+
+  if (!fs.existsSync(secretsDir)) {
+    return secrets; // No secrets directory (not running in Docker Swarm or K8s)
+  }
+
+  try {
+    const files = fs.readdirSync(secretsDir);
+    for (const file of files) {
+      try {
+        const filePath = path.join(secretsDir, file);
+        const stat = fs.statSync(filePath);
+        if (stat.isFile()) {
+          const content = fs.readFileSync(filePath, "utf-8").trim();
+          secrets[file] = content;
+        }
+      } catch {
+        // Skip files that can't be read
+      }
+    }
+  } catch {
+    // Directory not readable (permissions issue)
+  }
+
+  return secrets;
 }
 
 export function validateConfig(config: AppConfig): void {
@@ -86,6 +119,12 @@ export function loadConfig(options: { exitOnError?: boolean; logger?: AppLogger 
   const exitOnError = options.exitOnError !== false;
 
   try {
+    const secretsDir = process.env.SECRETS_DIR || "/run/secrets";
+    const secrets = loadDockerSecrets(secretsDir);
+
+    // Use AUTH_TOKEN from environment or Docker Secrets
+    let authToken = process.env.AUTH_TOKEN || secrets.AUTH_TOKEN;
+
     const config: AppConfig = {
       httpEnabled: parseBoolean(process.env.HTTP_ENABLED, true),
       httpsEnabled: parseBoolean(process.env.HTTPS_ENABLED, true),
@@ -96,7 +135,8 @@ export function loadConfig(options: { exitOnError?: boolean; logger?: AppLogger 
       workspaceDir: process.env.WORKSPACE_DIR || "/.council",
       certDir: process.env.CERT_DIR || "/certs",
       authEnabled: parseBoolean(process.env.AUTH_ENABLED, false),
-      authToken: process.env.AUTH_TOKEN
+      authToken,
+      secretsDir
     };
 
     validateConfig(config);
@@ -112,7 +152,8 @@ export function loadConfig(options: { exitOnError?: boolean; logger?: AppLogger 
         logFormat: config.logFormat,
         workspaceDir: config.workspaceDir,
         certDir: config.certDir,
-        authEnabled: config.authEnabled
+        authEnabled: config.authEnabled,
+        secretsDir: config.secretsDir
       },
       "Configuration loaded"
     );

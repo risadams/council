@@ -104,19 +104,19 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 
 ### Environment Variable Support
 
-- [ ] T042 [P] [US2] Implement dynamic port configuration: read `HTTP_PORT` and `HTTPS_PORT` env vars at startup, use in server listeners and registration payload
-- [ ] T043 [P] [US2] Implement logging configuration: read `LOG_LEVEL` (debug/info/warn/error) and `LOG_FORMAT` (json/text) env vars, apply to logger on startup
-- [ ] T044 [P] [US2] Implement workspace directory configuration: read `WORKSPACE_DIR` env var (default `/.council`), use for persona overrides file path
-- [ ] T045 [P] [US2] Add environment variable validation: if HTTP_PORT == HTTPS_PORT, fail startup with clear error; if ports < 1024 or > 65535, fail with clear error
-- [ ] T046 [US2] Document all supported environment variables in `docs/setup-docker-desktop.md`: HTTP_PORT, HTTPS_PORT, HTTP_ENABLED, HTTPS_ENABLED, LOG_LEVEL, LOG_FORMAT, WORKSPACE_DIR, AUTH_ENABLED, AUTH_TOKEN, CERT_DIR
-- [ ] T047 [US2] Create `tests/unit/environment-config.spec.ts` unit tests: valid port parsing, invalid port detection, logging level application, workspace directory resolution
+- [x] T042 [P] [US2] Implement dynamic port configuration: read `HTTP_PORT` and `HTTPS_PORT` env vars at startup, use in server listeners and registration payload
+- [x] T043 [P] [US2] Implement logging configuration: read `LOG_LEVEL` (debug/info/warn/error) and `LOG_FORMAT` (json/text) env vars, apply to logger on startup
+- [x] T044 [P] [US2] Implement workspace directory configuration: read `WORKSPACE_DIR` env var (default `/.council`), use for persona overrides file path
+- [x] T045 [P] [US2] Add environment variable validation: if HTTP_PORT == HTTPS_PORT, fail startup with clear error; if ports < 1024 or > 65535, fail with clear error
+- [x] T046 [US2] Document all supported environment variables in `docs/setup-docker-desktop.md`: HTTP_PORT, HTTPS_PORT, HTTP_ENABLED, HTTPS_ENABLED, LOG_LEVEL, LOG_FORMAT, WORKSPACE_DIR, AUTH_ENABLED, AUTH_TOKEN, CERT_DIR
+- [x] T047 [US2] Create `tests/unit/environment-config.spec.ts` unit tests: valid port parsing, invalid port detection, logging level application, workspace directory resolution
 
 ### Docker Secrets Support (Prepared for Future)
 
-- [ ] T048 [US2] Implement Docker Secrets reading in `server/src/utils/config.ts`: check for `/run/secrets/` directory, load secrets if auth enabled (future use)
-- [ ] T049 [US2] Add AUTH_ENABLED and AUTH_TOKEN env vars to configuration (default: false and empty); if AUTH_ENABLED, validate requests contain Bearer token matching AUTH_TOKEN (future implementation)
-- [ ] T050 [US2] Create `tests/unit/secrets-prepared.spec.ts` unit test: verify /run/secrets/ path checked, verify auth env vars are read (not applied, just prepared)
-- [ ] T051 [US2] Document auth preparation in docs: "Authentication is prepared for future integrations. Currently unauthenticated. To enable: set AUTH_ENABLED=true, provide AUTH_TOKEN via Docker Secrets"
+- [x] T048 [US2] Implement Docker Secrets reading in `server/src/utils/config.ts`: check for `/run/secrets/` directory, load secrets if auth enabled (future use)
+- [x] T049 [US2] Add AUTH_ENABLED and AUTH_TOKEN env vars to configuration (default: false and empty); if AUTH_ENABLED, validate requests contain Bearer token matching AUTH_TOKEN (future implementation)
+- [x] T050 [US2] Create `tests/unit/secrets-prepared.spec.ts` unit test: verify /run/secrets/ path checked, verify auth env vars are read (not applied, just prepared)
+- [x] T051 [US2] Document auth preparation in docs: "Authentication is prepared for future integrations. Currently unauthenticated. To enable: set AUTH_ENABLED=true, provide AUTH_TOKEN via Docker Secrets"
 
 ---
 
