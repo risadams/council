@@ -44,7 +44,7 @@ Implement Docker Desktop MCP Toolkit integration for Clarity Council. Tasks are 
 - [x] T012 Add structured error logging to all error paths: tool failures, schema validation errors, registration failures (include error category, message, stack trace)
 - [x] T013 Add `LOG_FORMAT` env var support: if `LOG_FORMAT=json` (default), output structured JSON; if `LOG_FORMAT=text`, pretty-print for local development
 - [x] T014 Create `tests/unit/logger.spec.ts` unit tests: validate JSON output format, test all log levels, verify no secrets in logs, test correlation ID generation
-- [ ] T015 Add request-scoped correlation ID to MCP request context: generate on tool invocation, include in all logs for that request, return in response metadata (if MCP spec supports)
+- [x] T015 Add request-scoped correlation ID to MCP request context: generate on tool invocation, include in all logs for that request, return in response metadata (if MCP spec supports)
 
 ### Environment Configuration
 
