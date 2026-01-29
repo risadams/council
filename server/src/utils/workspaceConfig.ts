@@ -1,11 +1,6 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
-
-export type PersonaOverride = {
-  soul?: string;
-  focus?: string[];
-  constraints?: string[];
-};
+import type { PersonaOverride } from "../types/personaOverrides.js";
 
 export type Overrides = Record<string, PersonaOverride>;
 
@@ -18,7 +13,7 @@ export function validateOverrides(overrides: Overrides, allowedPersonas: string[
       throw new Error(`Invalid persona override: ${name}`);
     }
     const keys = Object.keys(override ?? {});
-    const invalidKey = keys.find((k) => !["soul", "focus", "constraints"].includes(k));
+    const invalidKey = keys.find((k) => !["enabled", "customSoul", "customFocus", "customConstraints"].includes(k));
     if (invalidKey) {
       throw new Error(`Invalid override field for ${name}: ${invalidKey}`);
     }

@@ -1,3 +1,16 @@
+/**
+ * Persona Consult Tool
+ * 
+ * MCP tool that provides consultation from a single specified persona.
+ * Returns structured advice, assumptions, questions, and next steps from that persona's perspective.
+ * 
+ * The tool:
+ * 1. Validates input and persona name
+ * 2. Loads the requested persona contract
+ * 3. Generates persona-specific draft with context-aware advice
+ * 4. Formats output with confidence assessment
+ */
+
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -11,8 +24,18 @@ import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 const defaultInputSchema = loadSchema("persona.consult.input.schema.json");
 const defaultOutputSchema = loadSchema("persona.consult.output.schema.json");
 
+/** Optional schema overrides for testing */
 type SchemaOverrides = { inputSchema?: unknown; outputSchema?: unknown };
 
+/**
+ * Registers the persona.consult tool with the MCP server
+ * 
+ * Special handling for Devil's Advocate: uses specialized draft generation
+ * that focuses on risk analysis and assumption stress-testing.
+ * 
+ * @param server - The MCP tool registrar to register this tool with
+ * @param schemas - Optional schema overrides for testing purposes
+ */
 export async function registerPersonaConsult(server: ToolRegistrar, schemas?: SchemaOverrides) {
   const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
   const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;

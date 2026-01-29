@@ -1,6 +1,23 @@
+/**
+ * Persona Draft Generation Module
+ * 
+ * Generates structured consultant responses (drafts) from individual personas.
+ * Transforms persona contracts and user inputs into formatted advice, assumptions,
+ * questions, and next steps using depth-based content filtering.
+ */
+
 import { PersonaContract, PersonaName, PERSONA_CONTRACTS } from "./contracts.js";
 import { Depth, clipByDepth } from "../utils/depth.js";
 
+/**
+ * User consultation input parameters
+ * 
+ * @property user_problem - The core problem or decision to be addressed
+ * @property context - Optional background information and context
+ * @property desired_outcome - Optional desired end state or success criteria
+ * @property constraints - Optional list of constraints affecting the problem
+ * @property depth - Response detail level: 'brief', 'standard', or 'deep'
+ */
 export type ConsultInput = {
   user_problem: string;
   context?: string;
@@ -9,6 +26,17 @@ export type ConsultInput = {
   depth: Depth;
 };
 
+/**
+ * Structured persona consultation response
+ * 
+ * @property persona - The persona providing the advice
+ * @property summary - Brief overview of the consultation
+ * @property advice - Array of advice points tailored to depth
+ * @property assumptions - Underlying assumptions the persona makes
+ * @property questions - Clarifying questions the persona would ask
+ * @property next_steps - Recommended action items
+ * @property depth - The depth level used for filtering content
+ */
 export type PersonaDraft = {
   persona: PersonaName;
   summary: string;
@@ -19,6 +47,12 @@ export type PersonaDraft = {
   depth: Depth;
 };
 
+/**
+ * Filters personas by name, returning all if none specified
+ * 
+ * @param selected - Optional array of persona names to filter by
+ * @returns Filtered persona contracts matching the selection
+ */
 export function selectPersonas(selected?: PersonaName[]): PersonaContract[] {
   if (selected && selected.length > 0) {
     return PERSONA_CONTRACTS.filter((p) => selected.includes(p.name));
@@ -26,7 +60,18 @@ export function selectPersonas(selected?: PersonaName[]): PersonaContract[] {
   return PERSONA_CONTRACTS;
 }
 
+/**
+ * Generates a structured draft response from a specific persona
+ * 
+ * Combines persona soul, focus areas, and constraints with user input to create
+ * a comprehensive consultation response. Content is filtered by depth level.
+ * 
+ * @param persona - The persona contract to generate advice from
+ * @param input - User consultation input including problem and context
+ * @returns Structured draft with advice, assumptions, questions, and next steps
+ */
 export function generatePersonaDraft(persona: PersonaContract, input: ConsultInput): PersonaDraft {
+  // Build advice by combining persona soul, focus areas, and constraints
   const advice = [
     persona.soul,
     ...persona.focus.map((f) => `${persona.name} focus: ${f}`),
@@ -69,9 +114,18 @@ export function generatePersonaDraft(persona: PersonaContract, input: ConsultInp
   };
 }
 
+/**
+ * Generates a specialized Devil's Advocate response focused on risk analysis
+ * 
+ * Creates a targeted consultation emphasizing assumption risks, execution risks,
+ * and potential conflicts. This persona's draft is optimized for stress-testing plans.
+ * 
+ * @param input - User consultation input
+ * @returns Devil's Advocate draft emphasizing risks and fallback planning
+ */
 export function generateDevilsAdvocateDraft(input: ConsultInput): PersonaDraft {
-  const persona = PERSONA_CONTRACTS.find((p) => p.name === "Devil’s Advocate")!;
-  const riskBullets = [
+  const persona = PERSONA_CONTRACTS.find((p) => p.name === "Devil’s Advocate")!;  
+  // Risk categories to stress-test assumptions  const riskBullets = [
     "Assumption risk: unvalidated demand",
     "Execution risk: timeline too tight",
     "Financial risk: budget overrun",

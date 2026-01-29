@@ -1,3 +1,20 @@
+/**
+ * Clarity Council MCP Server - Main Entry Point
+ * 
+ * Initializes and runs the Model Context Protocol (MCP) server that implements
+ * the council consultation tools. Provides three main MCP tools:
+ * 
+ * 1. council.consult - Multi-persona synthesis and decision-making support
+ * 2. persona.consult - Single persona consultation
+ * 3. council.define_personas - Persona configuration management
+ * 
+ * Features:
+ * - Structured logging with JSON or text format
+ * - Docker service registration and health monitoring
+ * - Hot-reload of persona configuration via file watcher
+ * - Standard input/output transport for MCP protocol
+ */
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import * as z from "zod";

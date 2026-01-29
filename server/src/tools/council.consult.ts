@@ -1,3 +1,19 @@
+/**
+ * Council Consult Tool
+ * 
+ * MCP tool that orchestrates consultation with multiple personas and produces a synthesis.
+ * Integrates persona selection, draft generation, and synthesis formatting to provide
+ * comprehensive advice considering multiple perspectives.
+ * 
+ * The tool:
+ * 1. Validates input against schema
+ * 2. Selects relevant personas (or uses all if none specified)
+ * 3. Generates individual persona drafts
+ * 4. Optionally includes Devil's Advocate perspective for risk assessment
+ * 5. Synthesizes responses into agreements, conflicts, and risks
+ * 6. Formats output as markdown for readability
+ */
+
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -18,8 +34,15 @@ import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 const defaultInputSchema = loadSchema("council.consult.input.schema.json");
 const defaultOutputSchema = loadSchema("council.consult.output.schema.json");
 
+/** Optional schema overrides for testing */
 type SchemaOverrides = { inputSchema?: unknown; outputSchema?: unknown };
 
+/**
+ * Registers the council.consult tool with the MCP server
+ * 
+ * @param server - The MCP tool registrar to register this tool with
+ * @param schemas - Optional schema overrides for testing purposes
+ */
 export async function registerCouncilConsult(server: ToolRegistrar, schemas?: SchemaOverrides) {
   const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
   const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;

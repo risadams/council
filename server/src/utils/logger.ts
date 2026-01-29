@@ -1,3 +1,15 @@
+/**
+ * Structured Logging Module
+ * 
+ * Provides application-wide logging using pino with support for multiple formats and levels.
+ * Features include:
+ * - Structured JSON or text-based logging
+ * - Configurable log levels (debug, info, warn, error)
+ * - Request context tracking with correlation IDs
+ * - Tool execution lifecycle logging
+ * - Safe serialization of log values
+ */
+
 import { randomUUID } from "crypto";
 import { pino, stdTimeFunctions, type Logger as PinoLogger } from "pino";
 import type { Writable } from "stream";
@@ -7,6 +19,11 @@ type LogFormat = "json" | "text";
 
 type Loggable = string | number | boolean | Record<string, unknown> | Error | undefined | null;
 
+/**
+ * Application logger interface
+ * 
+ * Provides structured logging with four levels and supports child loggers for context binding.
+ */
 export type AppLogger = {
   level: LogLevel;
   debug: (arg1?: Loggable, arg2?: Loggable) => void;
@@ -16,6 +33,18 @@ export type AppLogger = {
   child: (bindings: Record<string, unknown>) => AppLogger;
 };
 
+/**
+ * Request execution context
+ * 
+ * Tracks logging context throughout a request lifecycle including timing,
+ * request IDs, and the tool being invoked.
+ * 
+ * @property logger - Logger instance for this request
+ * @property requestId - Unique identifier for this request
+ * @property correlationId - ID for correlating related operations
+ * @property startTime - Timestamp when request started (ms since epoch)
+ * @property tool - Optional name of the tool being executed
+ */
 export interface RequestContext {
   logger: AppLogger;
   requestId: string;

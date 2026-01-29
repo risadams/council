@@ -1,5 +1,19 @@
 #!/usr/bin/env node
 
+/**
+ * HTTPS Server for Clarity Council
+ * 
+ * Standalone HTTP/HTTPS server for the Clarity Council MCP service.
+ * Supports both HTTP and HTTPS endpoints with configurable ports.
+ * Implements:
+ * 
+ * - JSON-RPC 2.0 protocol for tool invocation
+ * - TLS certificate validation
+ * - Health check endpoint
+ * - Comprehensive error handling
+ * - Request logging and tracing
+ */
+
 import http from "http";
 import https from "https";
 import fs from "fs";
@@ -39,6 +53,11 @@ type JsonRpcRequest = {
   id?: string | number | null;
 };
 
+/**
+ * JSON-RPC 2.0 response format
+ * 
+ * Contains either a result (on success) or an error object (on failure).
+ */
 type JsonRpcResponse = {
   jsonrpc: "2.0";
   id: string | number | null;
