@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Health Check Result",
+  "description": "Response from MCP service health check endpoint",
+  "type": "object",
+  "required": [
+    "status",
+    "timestamp",
+    "uptime_seconds",
+    "http_endpoint_ok",
+    "https_endpoint_ok",
+    "mcp_protocol_ok",
+    "schema_validation_ok",
+    "disk_space_free_mb",
+    "memory_usage_mb"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["healthy", "unhealthy"],
+      "description": "Overall health status"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Health check time (UTC)"
+    },
+    "uptime_seconds": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Seconds since container start"
+    },
+    "http_endpoint_ok": {
+      "type": "boolean",
+      "description": "HTTP server responding"
+    },
+    "https_endpoint_ok": {
+      "type": "boolean",
+      "description": "HTTPS server responding"
+    },
+    "mcp_protocol_ok": {
+      "type": "boolean",
+      "description": "MCP JSON-RPC working"
+    },
+    "schema_validation_ok": {
+      "type": "boolean",
+      "description": "Tool schemas loaded and valid"
+    },
+    "disk_space_free_mb": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Available disk space (MB)"
+    },
+    "memory_usage_mb": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Current process memory (MB)"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Reason if status != healthy (optional)"
+    }
+  }
+}

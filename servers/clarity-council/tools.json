@@ -1,0 +1,85 @@
+[
+  {
+    "name": "council_consult",
+    "description": "Get multi-persona consultation on a strategic problem or decision from 6+ perspectives including growth, finance, risk, operations, customer advocacy, and culture",
+    "arguments": [
+      {
+        "name": "user_problem",
+        "type": "string",
+        "desc": "The strategic problem, decision, or question to get consultation on"
+      },
+      {
+        "name": "context",
+        "type": "string",
+        "desc": "Additional context about the situation (optional)"
+      },
+      {
+        "name": "desired_outcome",
+        "type": "string",
+        "desc": "What success looks like or what you're trying to achieve (optional)"
+      },
+      {
+        "name": "constraints",
+        "type": "array",
+        "desc": "Key constraints or limitations to consider (optional)"
+      },
+      {
+        "name": "depth",
+        "type": "string",
+        "desc": "Consultation depth: 'brief' for quick summary, 'standard' for balanced analysis, 'deep' for comprehensive exploration"
+      }
+    ]
+  },
+  {
+    "name": "persona_consult",
+    "description": "Get consultation from a specific persona on a problem",
+    "arguments": [
+      {
+        "name": "persona_name",
+        "type": "string",
+        "desc": "Name of the persona to consult: Growth Strategist, Financial Officer, Devil's Advocate, Ops Architect, Customer Advocate, or Culture Lead"
+      },
+      {
+        "name": "user_problem",
+        "type": "string",
+        "desc": "The problem or decision to consult on"
+      },
+      {
+        "name": "context",
+        "type": "string",
+        "desc": "Additional context about the situation (optional)"
+      },
+      {
+        "name": "desired_outcome",
+        "type": "string",
+        "desc": "What success looks like (optional)"
+      },
+      {
+        "name": "constraints",
+        "type": "array",
+        "desc": "Key constraints to consider (optional)"
+      },
+      {
+        "name": "depth",
+        "type": "string",
+        "desc": "Consultation depth: 'brief', 'standard', or 'deep'"
+      }
+    ]
+  },
+  {
+    "name": "council_define_personas",
+    "description": "Define or customize the personas used for consultation. Adjust their perspective, focus areas, and constraints to match your organization's needs",
+    "arguments": [
+      {
+        "name": "selected_personas",
+        "type": "array",
+        "desc": "List of personas to include in the council"
+      },
+      {
+        "name": "overrides",
+        "type": "object",
+        "desc": "Custom overrides for specific personas (soul, focus, constraints)"
+      }
+    ]
+  }
+]

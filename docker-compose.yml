@@ -1,5 +1,8 @@
+name: risadams
+
 services:
   clarity-council:
+    image: risadams/clarity-council:1.0.0
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,16 +11,19 @@ services:
       - "8000:8000"
       - "8080:8080"
     volumes:
-      # Mount certificates directory for persistent HTTPS certs
-      - ./certs:/app/certs
-      # Mount local personas configuration (optional)
-      - ./.council:/app/.council
+      # Mount certificates directory for persistent HTTPS certs (read-only)
+      - ./certs:/app/certs:ro
+      # Mount workspace for persona overrides and config
+      - ./council-workspace:/app/.council
     environment:
       NODE_ENV: production
       LOG_LEVEL: info
+      LOG_FORMAT: json
       HTTPS_PORT: 8000
       HTTP_ENABLED: "true"
       HTTP_PORT: 8080
+      WORKSPACE_DIR: /.council
+      CERT_DIR: /app/certs
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "node", "-e", "const https = require('https'); const options = {hostname: 'localhost', port: 8000, path: '/', method: 'GET', rejectUnauthorized: false}; https.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => { process.exit(1); }).end();"]

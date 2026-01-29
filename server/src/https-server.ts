@@ -1,13 +1,28 @@
 #!/usr/bin/env node
 
+/**
+ * HTTPS Server for Clarity Council
+ * 
+ * Standalone HTTP/HTTPS server for the Clarity Council MCP service.
+ * Supports both HTTP and HTTPS endpoints with configurable ports.
+ * Implements:
+ * 
+ * - JSON-RPC 2.0 protocol for tool invocation
+ * - TLS certificate validation
+ * - Health check endpoint
+ * - Comprehensive error handling
+ * - Request logging and tracing
+ */
+
 import http from "http";
 import https from "https";
 import fs from "fs";
 import path from "path";
 import process from "process";
 import { fileURLToPath } from "url";
-import { spawnSync } from "child_process";
-import { createLogger } from "./utils/logger.js";
+import { getLogConfig, getRootLogger } from "./utils/logger.js";
+import { loadConfig } from "./utils/config.js";
+import { HealthChecker } from "./utils/healthCheck.js";
 import { registerCouncilConsult } from "./tools/council.consult.js";
 import { registerPersonaConsult } from "./tools/persona.consult.js";
 import { registerDefinePersonas } from "./tools/council.define_personas.js";
@@ -16,58 +31,20 @@ import { ToolDefinition, ToolRegistrar } from "./utils/mcpAdapter.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const logger = createLogger();
+const logger = getRootLogger();
+const logConfig = getLogConfig();
+logger.info({ event: "logger.init", level: logConfig.level, format: logConfig.format }, "Logger initialized");
 
-const PORT = parseInt(process.env.HTTPS_PORT || "8000", 10);
-const HTTP_ENABLED = (process.env.HTTP_ENABLED || "true").toLowerCase() !== "false";
-const HTTP_PORT = parseInt(process.env.HTTP_PORT || "8080", 10);
-const CERT_DIR = process.env.CERT_DIR || path.join(__dirname, "..", "certs");
+const config = loadConfig({ logger });
 
-function ensureCertificates() {
-  fs.mkdirSync(CERT_DIR, { recursive: true });
-
-  const certPath = path.join(CERT_DIR, "cert.pem");
-  const keyPath = path.join(CERT_DIR, "key.pem");
-
-  const hasCerts = fs.existsSync(certPath) && fs.existsSync(keyPath);
-
-  if (!hasCerts) {
-    logger.warn({ certPath, keyPath }, "HTTPS certificates not found. Generating self-signed certificates.");
-
-    const result = spawnSync(
-      "openssl",
-      [
-        "req",
-        "-x509",
-        "-newkey",
-        "rsa:2048",
-        "-keyout",
-        keyPath,
-        "-out",
-        certPath,
-        "-days",
-        "365",
-        "-nodes",
-        "-subj",
-        "/CN=localhost"
-      ],
-      { stdio: "inherit" }
-    );
-
-    if (result.status !== 0) {
-      throw new Error(`Failed to generate self-signed certificates with openssl (exit code ${result.status ?? "unknown"}).`);
-    }
+function ensureCertificates(certDir: string) {
+  const certPath = path.join(certDir, "cert.pem");
+  const keyPath = path.join(certDir, "key.pem");
+  if (!fs.existsSync(certPath) || !fs.existsSync(keyPath)) {
+    throw new Error(`TLS certificates not found in ${certDir}. Expected cert.pem and key.pem.`);
   }
-
   return { certPath, keyPath };
 }
-
-const { certPath, keyPath } = ensureCertificates();
-
-const options = {
-  key: fs.readFileSync(keyPath),
-  cert: fs.readFileSync(certPath)
-};
 
 type JsonRpcRequest = {
   jsonrpc?: string;
@@ -76,6 +53,11 @@ type JsonRpcRequest = {
   id?: string | number | null;
 };
 
+/**
+ * JSON-RPC 2.0 response format
+ * 
+ * Contains either a result (on success) or an error object (on failure).
+ */
 type JsonRpcResponse = {
   jsonrpc: "2.0";
   id: string | number | null;
@@ -86,6 +68,7 @@ type JsonRpcResponse = {
 async function startServer() {
   const servers: Array<{ close: (cb: () => void) => void }> = [];
   const tools: ToolDefinition[] = [];
+  const healthChecker = new HealthChecker(config.httpPort, config.httpsPort, config.workspaceDir);
 
   // Add global error handlers to prevent silent crashes
   process.on("unhandledRejection", (reason, promise) => {
@@ -207,6 +190,48 @@ async function startServer() {
   // Shared request handler for health and JSON-RPC over HTTP/HTTPS
   const requestHandler: http.RequestListener = (req, res) => {
     try {
+      if (req.url === "/health" && req.method === "GET") {
+        logger.debug({ event: "request.health_check", path: req.url }, "Health check request");
+        healthChecker.performHealthCheck().then((healthStatus) => {
+          const statusCode = healthStatus.status === "healthy" ? 200 : 503;
+          res.writeHead(statusCode, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(healthStatus));
+        });
+        return;
+      }
+
+      if (req.url === "/mcp-metadata" && req.method === "GET") {
+        logger.debug({ event: "request.mcp_metadata", path: req.url }, "MCP metadata request");
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            name: "Clarity Council",
+            version: "0.1.0",
+            description: "Multi-persona AI consultation tool for decision-making",
+            endpoint: {
+              protocol: config.httpsEnabled ? "https" : "http",
+              host: "localhost",
+              port: config.httpsEnabled ? config.httpsPort : config.httpPort
+            },
+            tools: [
+              {
+                name: "council_consult",
+                description: "Consult multiple personas and produce a synthesis (agreements, conflicts, risks/tradeoffs, next_steps)."
+              },
+              {
+                name: "persona_consult",
+                description: "Consult a single persona returning structured advice, assumptions, questions, next_steps, and confidence."
+              },
+              {
+                name: "council_define_personas",
+                description: "Return current persona contracts and apply validated workspace-level overrides."
+              }
+            ]
+          })
+        );
+        return;
+      }
+
       if (req.url === "/" && req.method === "GET") {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(
@@ -291,29 +316,39 @@ async function startServer() {
     }
   };
 
-  // Create HTTPS server
-  const httpsServer = https.createServer(options, requestHandler);
-  httpsServer.on("error", (err) => {
-    logger.error({ err }, "HTTPS server error");
-  });
-  httpsServer.listen(PORT, "0.0.0.0", () => {
-    logger.info(
-      { port: PORT, certPath, keyPath },
-      `Clarity Council MCP HTTPS server started on https://localhost:${PORT}`
-    );
-  });
-  servers.push(httpsServer);
+  if (config.httpsEnabled) {
+    const { certPath, keyPath } = ensureCertificates(config.certDir);
+    const httpsOptions = {
+      key: fs.readFileSync(keyPath),
+      cert: fs.readFileSync(certPath)
+    };
 
-  // Optional HTTP server for local, non-TLS access
-  if (HTTP_ENABLED) {
+    const httpsServer = https.createServer(httpsOptions, requestHandler);
+    httpsServer.on("error", (err) => {
+      logger.error({ err }, "HTTPS server error");
+    });
+    httpsServer.listen(config.httpsPort, "0.0.0.0", () => {
+      logger.info(
+        { port: config.httpsPort, certPath, keyPath },
+        `Clarity Council MCP HTTPS server started on https://localhost:${config.httpsPort}`
+      );
+    });
+    servers.push(httpsServer);
+  } else {
+    logger.warn({ event: "https.disabled" }, "HTTPS server disabled by configuration");
+  }
+
+  if (config.httpEnabled) {
     const httpServer = http.createServer(requestHandler);
     httpServer.on("error", (err) => {
       logger.error({ err }, "HTTP server error");
     });
-    httpServer.listen(HTTP_PORT, "0.0.0.0", () => {
-      logger.info({ port: HTTP_PORT }, `Clarity Council MCP HTTP server started on http://localhost:${HTTP_PORT}`);
+    httpServer.listen(config.httpPort, "0.0.0.0", () => {
+      logger.info({ port: config.httpPort }, `Clarity Council MCP HTTP server started on http://localhost:${config.httpPort}`);
     });
     servers.push(httpServer);
+  } else {
+    logger.info({ event: "http.disabled" }, "HTTP server disabled by configuration");
   }
 
   // Handle graceful shutdown

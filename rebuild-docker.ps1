@@ -1,66 +1,101 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Rebuild and restart Docker containers for Clarity Council MCP
+    Rebuild, retag, and restart the Clarity Council Docker stack with MCP catalog import.
 
 .DESCRIPTION
-    This script stops running containers, rebuilds the Docker image,
-    and starts fresh containers.
+    Stops containers, rebuilds the image, retags it for Docker Desktop MCP (catalog/server),
+    restarts the stack, waits for health, and optionally imports/enables the MCP server entry.
 
 .EXAMPLE
-    .\rebuild-docker.ps1
+    .\rebuild-docker.ps1 -ImageTag "risadams/clarity-council:1.0.0"
 #>
 
 param(
     [switch]$NoCache,
-    [switch]$Verbose
+    [switch]$Verbose,
+    [switch]$SkipMcp,
+    [switch]$SkipClient,
+    [string]$ImageTag = "risadams/clarity-council:1.0.0",
+    [string]$ServerName = "clarity-council",
+    [string]$CatalogName = "risadams"
 )
 
 $ErrorActionPreference = "Stop"
 $VerbosePreference = if ($Verbose) { "Continue" } else { "SilentlyContinue" }
 
-Write-Host "🔄 Clarity Council Docker Rebuild" -ForegroundColor Cyan
-Write-Host "=================================" -ForegroundColor Cyan
+$repoRoot = Split-Path -Parent $PSCommandPath
+$serverYamlPath = Join-Path $repoRoot "servers/clarity-council/server.yaml"
+$defaultProject = Split-Path -Leaf $repoRoot
 
-# Stop containers
-Write-Host "`n📦 Stopping containers..." -ForegroundColor Yellow
-docker-compose down --remove-orphans
+function Get-ComposeInvoker {
+    if (Get-Command docker-compose -ErrorAction SilentlyContinue) {
+        return @{ Name = "docker-compose"; Invoke = { param([string[]]$CommandArgs) & docker-compose @CommandArgs } }
+    }
+
+    if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
+        throw "Docker CLI not found. Install Docker Desktop before running this script."
+    }
+
+    return @{ Name = "docker compose"; Invoke = { param([string[]]$CommandArgs) & docker compose @CommandArgs } }
+}
+
+$compose = Get-ComposeInvoker
+Write-Host "== Clarity Council Docker Rebuild ==" -ForegroundColor Cyan
+Write-Host "Using compose command: $($compose.Name)" -ForegroundColor DarkGray
+Write-Host "Image tag target: $ImageTag" -ForegroundColor DarkGray
+
+Write-Host "`n[1/6] Stopping containers..." -ForegroundColor Yellow
+& $compose.Invoke @("down", "--remove-orphans")
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "⚠️  Warning: docker-compose down failed" -ForegroundColor Yellow
+    Write-Host "Warning: compose down reported errors (continuing)" -ForegroundColor Yellow
 }
 
-# Remove old images (optional)
-Write-Host "`n🗑️  Removing old images..." -ForegroundColor Yellow
-$image = docker images | Select-String "clarity-council"
-if ($image) {
-    docker rmi "clarity-council-mcp" -f | Out-Null
-    Write-Host "✓ Old image removed" -ForegroundColor Green
+Write-Host "`n[2/6] Removing old images..." -ForegroundColor Yellow
+$candidateImages = @(
+    $ImageTag,
+    "clarity-council-mcp",
+    "$defaultProject-clarity-council",
+    "${defaultProject}_clarity-council"
+)
+
+foreach ($tag in $candidateImages | Select-Object -Unique | Where-Object { $_ -and (docker images -q $_) }) {
+    docker image rm -f $tag | Out-Null
+    Write-Host "Removed $tag" -ForegroundColor DarkGray
 }
 
-# Build
-Write-Host "`n🔨 Building Docker image..." -ForegroundColor Yellow
+Write-Host "`n[3/6] Building Docker image..." -ForegroundColor Yellow
 $buildArgs = @("build")
-if ($NoCache) {
-    $buildArgs += "--no-cache"
-}
-docker-compose $buildArgs
+if ($NoCache) { $buildArgs += "--no-cache" }
+& $compose.Invoke $buildArgs
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Docker build failed" -ForegroundColor Red
+    Write-Host "Docker build failed" -ForegroundColor Red
     exit 1
 }
-Write-Host "✓ Build complete" -ForegroundColor Green
 
-# Start containers
-Write-Host "`n🚀 Starting containers..." -ForegroundColor Yellow
-docker-compose up -d
+$composeImages = (& $compose.Invoke @("config", "--images") 2>$null) | Where-Object { $_ }
+$sourceImage = $composeImages | Where-Object { $_ -match "clarity-council" } | Select-Object -First 1
+if (-not $sourceImage) { $sourceImage = "$defaultProject-clarity-council" }
+
+if (docker images -q $sourceImage) {
+    if ($sourceImage -ne $ImageTag) {
+        docker tag $sourceImage $ImageTag
+        Write-Host "Retagged $sourceImage -> $ImageTag" -ForegroundColor Green
+    } else {
+        Write-Host "Image already tagged as $ImageTag" -ForegroundColor Green
+    }
+} else {
+    Write-Host "Warning: could not find built image '$sourceImage' to retag." -ForegroundColor Yellow
+}
+
+Write-Host "`n[4/6] Starting containers..." -ForegroundColor Yellow
+& $compose.Invoke @("up", "-d", "--force-recreate")
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Failed to start containers" -ForegroundColor Red
+    Write-Host "Failed to start containers" -ForegroundColor Red
     exit 1
 }
-Write-Host "✓ Containers started" -ForegroundColor Green
 
-# Wait for health check
-Write-Host "`n⏳ Waiting for server to be healthy..." -ForegroundColor Yellow
+Write-Host "`n[5/6] Waiting for server health (http://localhost:8080/health)..." -ForegroundColor Yellow
 $maxAttempts = 30
 $attempt = 0
 $healthy = $false
@@ -68,12 +103,12 @@ $healthy = $false
 while ($attempt -lt $maxAttempts -and -not $healthy) {
     Start-Sleep -Seconds 2
     $attempt++
-    
+
     try {
-        $response = Invoke-WebRequest -Uri "http://localhost:8080" -Method GET -UseBasicParsing -ErrorAction SilentlyContinue
+        $response = Invoke-WebRequest -Uri "http://localhost:8080/health" -Method GET -UseBasicParsing -ErrorAction Stop
         if ($response.StatusCode -eq 200) {
             $healthy = $true
-            Write-Host "✓ Server is healthy" -ForegroundColor Green
+            Write-Host "Health check passed on attempt $attempt" -ForegroundColor Green
         }
     } catch {
         Write-Host "." -NoNewline
@@ -81,11 +116,80 @@ while ($attempt -lt $maxAttempts -and -not $healthy) {
 }
 
 if (-not $healthy) {
-    Write-Host "`n⚠️  Warning: Server did not respond after 60 seconds" -ForegroundColor Yellow
-    Write-Host "   Check logs with: docker-compose logs" -ForegroundColor Yellow
+    Write-Host "`nWarning: server did not respond healthy within 60 seconds." -ForegroundColor Yellow
+    Write-Host "Check logs with: $($compose.Name) logs" -ForegroundColor Yellow
 } else {
-    Write-Host "`n✅ Clarity Council is ready!" -ForegroundColor Green
-    Write-Host "   HTTP:  http://localhost:8080" -ForegroundColor Cyan
-    Write-Host "   HTTPS: https://localhost:8000" -ForegroundColor Cyan
-    Write-Host "`n📝 View logs: docker-compose logs -f" -ForegroundColor Gray
+    Write-Host "Server is healthy." -ForegroundColor Green
 }
+
+if (-not $SkipMcp) {
+    Write-Host "`n[6/6] Importing MCP catalog entry and enabling server..." -ForegroundColor Yellow
+    $mcpAvailable = $false
+    try {
+        & docker @("mcp", "--help") *> $null
+        if ($LASTEXITCODE -eq 0) { $mcpAvailable = $true }
+    } catch {
+        $mcpAvailable = $false
+    }
+
+    if ($mcpAvailable -and (Test-Path $serverYamlPath)) {
+        # Check if catalog exists
+        $catalogs = @()
+        try {
+            $catalogs = (& docker @("mcp", "catalog", "ls") 2>$null) | Where-Object { $_ }
+        } catch {
+            $catalogs = @()
+        }
+
+        $catalogExists = $catalogs -and ($catalogs -match "^${CatalogName}:\s")
+        if (-not $catalogExists) {
+            Write-Host "Creating catalog: $CatalogName" -ForegroundColor Cyan
+            & docker @("mcp", "catalog", "create", $CatalogName)
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "Catalog created: $CatalogName" -ForegroundColor Green
+            } else {
+                Write-Host "Warning: failed to create catalog $CatalogName" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "Catalog already exists: $CatalogName" -ForegroundColor DarkGray
+        }
+
+        # Add server to catalog
+        Write-Host "Adding server to catalog: $CatalogName/$ServerName" -ForegroundColor Cyan
+        & docker @("mcp", "catalog", "add", $CatalogName, $ServerName, $serverYamlPath, "--force")
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Server added to catalog: $CatalogName/$ServerName" -ForegroundColor Green
+        } else {
+            Write-Host "Error: Failed to add server to catalog. Check 'docker mcp catalog show $CatalogName'" -ForegroundColor Red
+        }
+
+        # Enable server
+        Write-Host "Enabling server: $ServerName" -ForegroundColor Cyan
+        & docker @("mcp", "server", "enable", $ServerName)
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Server enabled: $ServerName" -ForegroundColor Green
+        } else {
+            Write-Host "Error: Failed to enable server. Check 'docker mcp server ls' and enable manually with 'docker mcp server enable $ServerName'" -ForegroundColor Red
+        }
+
+        if (-not $SkipClient) {
+            & docker @("mcp", "client", "connect", "vscode")
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "VS Code connected to Docker MCP Toolkit (restart VS Code if not detected)." -ForegroundColor Green
+            } else {
+                Write-Host "Warning: failed to connect VS Code client. You can run: docker mcp client connect vscode" -ForegroundColor Yellow
+            }
+        }
+    } elseif (-not $mcpAvailable) {
+        Write-Host "MCP CLI not available. Skipping catalog import. (Install Docker Desktop with MCP Toolkit.)" -ForegroundColor Yellow
+    } else {
+        Write-Host "Catalog file not found: $serverYamlPath" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "`n[6/6] Skipping MCP catalog/server steps (SkipMcp requested)." -ForegroundColor Yellow
+}
+
+Write-Host "`nClarity Council is ready." -ForegroundColor Cyan
+Write-Host "HTTP:  http://localhost:8080" -ForegroundColor Cyan
+Write-Host "HTTPS: https://localhost:8000" -ForegroundColor Cyan
+Write-Host "Logs:  $($compose.Name) logs -f" -ForegroundColor DarkGray

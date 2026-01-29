@@ -1,3 +1,25 @@
+/**
+ * Council Consultation Formatting Module
+ * 
+ * Formats council consultation results into readable markdown output that includes:
+ * - Individual persona perspectives with confidence ratings
+ * - Synthesis of agreements, conflicts, and risks
+ * - Actionable next steps
+ * - Detailed assumptions, questions, and reasoning
+ */
+
+/**
+ * Formatted persona response for output
+ * 
+ * @property persona - Name of the persona providing advice
+ * @property summary - Brief one-line summary of the perspective
+ * @property advice - Formatted advice (typically markdown bullets)
+ * @property assumptions - Underlying assumptions made by this persona
+ * @property questions - Clarifying questions from this perspective
+ * @property next_steps - Recommended actions
+ * @property confidence - Confidence level (low, medium, high)
+ * @property confidence_rationale - Explanation for the confidence rating
+ */
 export type FormattedResponse = {
   persona: string;
   summary: string;
@@ -9,6 +31,15 @@ export type FormattedResponse = {
   confidence_rationale?: string;
 };
 
+/**
+ * Synthesized council insights
+ * 
+ * @property agreements - Points of consensus across personas
+ * @property conflicts - Areas where personas diverge significantly
+ * @property risks_tradeoffs - Key risks and tradeoff considerations
+ * @property next_steps - Combined actionable next steps
+ * @property notes - Optional additional notes or caveats
+ */
 export type Synthesis = {
   agreements: string[];
   conflicts: string[];
@@ -17,6 +48,17 @@ export type Synthesis = {
   notes?: string[];
 };
 
+/**
+ * Formats council consultation results as readable markdown
+ * 
+ * Produces a structured markdown document with individual persona perspectives
+ * followed by synthesized agreements, conflicts, risks, and next steps.
+ * 
+ * @param responses - Individual persona responses to format
+ * @param synthesis - Synthesized insights across all personas
+ * @param problem - The original problem statement
+ * @returns Formatted markdown string suitable for display or documentation
+ */
 export function formatCouncilConsultAsMarkdown(
   responses: FormattedResponse[],
   synthesis: Synthesis,

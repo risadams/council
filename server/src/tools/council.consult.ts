@@ -1,3 +1,19 @@
+/**
+ * Council Consult Tool
+ * 
+ * MCP tool that orchestrates consultation with multiple personas and produces a synthesis.
+ * Integrates persona selection, draft generation, and synthesis formatting to provide
+ * comprehensive advice considering multiple perspectives.
+ * 
+ * The tool:
+ * 1. Validates input against schema
+ * 2. Selects relevant personas (or uses all if none specified)
+ * 3. Generates individual persona drafts
+ * 4. Optionally includes Devil's Advocate perspective for risk assessment
+ * 5. Synthesizes responses into agreements, conflicts, and risks
+ * 6. Formats output as markdown for readability
+ */
+
 import { loadSchema } from "../utils/schemaLoader.js";
 import { validate } from "../utils/validation.js";
 import { toError } from "../utils/errors.js";
@@ -11,15 +27,22 @@ import {
 import { formatPersonaDraft } from "../utils/personaFormatter.js";
 import { buildSynthesis } from "../utils/synthesis.js";
 import { Depth } from "../utils/depth.js";
-import { withRequest, logRequestComplete } from "../utils/logger.js";
+import { logToolError, logToolStart, logToolSuccess } from "../utils/logger.js";
 import { formatCouncilConsultAsMarkdown } from "../utils/councilFormatter.js";
 import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
 const defaultInputSchema = loadSchema("council.consult.input.schema.json");
 const defaultOutputSchema = loadSchema("council.consult.output.schema.json");
 
+/** Optional schema overrides for testing */
 type SchemaOverrides = { inputSchema?: unknown; outputSchema?: unknown };
 
+/**
+ * Registers the council.consult tool with the MCP server
+ * 
+ * @param server - The MCP tool registrar to register this tool with
+ * @param schemas - Optional schema overrides for testing purposes
+ */
 export async function registerCouncilConsult(server: ToolRegistrar, schemas?: SchemaOverrides) {
   const inputSchema = schemas?.inputSchema ?? defaultInputSchema;
   const outputSchema = schemas?.outputSchema ?? defaultOutputSchema;
@@ -30,11 +53,11 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
     inputSchema,
     outputSchema,
     handler: async (input: Record<string, unknown>) => {
-      const ctx = withRequest();
+      const ctx = logToolStart("council.consult", input);
       try {
         const { valid, errors } = validate(inputSchema, input);
         if (!valid) {
-          logRequestComplete(ctx, "council.consult", false, "validation");
+          logToolError(ctx, "council.consult", "validation", new Error("Invalid input"));
           return toError("validation", "Invalid input", errors);
         }
 
@@ -49,6 +72,11 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
         };
 
         const active = selectPersonas(selected);
+        ctx.logger.debug(
+          { event: "council.personas_selected", count: active.length, personas: active.map((p) => p.name) },
+          `Selected ${active.length} personas for consultation`
+        );
+
         const drafts = active.map((persona) =>
           (persona.name as string) === "Devil's Advocate"
             ? generateDevilsAdvocateDraft(consultInput)
@@ -58,20 +86,21 @@ export async function registerCouncilConsult(server: ToolRegistrar, schemas?: Sc
         const responses = drafts.map(formatPersonaDraft);
         const synthesis = buildSynthesis(responses, depth, consultInput);
 
-        logRequestComplete(ctx, "council.consult", true);
         // Return both structured data and formatted markdown for better display
         const markdown = formatCouncilConsultAsMarkdown(
           responses,
           synthesis,
           (input as any).user_problem
         );
-        return {
+        const result = {
           responses,
           synthesis,
           formatted: markdown
         };
+        logToolSuccess(ctx, "council.consult", result);
+        return result;
       } catch (err: any) {
-        logRequestComplete(ctx, "council.consult", false, "internal");
+        logToolError(ctx, "council.consult", "internal", err);
         return toError("internal", "Unexpected error", { message: err.message });
       }
     }

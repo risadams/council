@@ -1,0 +1,49 @@
+name: clarity-council
+image: risadams/clarity-council:1.0.0
+type: server
+meta:
+  category: ai
+  tags:
+    - ai
+    - consultation
+    - decision-making
+    - strategy
+about:
+  title: Clarity Council
+  description: Multi-persona AI consultation tool for strategic decision-making and problem-solving
+  icon: https://avatars.githubusercontent.com/u/1?s=200&v=4
+source:
+  project: https://github.com/risadams/council
+  commit: latest
+config:
+  description: Configure Clarity Council MCP Server
+  env:
+    - name: HTTP_PORT
+      example: '8080'
+      value: '8080'
+    - name: HTTPS_PORT
+      example: '8000'
+      value: '8000'
+    - name: LOG_LEVEL
+      example: 'info'
+      value: 'info'
+    - name: LOG_FORMAT
+      example: 'json'
+      value: 'json'
+  parameters:
+    type: object
+    properties:
+      http_port:
+        type: number
+        description: HTTP server port
+      https_port:
+        type: number
+        description: HTTPS server port
+      log_level:
+        type: string
+        enum: [debug, info, warn, error]
+        description: Logging level
+      log_format:
+        type: string
+        enum: [json, text]
+        description: Log output format

@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Persona Configuration Overrides",
+  "description": "Workspace file defining per-persona customizations",
+  "type": "object",
+  "required": ["version", "lastModified", "overrides"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": ["1.0"],
+      "description": "File version for migrations"
+    },
+    "lastModified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last modification timestamp (UTC)"
+    },
+    "overrides": {
+      "type": "object",
+      "description": "Map of persona ID to override configuration",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["enabled"],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Include this persona in consultations"
+          },
+          "customSoul": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Override persona's core purpose"
+          },
+          "customFocus": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "description": "Override focus areas"
+          },
+          "customConstraints": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "description": "Override decision constraints"
+          }
+        }
+      }
+    }
+  }
+}
