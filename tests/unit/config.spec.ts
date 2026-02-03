@@ -54,7 +54,11 @@ describe("config loader", () => {
       logFormat: "json",
       workspaceDir: makeTempDir("workspace-"),
       certDir: makeTempDir("certs-"),
-      authEnabled: false
+      authEnabled: false,
+      secretsDir: "/tmp",
+      interactiveModeEnabled: true,
+      debateCycleLimit: 10,
+      extendedDebateCycleLimit: 20
     };
 
     expect(() => validateConfig(config)).toThrow(/HTTP_PORT/);
@@ -75,7 +79,11 @@ describe("config loader", () => {
       logFormat: "json",
       workspaceDir,
       certDir,
-      authEnabled: false
+      authEnabled: false,
+      secretsDir: "/tmp",
+      interactiveModeEnabled: true,
+      debateCycleLimit: 10,
+      extendedDebateCycleLimit: 20
     };
 
     expect(() => validateConfig(config)).toThrow(/must differ/);
@@ -94,7 +102,11 @@ describe("config loader", () => {
       logFormat: "json",
       workspaceDir,
       certDir,
-      authEnabled: false
+      authEnabled: false,
+      secretsDir: "/tmp",
+      interactiveModeEnabled: true,
+      debateCycleLimit: 10,
+      extendedDebateCycleLimit: 20
     };
 
     expect(() => validateConfig(config)).toThrow(/certificates|cert.pem|key.pem/i);

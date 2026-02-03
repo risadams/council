@@ -89,12 +89,12 @@ describe("Container Lifecycle Sync (T040)", () => {
     expect(["registering", "healthy", "unhealthy", "stopped"]).toContain("healthy");
   });
 
-  it("should provide /mcp-metadata endpoint with all 3 tools", async () => {
+  it("should provide /mcp-metadata endpoint with all 4 tools", async () => {
     // Placeholder: In real test, would:
     // 1. Start server
     // 2. GET http://localhost:PORT/mcp-metadata
-    // 3. Verify response includes council_consult, persona_consult, council_define_personas
-    expect(["council_consult", "persona_consult", "council_define_personas"]).toHaveLength(3);
+    // 3. Verify response includes council_consult, persona_consult, council_define_personas, council_discuss
+    expect(["council_consult", "persona_consult", "council_define_personas", "council_discuss"]).toHaveLength(4);
   });
 });
 

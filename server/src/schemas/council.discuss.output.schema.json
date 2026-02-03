@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/contracts/council.discuss.output.schema.json",
+  "title": "council.discuss output",
+  "type": "object",
+  "required": ["sessionId", "status", "currentState"],
+  "properties": {
+    "sessionId": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["clarifying", "debating", "awaiting_final_confirmation", "completed", "cancelled", "error"]
+    },
+    "message": { "type": "string" },
+    "nextAction": {
+      "type": "object",
+      "properties": {
+        "actionType": {
+          "type": "string",
+          "enum": ["answer_question", "wait_for_debate", "review_final_answer", "none"]
+        },
+        "prompt": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "nextQuestion": {
+      "type": "object",
+      "properties": {
+        "questionId": { "type": "string" },
+        "question": { "type": "string" },
+        "round": { "type": "integer" },
+        "askedBy": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "debateExchanges": {
+      "type": "string",
+      "description": "Formatted markdown string showing all debate exchanges with persona attribution"
+    },
+    "currentState": { "type": "object" }
+  },
+  "additionalProperties": false
+}

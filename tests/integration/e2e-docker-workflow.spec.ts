@@ -79,12 +79,16 @@ describe("E2E Docker Workflow Integration (T076)", () => {
         {
           name: "council_define_personas",
           description: "Define or override persona configurations"
+        },
+        {
+          name: "council_discuss",
+          description: "Interactive multi-turn council discussion with clarifications"
         }
       ]
     };
 
     expect(metadata.name).toBe("Clarity Council");
-    expect(metadata.tools.length).toBe(3);
+    expect(metadata.tools.length).toBe(4);
     expect(metadata.tools[0].name).toBe("council_consult");
 
     logger.info({ event: "e2e.metadata.pass", toolCount: metadata.tools.length }, "Service metadata verified");

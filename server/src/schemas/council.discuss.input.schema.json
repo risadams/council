@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/contracts/council.discuss.input.schema.json",
+  "title": "council.discuss input",
+  "type": "object",
+  "required": ["requestText"],
+  "properties": {
+    "requestText": { "type": "string", "minLength": 1, "maxLength": 5000 },
+    "requestContext": { "type": "string", "maxLength": 2000 },
+    "sessionId": { "type": "string" },
+    "answer": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "revisitSkipped": { "type": "boolean", "default": false },
+    "personasRequested": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Growth Strategist",
+          "Financial Officer",
+          "Devil’s Advocate",
+          "Ops Architect",
+          "Customer Advocate",
+          "Culture Lead",
+          "Product Owner",
+          "Scrum Master",
+          "Senior Developer",
+          "Senior Architect",
+          "DevOps Engineer",
+          "Security Expert",
+          "QA Engineer",
+          "Tech Lead"
+        ]
+      }
+    },
+    "extendedDebate": { "type": "boolean", "default": false },
+    "interactiveMode": { "type": "boolean", "default": true }
+  },
+  "additionalProperties": false
+}

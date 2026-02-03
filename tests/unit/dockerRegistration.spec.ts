@@ -21,10 +21,11 @@ describe("docker registration", () => {
       expect(result.version).toBe("0.1.0");
       expect(result.endpoint.protocol).toMatch(/http|https/);
       expect(result.endpoint.port).toBeGreaterThanOrEqual(1024);
-      expect(result.tools.length).toBe(3);
+      expect(result.tools.length).toBe(4);
       expect(result.tools[0].name).toBe("council_consult");
       expect(result.tools[1].name).toBe("persona_consult");
       expect(result.tools[2].name).toBe("council_define_personas");
+      expect(result.tools[3].name).toBe("council_discuss");
       expect(result.healthCheckUrl).toContain("/health");
       expect(result.registrationTimestamp).toBeDefined();
       expect(result.status).toMatch(/healthy|unhealthy/);
