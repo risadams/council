@@ -81,5 +81,36 @@
         "desc": "Custom overrides for specific personas (soul, focus, constraints)"
       }
     ]
+  },
+  {
+    "name": "council_discuss",
+    "description": "Interactive multi-turn council session with clarifications, debate cycles, and consolidated final answer",
+    "arguments": [
+      {
+        "name": "requestText",
+        "type": "string",
+        "desc": "The user's request or question to the council"
+      },
+      {
+        "name": "requestContext",
+        "type": "string",
+        "desc": "Additional context for the request (optional)"
+      },
+      {
+        "name": "personasRequested",
+        "type": "array",
+        "desc": "Specific persona names to include (optional, overrides automatic selection)"
+      },
+      {
+        "name": "extendedDebate",
+        "type": "boolean",
+        "desc": "Enable extended debate mode (optional)"
+      },
+      {
+        "name": "interactiveMode",
+        "type": "boolean",
+        "desc": "Enable interactive clarification/debate flow (optional)"
+      }
+    ]
   }
 ]

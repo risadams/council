@@ -1,8 +1,9 @@
 # Clarity Council MCP Server
 
-A minimal Model Context Protocol (MCP) server that lets you consult a council of personas for structured advice and synthesis. It exposes three tools:
+A Model Context Protocol (MCP) server that provides AI-powered consultation from a council of expert personas. It exposes four tools:
 
 - `council_consult`: consult multiple personas and return a synthesis
+- `council_discuss`: interactive multi-turn discussion with clarifications and debate
 - `persona_consult`: consult a single persona
 - `council_define_personas`: view and override persona contracts in this workspace
 

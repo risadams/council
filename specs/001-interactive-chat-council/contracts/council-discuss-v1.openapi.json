@@ -1,0 +1,573 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Interactive Council Chat Tool API",
+    "description": "MCP tool contract for interactive multi-turn council discussions with clarifications and debates",
+    "version": "1.0.0",
+    "x-mcp-tool": {
+      "category": "analysis",
+      "scope": "single request per invocation"
+    }
+  },
+  "paths": {
+    "/council/consult/interactive": {
+      "post": {
+        "operationId": "councilConsultInteractive",
+        "summary": "Initiate an interactive multi-turn council session",
+        "description": "Starts a new conversation session with the council. The system detects ambiguity, presents clarifying questions sequentially, facilitates council-to-council debate, and delivers a consolidated final answer.",
+        "x-mcp-tool-method": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsultRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session initiated or completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request (e.g., missing request text)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited or session limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/council/session/{sessionId}/respond": {
+      "post": {
+        "operationId": "sessionRespond",
+        "summary": "Respond to a clarification question or continue session",
+        "description": "Submits user response to an outstanding clarification question, or signals skip/deferral.",
+        "x-mcp-tool-method": true,
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionResponseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response recorded; next state (question/debate/answer) returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid response (e.g., empty answer without skip flag)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/council/session/{sessionId}": {
+      "get": {
+        "operationId": "getSession",
+        "summary": "Retrieve current session state",
+        "description": "Fetches full session context including clarifications, debate state, and interim results.",
+        "x-mcp-tool-method": true,
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session context retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionState"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConsultRequest": {
+        "type": "object",
+        "required": ["requestText"],
+        "properties": {
+          "requestText": {
+            "type": "string",
+            "description": "The user's question or request to the council",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "requestContext": {
+            "type": "string",
+            "description": "Optional background context (e.g., prior conversation, domain)",
+            "maxLength": 2000
+          },
+          "personasRequested": {
+            "type": "array",
+            "description": "Optional list of specific persona names to consult (overrides automatic selection)",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 14
+          },
+          "extendedDebate": {
+            "type": "boolean",
+            "description": "If true, user opts into extended debate mode (higher debate cycle limit)",
+            "default": false
+          },
+          "interactiveMode": {
+            "type": "boolean",
+            "description": "If true, enable interactive clarification and debate flow; if false, return direct answer (legacy mode)",
+            "default": true
+          }
+        }
+      },
+      "ConsultResponse": {
+        "type": "object",
+        "required": ["sessionId", "status", "currentState"],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique session identifier for multi-turn interactions"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["clarifying", "debating", "awaiting_final_confirmation", "completed", "error"],
+            "description": "Current session status"
+          },
+          "currentState": {
+            "$ref": "#/components/schemas/SessionState"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable status message or next action expected"
+          },
+          "nextAction": {
+            "type": "object",
+            "description": "What the user should do next",
+            "properties": {
+              "actionType": {
+                "type": "string",
+                "enum": ["answer_question", "wait_for_debate", "review_final_answer", "none"],
+                "description": "Expected user action"
+              },
+              "prompt": {
+                "type": "string",
+                "description": "UI prompt to display to user (if actionType = 'answer_question')"
+              }
+            }
+          }
+        }
+      },
+      "SessionResponseRequest": {
+        "type": "object",
+        "required": ["answer"],
+        "properties": {
+          "answer": {
+            "type": "string",
+            "description": "User's response to the current question, or 'Skip question' to defer",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "revisitSkipped": {
+            "type": "boolean",
+            "description": "If true, user is answering a previously skipped question (for refinement)",
+            "default": false
+          }
+        }
+      },
+      "SessionResponseResponse": {
+        "type": "object",
+        "required": ["sessionId", "status", "currentState"],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["clarifying", "debating", "awaiting_final_confirmation", "completed", "error"]
+          },
+          "currentState": {
+            "$ref": "#/components/schemas/SessionState"
+          },
+          "answerRecorded": {
+            "type": "boolean",
+            "description": "Whether the answer was successfully recorded"
+          },
+          "nextQuestion": {
+            "type": "object",
+            "description": "Next clarification question if status = 'clarifying', otherwise null",
+            "properties": {
+              "questionId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "question": {
+                "type": "string"
+              },
+              "round": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 3
+              },
+              "askedBy": {
+                "type": "string",
+                "description": "Which persona or system is asking"
+              }
+            },
+            "nullable": true
+          },
+          "debateInProgress": {
+            "type": "object",
+            "description": "If status = 'debating', current debate cycle info",
+            "properties": {
+              "cycleNumber": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "personasDebating": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "recentExchange": {
+                "type": "string",
+                "description": "Latest debate exchange snippet"
+              }
+            },
+            "nullable": true
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionState": {
+        "type": "object",
+        "required": ["sessionId", "status", "clarificationProgress", "messageTurns"],
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["clarifying", "debating", "awaiting_final_confirmation", "completed", "cancelled", "error"]
+          },
+          "clarificationProgress": {
+            "type": "object",
+            "properties": {
+              "roundNumber": {
+                "type": "integer",
+                "description": "Current clarification round (0 if none, 1-3 if active)"
+              },
+              "roundsCompleted": {
+                "type": "integer"
+              },
+              "questionsAsked": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ClarificationQuestionState"
+                }
+              },
+              "skippedQuestions": {
+                "type": "array",
+                "description": "Questions the user skipped (by question ID and text)",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "questionId": { "type": "string", "format": "uuid" },
+                    "question": { "type": "string" }
+                  }
+                }
+              },
+              "assumptions": {
+                "type": "array",
+                "description": "Explicit assumptions made for skipped questions",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "assumptionText": { "type": "string" },
+                    "rationale": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "debateProgress": {
+            "type": "object",
+            "properties": {
+              "cycleNumber": {
+                "type": "integer",
+                "description": "Current debate cycle (0 if not started)"
+              },
+              "cyclesCompleted": {
+                "type": "integer"
+              },
+              "cycleLimitReached": {
+                "type": "boolean",
+                "description": "Whether debate cycle limit has been reached"
+              },
+              "participatingPersonas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "debateExchanges": {
+                "type": "array",
+                "description": "Recent debate exchanges (limited to last N for performance)",
+                "items": {
+                  "$ref": "#/components/schemas/DebateExchange"
+                }
+              }
+            }
+          },
+          "messageTurns": {
+            "type": "array",
+            "description": "All message exchanges in chronological order",
+            "items": {
+              "$ref": "#/components/schemas/MessageTurnState"
+            }
+          },
+          "selectedPersonas": {
+            "type": "array",
+            "description": "Personas participating in this session",
+            "items": {
+              "type": "string"
+            }
+          },
+          "finalAnswer": {
+            "type": "string",
+            "description": "Consolidated final answer (populated when status = 'completed')",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "correlationId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "startTime": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "lastUpdateTime": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "extendedDebateRequested": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ClarificationQuestionState": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "question": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "answered", "skipped", "deferred"]
+          },
+          "userAnswer": {
+            "type": "string",
+            "nullable": true
+          },
+          "targetAmbiguity": {
+            "type": "string",
+            "description": "What aspect is being clarified"
+          }
+        }
+      },
+      "DebateExchange": {
+        "type": "object",
+        "properties": {
+          "speaker": {
+            "type": "string",
+            "description": "Persona name"
+          },
+          "stance": {
+            "type": "string",
+            "description": "Brief summary of persona's position"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why this stance is taken"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MessageTurnState": {
+        "type": "object",
+        "properties": {
+          "turnId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sender": {
+            "type": "string",
+            "description": "Name of sender (user or persona)"
+          },
+          "senderType": {
+            "type": "string",
+            "enum": ["user", "persona", "system"]
+          },
+          "messageType": {
+            "type": "string",
+            "enum": ["question", "answer", "discussion", "conclusion", "assumption_statement"]
+          },
+          "content": {
+            "type": "string"
+          },
+          "sequenceNumber": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error", "code"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message"
+          },
+          "code": {
+            "type": "string",
+            "enum": ["validation_error", "session_not_found", "session_expired", "rate_limited", "internal_error"],
+            "description": "Error category for programmatic handling"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional structured error details",
+            "nullable": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "VS Code extension internal authentication (opaque to user)"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "x-internal-notes": {
+    "implementation_notes": [
+      "Session lifecycle managed entirely in-memory per VS Code chat window",
+      "No persistent storage; session expires when chat window closes",
+      "LLM inference for clarification detection and persona selection uses existing council.consult infrastructure",
+      "Debate cycle limit enforced server-side; client notified when limit reached (FR-019)",
+      "All responses include full session state for client replay and observability",
+      "Rate limiting per-user at VS Code session level (not per-request globally)"
+    ],
+    "future_extensions": [
+      "Versioned schema: v2 could add multi-session history, session export, or async processing",
+      "Consider separate tool for session export/audit (currently logs are internal)"
+    ]
+  }
+}

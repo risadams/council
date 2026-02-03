@@ -1,6 +1,6 @@
 # Tools Reference
 
-This server registers three MCP tools. Use `tools/call` with the `name` shown below.
+This server registers four MCP tools. Use `tools/call` with the `name` shown below.
 
 ## council_consult
 Consult multiple personas and produce a synthesis: agreements, conflicts, risks/tradeoffs, and next steps.
@@ -43,6 +43,71 @@ $body = '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"council
 $response = Invoke-WebRequest -Uri http://localhost:8080 -Method POST -ContentType 'application/json' -Body $body
 ($response.Content | ConvertFrom-Json).result.content[0].text
 ```
+
+## council_discuss
+
+Interactive multi-turn council session with clarification questions, debate cycles, and consolidated final answer.
+
+Input fields:
+- `requestText` (string): Initial user request (required for new sessions)
+- `sessionId` (string, optional): Continue existing session
+- `answer` (string, optional): Answer to clarification question
+- `personasRequested` (string[], optional): Specific personas to include
+- `extendedDebate` (boolean, optional): Enable extended debate (20 cycles instead of 10)
+- `revisitSkipped` (boolean, optional): Revisit previously skipped questions
+- `interactiveMode` (boolean, optional, default: true): Enable interactive mode
+
+Output:
+- `sessionId`: Unique session identifier
+- `status`: Current session status (`clarifying`, `debating`, `completed`)
+- `message`: Human-readable status message
+- `nextAction`: Next action for client
+- `nextQuestion`: Next clarification question (if status = `clarifying`)
+- `debateExchanges`: Formatted markdown showing debate exchanges
+- `currentState`: Full session state
+
+Workflow:
+1. **Start Session**: Call with `requestText` - system detects ambiguity and asks clarification questions
+2. **Answer Questions**: Call with `sessionId` and `answer` - answer questions one-at-a-time or "skip"
+3. **Council Debate**: System orchestrates persona discussion (up to 10 cycles, or 20 with `extendedDebate`)
+4. **Final Answer**: System generates consolidated response with assumptions for skipped questions
+
+Example (curl - Start Session):
+```bash
+curl -s http://localhost:8080 -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":1,
+    "method":"tools/call",
+    "params":{
+      "name":"council_discuss",
+      "arguments":{
+        "requestText":"How should we architect our new microservices platform?"
+      }
+    }
+  }'
+```
+
+Example (curl - Answer Clarification):
+```bash
+curl -s http://localhost:8080 -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":2,
+    "method":"tools/call",
+    "params":{
+      "name":"council_discuss",
+      "arguments":{
+        "sessionId":"<session-id-from-previous-response>",
+        "answer":"High availability and scalability are our primary goals"
+      }
+    }
+  }'
+```
+
+See [usage.md](usage.md#council_discuss-interactive-mode) for detailed examples and workflow.
 
 ## persona_consult
 Consult a single persona for focused advice, assumptions, questions, next steps, and confidence.

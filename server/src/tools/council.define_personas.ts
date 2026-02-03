@@ -5,6 +5,7 @@ import { PERSONA_CONTRACTS, PersonaContract } from "../personas/contracts.js";
 import { readOverrides, writeOverrides, Overrides, validateOverrides } from "../utils/workspaceConfig.js";
 import { logToolError, logToolStart, logToolSuccess, getRootLogger } from "../utils/logger.js";
 import { getGlobalPersonaWatcher } from "../utils/personaWatcherGlobal.js";
+import type { PersonaOverride } from "../types/personaOverrides.js";
 import type { ToolRegistrar } from "../utils/mcpAdapter.js";
 
 const defaultInputSchema = loadSchema("council.define_personas.input.schema.json");
@@ -45,10 +46,10 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
 
         // Apply overrides onto base contracts (only allowed fields)
         const personas: PersonaContract[] = PERSONA_CONTRACTS.map((base) => {
-          const o = mergedOverrides[base.name] ?? {};
-          const focus = o.focus ?? base.focus;
-          const constraints = o.constraints ?? base.constraints;
-          const soul = o.soul ?? base.soul;
+          const o = (mergedOverrides[base.name] ?? {}) as Partial<PersonaOverride>;
+          const focus = o.customFocus ?? base.focus;
+          const constraints = o.customConstraints ?? base.constraints;
+          const soul = o.customSoul ?? base.soul;
           return { ...base, focus, constraints, soul };
         });
 
@@ -64,9 +65,9 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
                 (acc, [personaName, override]) => {
                   acc[personaName] = {
                     enabled: true,
-                    customSoul: override.soul,
-                    customFocus: override.focus,
-                    customConstraints: override.constraints
+                    customSoul: override.customSoul,
+                    customFocus: override.customFocus,
+                    customConstraints: override.customConstraints
                   };
                   return acc;
                 },

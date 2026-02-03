@@ -22,8 +22,10 @@ import { getLogConfig, getRootLogger } from "./utils/logger.js";
 import { loadConfig } from "./utils/config.js";
 import { DockerRegistration } from "./utils/dockerRegistration.js";
 import { PersonaConfigWatcher } from "./utils/fileWatcher.js";
+import { loadSchema } from "./utils/schemaLoader.js";
 
 import { registerCouncilConsult } from "./tools/council.consult.js";
+import { registerCouncilDiscuss } from "./tools/council.discuss.js";
 import { registerPersonaConsult } from "./tools/persona.consult.js";
 import { registerDefinePersonas } from "./tools/council.define_personas.js";
 import { createMcpToolRegistrar } from "./utils/mcpAdapter.js";
@@ -136,6 +138,13 @@ async function main() {
   await registerCouncilConsult(toolRegistrar, {
     inputSchema: councilConsultInputSchema,
     outputSchema: councilConsultOutputSchema
+  });
+  await registerCouncilDiscuss(toolRegistrar, {
+    config,
+    schemas: {
+      inputSchema: loadSchema("council.discuss.input.schema.json"),
+      outputSchema: loadSchema("council.discuss.output.schema.json")
+    }
   });
   await registerPersonaConsult(toolRegistrar, {
     inputSchema: personaConsultInputSchema,

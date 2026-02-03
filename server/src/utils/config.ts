@@ -15,6 +15,9 @@ export type AppConfig = {
   authEnabled: boolean;
   authToken?: string;
   secretsDir: string;
+  interactiveModeEnabled: boolean;
+  debateCycleLimit: number;
+  extendedDebateCycleLimit: number;
 };
 
 function parseBoolean(value: string | undefined, defaultValue: boolean): boolean {
@@ -30,6 +33,15 @@ function parsePort(value: string | undefined, defaultValue: number): number {
   const parsed = Number.parseInt(value, 10);
   if (Number.isNaN(parsed)) {
     throw new Error(`Invalid port: ${value}`);
+  }
+  return parsed;
+}
+
+function parsePositiveInt(value: string | undefined, defaultValue: number): number {
+  if (typeof value === "undefined" || value === "") return defaultValue;
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed) || parsed <= 0) {
+    throw new Error(`Invalid positive integer: ${value}`);
   }
   return parsed;
 }
@@ -117,6 +129,14 @@ export function validateConfig(config: AppConfig): void {
 
   ensureDirectoryExists(config.workspaceDir, "WORKSPACE_DIR", errors);
 
+  if (config.debateCycleLimit <= 0) {
+    errors.push("COUNCIL_DEBATE_CYCLE_LIMIT must be greater than 0");
+  }
+
+  if (config.extendedDebateCycleLimit < config.debateCycleLimit) {
+    errors.push("COUNCIL_EXTENDED_DEBATE_CYCLE_LIMIT must be >= COUNCIL_DEBATE_CYCLE_LIMIT");
+  }
+
   if (errors.length > 0) {
     throw new Error(errors.join("; "));
   }
@@ -175,7 +195,10 @@ export function loadConfig(options: { exitOnError?: boolean; logger?: AppLogger 
       certDir: defaultCertDir,
       authEnabled: parseBoolean(process.env.AUTH_ENABLED, false),
       authToken,
-      secretsDir
+      secretsDir,
+      interactiveModeEnabled: parseBoolean(process.env.COUNCIL_INTERACTIVE_ENABLED, true),
+      debateCycleLimit: parsePositiveInt(process.env.COUNCIL_DEBATE_CYCLE_LIMIT, 10),
+      extendedDebateCycleLimit: parsePositiveInt(process.env.COUNCIL_EXTENDED_DEBATE_CYCLE_LIMIT, 20)
     };
 
     validateConfig(config);
@@ -192,7 +215,10 @@ export function loadConfig(options: { exitOnError?: boolean; logger?: AppLogger 
         workspaceDir: config.workspaceDir,
         certDir: config.certDir,
         authEnabled: config.authEnabled,
-        secretsDir: config.secretsDir
+        secretsDir: config.secretsDir,
+        interactiveModeEnabled: config.interactiveModeEnabled,
+        debateCycleLimit: config.debateCycleLimit,
+        extendedDebateCycleLimit: config.extendedDebateCycleLimit
       },
       "Configuration loaded"
     );

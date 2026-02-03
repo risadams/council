@@ -22,8 +22,10 @@ import process from "process";
 import { fileURLToPath } from "url";
 import { getLogConfig, getRootLogger } from "./utils/logger.js";
 import { loadConfig } from "./utils/config.js";
+import { loadSchema } from "./utils/schemaLoader.js";
 import { HealthChecker } from "./utils/healthCheck.js";
 import { registerCouncilConsult } from "./tools/council.consult.js";
+import { registerCouncilDiscuss } from "./tools/council.discuss.js";
 import { registerPersonaConsult } from "./tools/persona.consult.js";
 import { registerDefinePersonas } from "./tools/council.define_personas.js";
 import { ToolDefinition, ToolRegistrar } from "./utils/mcpAdapter.js";
@@ -88,6 +90,13 @@ async function startServer() {
 
   // Register all tools into our in-process registry
   await registerCouncilConsult(registrar);
+  await registerCouncilDiscuss(registrar, {
+    config,
+    schemas: {
+      inputSchema: loadSchema("council.discuss.input.schema.json"),
+      outputSchema: loadSchema("council.discuss.output.schema.json")
+    }
+  });
   await registerPersonaConsult(registrar);
   await registerDefinePersonas(registrar);
 
