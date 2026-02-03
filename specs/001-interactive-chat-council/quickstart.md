@@ -140,7 +140,7 @@ User: "Scalability - we're hitting limits with the monolith."
 **Step 2: Debate begins with competing views**
 ```
 [Debate Cycle 1]
-Senior Architect: "Microservices is overcomplicited for 8 engineers. 
+Senior Architect: "Microservices is overcomplicated for 8 engineers. 
                    You'll spend more time on distributed systems 
                    than on scaling the core product."
 

@@ -26,7 +26,17 @@ export class SessionStore {
   deleteSession(sessionId: string): void {
     this.sessions.delete(sessionId);
   }
-
+  /**
+   * Upsert a session.
+   * - If state.sessionId is provided, the session will be stored/overwritten under that ID.
+   * - If state.sessionId is missing, a new ID will be generated.
+   */
+  saveSession(state: SessionState): SessionState {
+    const sessionId = state.sessionId ?? randomUUID();
+    const session: SessionState = { ...state, sessionId };
+    this.sessions.set(sessionId, session);
+    return session;
+  }
   clearAll(): void {
     this.sessions.clear();
   }

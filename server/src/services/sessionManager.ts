@@ -51,7 +51,9 @@ export class SessionManager {
       updatedAt: new Date().toISOString()
     }));
   }
-
+  setSessionStatus(sessionId: string, status: SessionStatus): SessionState | undefined {
+    return this.setStatus(sessionId, status);
+  }
   addParticipant(sessionId: string, participant: Participant): SessionState | undefined {
     return this.store.updateSession(sessionId, (current) => ({
       ...current,

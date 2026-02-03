@@ -86,7 +86,7 @@ export function createSkipAssumption(question: ClarificationQuestion): string {
 }
 
 export function isSkipCommand(answerText: string): boolean {
-  return /skip question/i.test(answerText.trim());
+  return /^\s*(skip|defer)(\s+question)?\s*$/i.test(answerText);
 }
 
 export function createSystemParticipant(): Participant {

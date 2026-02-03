@@ -30,7 +30,7 @@ describe("Clarification Skip/Defer Handling", () => {
 
     it("should handle whitespace variations", () => {
       expect(isSkipCommand("  skip  ")).toBe(true);
-      expect(isSkipCommand("\\tdefer\\n")).toBe(true);
+      expect(isSkipCommand("\tdefer\n")).toBe(true);
     });
   });
 

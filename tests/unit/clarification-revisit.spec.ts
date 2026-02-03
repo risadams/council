@@ -169,7 +169,7 @@ describe("Clarification Revisit - skipped questions", () => {
       createdAt: new Date().toISOString()
     };
 
-    const session: SessionState = {
+    const state: SessionState = {
       sessionId,
       requestText: "Test",
       status: "completed",
