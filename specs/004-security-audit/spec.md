@@ -5,6 +5,16 @@
 **Status**: Draft  
 **Input**: User description: "Full security audit of code and dependencies. Ensure npm packages, base image, and codebase have no critical or high CVE vulnerabilities. Identify and fix as many issues as possible. Document unavoidable vulnerabilities with impact analysis in docs."
 
+## Clarifications
+
+### Session 2026-02-11
+
+- Q: Which vulnerability scanner tools should be used? → A: npm audit (GitHub Advisory Database for npm packages)
+- Q: How should Docker base image OS-level CVEs be handled? → A: Document OS CVEs in node:25-bookworm-slim as-is, accept as unfixable with impact analysis
+- Q: How should conflicting CVE severity reports be handled? → A: Use highest severity reported across all sources
+- Q: What format should vulnerability reports and audit evidence use? → A: Markdown documentation (docs/SECURITY_AUDIT.md) for compliance + GitHub Issues for workflow tracking
+- Q: What criteria define an "unfixable" vulnerability? → A: Multi-criteria: (A) no patch available + no alternative package + cannot mitigate in code, OR (B) fix requires breaking API changes (risk accepted), reviewed in next maintenance cycle per (D)
+
 ## User Scenarios & Testing
 
 ### User Story 1 - Identify All CVE Vulnerabilities in Dependencies (Priority: P1)
@@ -78,22 +88,23 @@ CI/CD pipelines and deployment teams need confirmation that all critical and hig
 - What if fixing one CVE requires upgrading a package that introduces breaking changes to our API?
 - What if the base Node.js image contains OS-level CVEs beyond our control?
 - How are pre-release or RC (release candidate) versions evaluated for vulnerability fixes?
+- What happens when different vulnerability data sources report conflicting severity levels for the same CVE? (Answer per clarification: use highest severity)
 
 ## Requirements
 
 ### Functional Requirements
 
 - **FR-001**: System MUST identify all CVE vulnerabilities in npm packages (both direct and transitive dependencies) using industry-standard auditing tools
-- **FR-002**: System MUST identify all CVE vulnerabilities in the Docker base image (node:25-bookworm-slim) and system-level packages
-- **FR-003**: System MUST categorize identified vulnerabilities by severity level (critical, high, medium, low) per CVE reporting standards
+- **FR-002**: System MUST identify all CVE vulnerabilities in the Docker base image (node:25-bookworm-slim) and system-level packages; identified OS-level CVEs are documented but not remediated (per clarification)
+- **FR-003**: System MUST categorize identified vulnerabilities by severity level (critical, high, medium, low) per CVE reporting standards; when multiple sources report conflicting severity for the same CVE, use the highest reported severity
 - **FR-004**: System MUST provide clear remediation paths for each vulnerability, including available patch versions or alternative packages
 - **FR-005**: System MUST apply patches and version updates to resolve all critical and high-severity vulnerabilities without breaking existing functionality
 - **FR-006**: System MUST verify that all tests pass after each vulnerability remediation to ensure no regressions
 - **FR-007**: System MUST verify that Docker build succeeds after all remediations
-- **FR-008**: System MUST track which vulnerabilities could not be fixed and document justification for each
-- **FR-009**: System MUST generate a comprehensive vulnerability report including original state, actions taken, and final clean state
-- **FR-010**: System MUST create a persistent documentation file (in docs/) listing any accepted/unfixable vulnerabilities with impact analysis
-- **FR-011**: System MUST document the audit methodology, tools used, and date of audit for compliance purposes
+- **FR-008**: System MUST track which vulnerabilities could not be fixed and document justification for each; unfixable classification follows multi-criteria: (1) no patch available AND no suitable alternative AND cannot mitigate in code, OR (2) fix would require breaking API changes (risk accepted); unfixable items reviewed in next maintenance cycle
+- **FR-009**: System MUST generate a comprehensive vulnerability report including original state, actions taken, and final clean state; report stored as docs/SECURITY_AUDIT.md in markdown format with compliance-friendly sections (scan date/time, tools, summary stats, detailed findings, remediation actions)
+- **FR-010**: System MUST create a persistent documentation file (in docs/) listing any accepted/unfixable vulnerabilities with impact analysis; document must include: CVE ID, affected package, severity, reason for unfixable status (no patch/alternative/fix breaks API), mitigation strategies if applicable, and link to related GitHub Issue for tracking across maintenance cycles
+- **FR-011**: System MUST document the audit methodology, tools used, and date of audit for compliance purposes in docs/SECURITY_AUDIT.md; GitHub Issues created and linked for tracking each vulnerability and its resolution
 - **FR-012**: System MUST verify that vulnerable code patterns are not present (e.g., hardcoded credentials, insecure cryptography, unsafe deserialization)
 
 ### Key Entities
@@ -110,8 +121,8 @@ CI/CD pipelines and deployment teams need confirmation that all critical and hig
 
 - **SC-001**: Zero critical-severity CVEs identified in npm dependency tree after audit completion
 - **SC-002**: Zero high-severity CVEs identified in npm dependency tree after audit completion
-- **SC-003**: Zero critical-severity CVEs identified in Docker image layers after audit completion
-- **SC-004**: Zero high-severity CVEs identified in Docker image layers after audit completion
+- **SC-003**: OS-level CVEs in node:25-bookworm-slim are identified and documented in docs/SECURITY_FINDINGS.md with impact analysis; upgrades to newer 25.* versions are evaluated but not required in this scope
+- **SC-004**: High-severity npm package vulnerabilities in Docker image are resolved; OS-level vulnerabilities are documented with justification
 - **SC-005**: 100% of remediable critical/high CVEs have known patches and are updated
 - **SC-006**: 207/207 tests pass after all security patches are applied (no regressions)
 - **SC-007**: Docker image builds successfully without warnings from security scanners
@@ -122,11 +133,12 @@ CI/CD pipelines and deployment teams need confirmation that all critical and hig
 
 ## Assumptions
 
-- npm audit and Trivy/Grype are available tools for vulnerability scanning
-- Docker base images are regularly updated by Docker Hub but may contain known OS vulnerabilities
+- npm audit (using GitHub Advisory Database) is the primary tool for scanning npm package vulnerabilities
+- Docker base image OS CVEs (node:25-bookworm-slim) are identified and documented; OS-level package remediation is deferred to future base image upgrades
+- Vulnerability scanner tools configured per clarification session 2026-02-11
 - Some dependencies may be locked to specific versions for compatibility - these will be evaluated for upgrade feasibility
 - The team accepts reasonable performance trade-offs when upgrading security-critical packages
-- "Unfixable" vulnerabilities are those with no available patch, no suitable alternative, and architectural constraints preventing workaround
+- **"Unfixable" vulnerabilities are those meeting: (A) no available patch + no suitable alternative + cannot mitigate in code, OR (B) fix would require breaking API changes (risk accepted); these are documented with impact analysis and reviewed in next maintenance cycle (rolling review per clarification) (includes OS-level CVEs)
 - Current test suite (207 tests) represents the functional requirements that cannot be broken by security patches
 
 ## Out of Scope
