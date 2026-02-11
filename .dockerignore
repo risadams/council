@@ -3,6 +3,8 @@ npm-debug.log
 dist
 .git
 .gitignore
+Dockerfile*
+.dockerignore
 .vscode
 .council
 .specify
@@ -12,5 +14,6 @@ specs
 docs
 coverage
 .env*
+*.log*
 WORKBOOK_AI_BoA-v1.pdf
 .DS_Store
