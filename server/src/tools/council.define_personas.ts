@@ -33,7 +33,19 @@ export async function registerDefinePersonas(server: ToolRegistrar, schemas?: Sc
           return toError("validation", "Invalid input", errors);
         }
 
-        const incomingOverrides = ((input as any).overrides ?? {}) as Overrides;
+        let incomingOverrides = ((input as any).overrides ?? {}) as Overrides;
+        
+        // Normalize input field names (focus, soul, constraints) to internal names (customFocus, customSoul, customConstraints)
+        incomingOverrides = Object.entries(incomingOverrides).reduce((acc, [personaName, override]) => {
+          acc[personaName] = {
+            enabled: (override as any).enabled ?? true,
+            customSoul: override.customSoul ?? (override as any).soul,
+            customFocus: override.customFocus ?? (override as any).focus,
+            customConstraints: override.customConstraints ?? (override as any).constraints
+          };
+          return acc;
+        }, {} as Overrides);
+        
         const existingOverrides = readOverrides();
         const mergedOverrides = { ...existingOverrides, ...incomingOverrides };
 

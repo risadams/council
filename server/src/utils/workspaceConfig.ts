@@ -13,7 +13,8 @@ export function validateOverrides(overrides: Overrides, allowedPersonas: string[
       throw new Error(`Invalid persona override: ${name}`);
     }
     const keys = Object.keys(override ?? {});
-    const invalidKey = keys.find((k) => !["enabled", "customSoul", "customFocus", "customConstraints"].includes(k));
+    // Accept both public field names (soul, focus, constraints) and internal names (customSoul, customFocus, customConstraints)
+    const invalidKey = keys.find((k) => !["enabled", "soul", "focus", "constraints", "customSoul", "customFocus", "customConstraints"].includes(k));
     if (invalidKey) {
       throw new Error(`Invalid override field for ${name}: ${invalidKey}`);
     }

@@ -54,7 +54,7 @@ export function startDiscussion(options: {
     const draft = generatePersonaDraft(contract, consultInput);
     
     // Generate substantive debate content from the draft
-    let content = `**${persona.name}:**\n\n`;
+    let content = `${persona.name}: `;
     
     // Add key advice points (skip the first generic soul statement)
     const advicePoints = draft.advice.slice(1, 4); // Take 2-3 specific points

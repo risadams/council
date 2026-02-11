@@ -94,6 +94,12 @@ export class DockerRegistration {
             description: "Return current persona contracts and apply validated workspace-level overrides.",
             inputSchema: {} as unknown,
             outputSchema: {} as unknown
+          },
+          {
+            name: "council_discuss",
+            description: "Interactive council session with clarifications, debate cycles, and consolidated final answer.",
+            inputSchema: {} as unknown,
+            outputSchema: {} as unknown
           }
         ],
         healthCheckUrl: `${protocol}://localhost:${port}/health`,

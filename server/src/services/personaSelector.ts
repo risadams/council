@@ -30,7 +30,8 @@ export function selectPersonasForRequest(
     }
   });
 
-  if (selected.size === 0) {
+  const usedDefaults = selected.size === 0;
+  if (usedDefaults) {
     DEFAULT_PERSONAS.forEach((persona) => selected.add(persona));
   }
 
@@ -40,7 +41,7 @@ export function selectPersonasForRequest(
 
   return {
     selected: filtered,
-    reason: filtered.length === 0 ? "No matching personas; fallback to defaults" : "Matched personas to request keywords",
+    reason: usedDefaults ? "Using defaults" : "Matched personas to request keywords",
     userOverride: false
   };
 }

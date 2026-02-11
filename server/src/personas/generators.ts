@@ -159,7 +159,7 @@ export function generatePersonaDraft(persona: PersonaContract, input: ConsultInp
 
   return {
     persona: persona.name,
-    summary: `${persona.name} perspective on: ${input.user_problem}`,
+    summary: `${persona.name}: ${input.user_problem}`,
     advice: clipByDepth(advice, input.depth),
     assumptions: clipByDepth(assumptions, input.depth),
     questions: clipByDepth(questions, input.depth),

@@ -52,6 +52,11 @@ export class SessionManager {
     }));
   }
   setSessionStatus(sessionId: string, status: SessionStatus): SessionState | undefined {
+    const validStatuses: SessionStatus[] = ['created', 'clarifying', 'debating', 'completed'];
+    if (!validStatuses.includes(status)) {
+      const session = this.store.getSession(sessionId);
+      return session; // Return current session without changes on invalid status
+    }
     return this.setStatus(sessionId, status);
   }
   addParticipant(sessionId: string, participant: Participant): SessionState | undefined {
@@ -62,7 +67,29 @@ export class SessionManager {
     }));
   }
 
-  addMessageTurn(sessionId: string, turn: MessageTurn): SessionState | undefined {
+  addMessageTurn(sessionId: string, senderOrTurn?: Participant | MessageTurn, messageTypeOrUndefined?: string, content?: string): SessionState | undefined {
+    let turn: MessageTurn;
+    
+    // Support both old API (sender, messageType, content) and new API (turn object)
+    if (senderOrTurn && 'turnId' in senderOrTurn) {
+      // New API: full MessageTurn object
+      turn = senderOrTurn as MessageTurn;
+    } else if (senderOrTurn) {
+      // Old API: (sender, messageType, content)
+      const sender = senderOrTurn as Participant;
+      const session = this.store.getSession(sessionId);
+      if (!session) return undefined;
+      turn = createMessageTurn({
+        sessionId,
+        sender,
+        messageType: (messageTypeOrUndefined as any) || 'answer',
+        content: content || '',
+        sequenceNumber: session.messageTurns.length + 1
+      });
+    } else {
+      return undefined;
+    }
+    
     return this.store.updateSession(sessionId, (current) => ({
       ...current,
       messageTurns: [...current.messageTurns, turn],
