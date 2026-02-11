@@ -1,0 +1,354 @@
+clarity-council-mcp@0.1.0 A:\council\server
+Γö£ΓöÇΓö¼ @modelcontextprotocol/sdk@1.26.0
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @cfworker/json-schema@^4.1.1
+Γöé Γö£ΓöÇΓö¼ @hono/node-server@1.19.9
+Γöé Γöé ΓööΓöÇΓöÇ hono@4.11.9 deduped
+Γöé Γö£ΓöÇΓö¼ ajv-formats@3.0.1
+Γöé Γöé ΓööΓöÇΓöÇ ajv@8.17.1 deduped
+Γöé Γö£ΓöÇΓöÇ ajv@8.17.1 deduped
+Γöé Γö£ΓöÇΓöÇ content-type@1.0.5
+Γöé Γö£ΓöÇΓö¼ cors@2.8.6
+Γöé Γöé Γö£ΓöÇΓöÇ object-assign@4.1.1
+Γöé Γöé ΓööΓöÇΓöÇ vary@1.1.2
+Γöé Γö£ΓöÇΓö¼ cross-spawn@7.0.6
+Γöé Γöé Γö£ΓöÇΓöÇ path-key@3.1.1
+Γöé Γöé Γö£ΓöÇΓö¼ shebang-command@2.0.0
+Γöé Γöé Γöé ΓööΓöÇΓöÇ shebang-regex@3.0.0
+Γöé Γöé ΓööΓöÇΓö¼ which@2.0.2
+Γöé Γöé   ΓööΓöÇΓöÇ isexe@2.0.0
+Γöé Γö£ΓöÇΓöÇ eventsource-parser@3.0.6
+Γöé Γö£ΓöÇΓö¼ eventsource@3.0.7
+Γöé Γöé ΓööΓöÇΓöÇ eventsource-parser@3.0.6 deduped
+Γöé Γö£ΓöÇΓö¼ express-rate-limit@8.2.1
+Γöé Γöé Γö£ΓöÇΓöÇ express@5.2.1 deduped
+Γöé Γöé ΓööΓöÇΓöÇ ip-address@10.0.1
+Γöé Γö£ΓöÇΓö¼ express@5.2.1
+Γöé Γöé Γö£ΓöÇΓö¼ accepts@2.0.0
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ mime-types@3.0.2 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ negotiator@1.0.0
+Γöé Γöé Γö£ΓöÇΓö¼ body-parser@2.2.2
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ bytes@3.1.2 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ content-type@1.0.5 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ debug@4.4.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ http-errors@2.0.1 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ iconv-lite@0.7.2 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ on-finished@2.4.1 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ qs@6.14.1 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ raw-body@3.0.2 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ type-is@2.0.1 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ content-disposition@1.0.1
+Γöé Γöé Γö£ΓöÇΓöÇ content-type@1.0.5 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ cookie-signature@1.2.2
+Γöé Γöé Γö£ΓöÇΓöÇ cookie@0.7.2
+Γöé Γöé Γö£ΓöÇΓö¼ debug@4.4.3
+Γöé Γöé Γöé ΓööΓöÇΓöÇ ms@2.1.3
+Γöé Γöé Γö£ΓöÇΓöÇ depd@2.0.0
+Γöé Γöé Γö£ΓöÇΓöÇ encodeurl@2.0.0
+Γöé Γöé Γö£ΓöÇΓöÇ escape-html@1.0.3
+Γöé Γöé Γö£ΓöÇΓöÇ etag@1.8.1
+Γöé Γöé Γö£ΓöÇΓö¼ finalhandler@2.1.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ debug@4.4.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ encodeurl@2.0.0 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ escape-html@1.0.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ on-finished@2.4.1 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ parseurl@1.3.3 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ statuses@2.0.2 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ fresh@2.0.0
+Γöé Γöé Γö£ΓöÇΓö¼ http-errors@2.0.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ depd@2.0.0 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ inherits@2.0.4
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ setprototypeof@1.2.0
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ statuses@2.0.2 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ toidentifier@1.0.1
+Γöé Γöé Γö£ΓöÇΓöÇ merge-descriptors@2.0.0
+Γöé Γöé Γö£ΓöÇΓö¼ mime-types@3.0.2
+Γöé Γöé Γöé ΓööΓöÇΓöÇ mime-db@1.54.0
+Γöé Γöé Γö£ΓöÇΓö¼ on-finished@2.4.1
+Γöé Γöé Γöé ΓööΓöÇΓöÇ ee-first@1.1.1
+Γöé Γöé Γö£ΓöÇΓö¼ once@1.4.0
+Γöé Γöé Γöé ΓööΓöÇΓöÇ wrappy@1.0.2
+Γöé Γöé Γö£ΓöÇΓöÇ parseurl@1.3.3
+Γöé Γöé Γö£ΓöÇΓö¼ proxy-addr@2.0.7
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ forwarded@0.2.0
+Γöé Γöé Γöé ΓööΓöÇΓöÇ ipaddr.js@1.9.1
+Γöé Γöé Γö£ΓöÇΓö¼ qs@6.14.1
+Γöé Γöé Γöé ΓööΓöÇΓö¼ side-channel@1.1.0
+Γöé Γöé Γöé   Γö£ΓöÇΓöÇ es-errors@1.3.0
+Γöé Γöé Γöé   Γö£ΓöÇΓöÇ object-inspect@1.13.4
+Γöé Γöé Γöé   Γö£ΓöÇΓö¼ side-channel-list@1.0.0
+Γöé Γöé Γöé   Γöé Γö£ΓöÇΓöÇ es-errors@1.3.0 deduped
+Γöé Γöé Γöé   Γöé ΓööΓöÇΓöÇ object-inspect@1.13.4 deduped
+Γöé Γöé Γöé   Γö£ΓöÇΓö¼ side-channel-map@1.0.1
+Γöé Γöé Γöé   Γöé Γö£ΓöÇΓö¼ call-bound@1.0.4
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓö¼ call-bind-apply-helpers@1.0.2
+Γöé Γöé Γöé   Γöé Γöé Γöé Γö£ΓöÇΓöÇ es-errors@1.3.0 deduped
+Γöé Γöé Γöé   Γöé Γöé Γöé ΓööΓöÇΓöÇ function-bind@1.1.2 deduped
+Γöé Γöé Γöé   Γöé Γöé ΓööΓöÇΓöÇ get-intrinsic@1.3.0 deduped
+Γöé Γöé Γöé   Γöé Γö£ΓöÇΓöÇ es-errors@1.3.0 deduped
+Γöé Γöé Γöé   Γöé Γö£ΓöÇΓö¼ get-intrinsic@1.3.0
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓöÇ call-bind-apply-helpers@1.0.2 deduped
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓöÇ es-define-property@1.0.1
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓöÇ es-errors@1.3.0 deduped
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓö¼ es-object-atoms@1.1.1
+Γöé Γöé Γöé   Γöé Γöé Γöé ΓööΓöÇΓöÇ es-errors@1.3.0 deduped
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓöÇ function-bind@1.1.2
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓö¼ get-proto@1.0.1
+Γöé Γöé Γöé   Γöé Γöé Γöé Γö£ΓöÇΓö¼ dunder-proto@1.0.1
+Γöé Γöé Γöé   Γöé Γöé Γöé Γöé Γö£ΓöÇΓöÇ call-bind-apply-helpers@1.0.2 deduped
+Γöé Γöé Γöé   Γöé Γöé Γöé Γöé Γö£ΓöÇΓöÇ es-errors@1.3.0 deduped
+Γöé Γöé Γöé   Γöé Γöé Γöé Γöé ΓööΓöÇΓöÇ gopd@1.2.0 deduped
+Γöé Γöé Γöé   Γöé Γöé Γöé ΓööΓöÇΓöÇ es-object-atoms@1.1.1 deduped
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓöÇ gopd@1.2.0
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓöÇ has-symbols@1.1.0
+Γöé Γöé Γöé   Γöé Γöé Γö£ΓöÇΓö¼ hasown@2.0.2
+Γöé Γöé Γöé   Γöé Γöé Γöé ΓööΓöÇΓöÇ function-bind@1.1.2 deduped
+Γöé Γöé Γöé   Γöé Γöé ΓööΓöÇΓöÇ math-intrinsics@1.1.0
+Γöé Γöé Γöé   Γöé ΓööΓöÇΓöÇ object-inspect@1.13.4 deduped
+Γöé Γöé Γöé   ΓööΓöÇΓö¼ side-channel-weakmap@1.0.2
+Γöé Γöé Γöé     Γö£ΓöÇΓöÇ call-bound@1.0.4 deduped
+Γöé Γöé Γöé     Γö£ΓöÇΓöÇ es-errors@1.3.0 deduped
+Γöé Γöé Γöé     Γö£ΓöÇΓöÇ get-intrinsic@1.3.0 deduped
+Γöé Γöé Γöé     Γö£ΓöÇΓöÇ object-inspect@1.13.4 deduped
+Γöé Γöé Γöé     ΓööΓöÇΓöÇ side-channel-map@1.0.1 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ range-parser@1.2.1
+Γöé Γöé Γö£ΓöÇΓö¼ router@2.2.0
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ debug@4.4.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ depd@2.0.0 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ is-promise@4.0.0
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ parseurl@1.3.3 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ path-to-regexp@8.3.0
+Γöé Γöé Γö£ΓöÇΓö¼ send@1.2.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ debug@4.4.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ encodeurl@2.0.0 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ escape-html@1.0.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ etag@1.8.1 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ fresh@2.0.0 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ http-errors@2.0.1 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ mime-types@3.0.2 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ ms@2.1.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ on-finished@2.4.1 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ range-parser@1.2.1 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ statuses@2.0.2 deduped
+Γöé Γöé Γö£ΓöÇΓö¼ serve-static@2.2.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ encodeurl@2.0.0 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ escape-html@1.0.3 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ parseurl@1.3.3 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ send@1.2.1 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ statuses@2.0.2
+Γöé Γöé Γö£ΓöÇΓö¼ type-is@2.0.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ content-type@1.0.5 deduped
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ media-typer@1.1.0
+Γöé Γöé Γöé ΓööΓöÇΓöÇ mime-types@3.0.2 deduped
+Γöé Γöé ΓööΓöÇΓöÇ vary@1.1.2 deduped
+Γöé Γö£ΓöÇΓöÇ hono@4.11.9
+Γöé Γö£ΓöÇΓöÇ jose@6.1.3
+Γöé Γö£ΓöÇΓöÇ json-schema-typed@8.0.2
+Γöé Γö£ΓöÇΓöÇ pkce-challenge@5.0.1
+Γöé Γö£ΓöÇΓö¼ raw-body@3.0.2
+Γöé Γöé Γö£ΓöÇΓöÇ bytes@3.1.2
+Γöé Γöé Γö£ΓöÇΓöÇ http-errors@2.0.1 deduped
+Γöé Γöé Γö£ΓöÇΓö¼ iconv-lite@0.7.2
+Γöé Γöé Γöé ΓööΓöÇΓöÇ safer-buffer@2.1.2
+Γöé Γöé ΓööΓöÇΓöÇ unpipe@1.0.0
+Γöé Γö£ΓöÇΓö¼ zod-to-json-schema@3.25.1
+Γöé Γöé ΓööΓöÇΓöÇ zod@4.3.6 deduped
+Γöé ΓööΓöÇΓöÇ zod@4.3.6 deduped
+Γö£ΓöÇΓö¼ @types/node@25.2.3
+Γöé ΓööΓöÇΓöÇ undici-types@7.16.0
+Γö£ΓöÇΓö¼ ajv@8.17.1
+Γöé Γö£ΓöÇΓöÇ fast-deep-equal@3.1.3
+Γöé Γö£ΓöÇΓöÇ fast-uri@3.1.0
+Γöé Γö£ΓöÇΓöÇ json-schema-traverse@1.0.0
+Γöé ΓööΓöÇΓöÇ require-from-string@2.0.2
+Γö£ΓöÇΓö¼ chokidar@3.6.0
+Γöé Γö£ΓöÇΓö¼ anymatch@3.1.3
+Γöé Γöé Γö£ΓöÇΓöÇ normalize-path@3.0.0 deduped
+Γöé Γöé ΓööΓöÇΓöÇ picomatch@2.3.1
+Γöé Γö£ΓöÇΓö¼ braces@3.0.3
+Γöé Γöé ΓööΓöÇΓö¼ fill-range@7.1.1
+Γöé Γöé   ΓööΓöÇΓö¼ to-regex-range@5.0.1
+Γöé Γöé     ΓööΓöÇΓöÇ is-number@7.0.0
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY fsevents@~2.3.2
+Γöé Γö£ΓöÇΓö¼ glob-parent@5.1.2
+Γöé Γöé ΓööΓöÇΓöÇ is-glob@4.0.3 deduped
+Γöé Γö£ΓöÇΓö¼ is-binary-path@2.1.0
+Γöé Γöé ΓööΓöÇΓöÇ binary-extensions@2.3.0
+Γöé Γö£ΓöÇΓö¼ is-glob@4.0.3
+Γöé Γöé ΓööΓöÇΓöÇ is-extglob@2.1.1
+Γöé Γö£ΓöÇΓöÇ normalize-path@3.0.0
+Γöé ΓööΓöÇΓö¼ readdirp@3.6.0
+Γöé   ΓööΓöÇΓöÇ picomatch@2.3.1 deduped
+Γö£ΓöÇΓö¼ pino@10.3.1
+Γöé Γö£ΓöÇΓöÇ @pinojs/redact@0.4.0
+Γöé Γö£ΓöÇΓöÇ atomic-sleep@1.0.0
+Γöé Γö£ΓöÇΓöÇ on-exit-leak-free@2.1.2
+Γöé Γö£ΓöÇΓö¼ pino-abstract-transport@3.0.0
+Γöé Γöé ΓööΓöÇΓöÇ split2@4.2.0
+Γöé Γö£ΓöÇΓöÇ pino-std-serializers@7.1.0
+Γöé Γö£ΓöÇΓöÇ process-warning@5.0.0
+Γöé Γö£ΓöÇΓöÇ quick-format-unescaped@4.0.4
+Γöé Γö£ΓöÇΓöÇ real-require@0.2.0
+Γöé Γö£ΓöÇΓöÇ safe-stable-stringify@2.5.0
+Γöé Γö£ΓöÇΓö¼ sonic-boom@4.2.1
+Γöé Γöé ΓööΓöÇΓöÇ atomic-sleep@1.0.0 deduped
+Γöé ΓööΓöÇΓö¼ thread-stream@4.0.0
+Γöé   ΓööΓöÇΓöÇ real-require@0.2.0 deduped
+Γö£ΓöÇΓö¼ ts-node@10.9.2
+Γöé Γö£ΓöÇΓö¼ @cspotcode/source-map-support@0.8.1
+Γöé Γöé ΓööΓöÇΓö¼ @jridgewell/trace-mapping@0.3.9
+Γöé Γöé   Γö£ΓöÇΓöÇ @jridgewell/resolve-uri@3.1.2
+Γöé Γöé   ΓööΓöÇΓöÇ @jridgewell/sourcemap-codec@1.5.5 deduped
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @swc/core@>=1.2.50
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @swc/wasm@>=1.2.50
+Γöé Γö£ΓöÇΓöÇ @tsconfig/node10@1.0.12
+Γöé Γö£ΓöÇΓöÇ @tsconfig/node12@1.0.11
+Γöé Γö£ΓöÇΓöÇ @tsconfig/node14@1.0.3
+Γöé Γö£ΓöÇΓöÇ @tsconfig/node16@1.0.4
+Γöé Γö£ΓöÇΓöÇ @types/node@25.2.3 deduped
+Γöé Γö£ΓöÇΓö¼ acorn-walk@8.3.4
+Γöé Γöé ΓööΓöÇΓöÇ acorn@8.15.0 deduped
+Γöé Γö£ΓöÇΓöÇ acorn@8.15.0
+Γöé Γö£ΓöÇΓöÇ arg@4.1.3
+Γöé Γö£ΓöÇΓöÇ create-require@1.1.1
+Γöé Γö£ΓöÇΓöÇ diff@4.0.4
+Γöé Γö£ΓöÇΓöÇ make-error@1.3.6
+Γöé Γö£ΓöÇΓöÇ typescript@5.9.3 deduped
+Γöé Γö£ΓöÇΓöÇ v8-compile-cache-lib@3.0.1
+Γöé ΓööΓöÇΓöÇ yn@3.1.1
+Γö£ΓöÇΓöÇ typescript@5.9.3
+Γö£ΓöÇΓöÇ uuid@9.0.1
+Γö£ΓöÇΓö¼ vitest@4.0.18
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @edge-runtime/vm@*
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @opentelemetry/api@^1.9.0
+Γöé Γö£ΓöÇΓöÇ @types/node@25.2.3 deduped
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @vitest/browser-playwright@4.0.18
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @vitest/browser-preview@4.0.18
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @vitest/browser-webdriverio@4.0.18
+Γöé Γö£ΓöÇΓö¼ @vitest/expect@4.0.18
+Γöé Γöé Γö£ΓöÇΓöÇ @standard-schema/spec@1.1.0
+Γöé Γöé Γö£ΓöÇΓö¼ @types/chai@5.2.3
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ @types/deep-eql@4.0.2
+Γöé Γöé Γöé ΓööΓöÇΓöÇ assertion-error@2.0.1
+Γöé Γöé Γö£ΓöÇΓöÇ @vitest/spy@4.0.18 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ @vitest/utils@4.0.18 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ chai@6.2.2
+Γöé Γöé ΓööΓöÇΓöÇ tinyrainbow@3.0.3 deduped
+Γöé Γö£ΓöÇΓö¼ @vitest/mocker@4.0.18
+Γöé Γöé Γö£ΓöÇΓöÇ @vitest/spy@4.0.18 deduped
+Γöé Γöé Γö£ΓöÇΓö¼ estree-walker@3.0.3
+Γöé Γöé Γöé ΓööΓöÇΓöÇ @types/estree@1.0.8
+Γöé Γöé Γö£ΓöÇΓöÇ magic-string@0.30.21 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY msw@^2.4.9
+Γöé Γöé ΓööΓöÇΓöÇ vite@6.4.1 deduped
+Γöé Γö£ΓöÇΓö¼ @vitest/pretty-format@4.0.18
+Γöé Γöé ΓööΓöÇΓöÇ tinyrainbow@3.0.3 deduped
+Γöé Γö£ΓöÇΓö¼ @vitest/runner@4.0.18
+Γöé Γöé Γö£ΓöÇΓöÇ @vitest/utils@4.0.18 deduped
+Γöé Γöé ΓööΓöÇΓöÇ pathe@2.0.3 deduped
+Γöé Γö£ΓöÇΓö¼ @vitest/snapshot@4.0.18
+Γöé Γöé Γö£ΓöÇΓöÇ @vitest/pretty-format@4.0.18 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ magic-string@0.30.21 deduped
+Γöé Γöé ΓööΓöÇΓöÇ pathe@2.0.3 deduped
+Γöé Γö£ΓöÇΓöÇ @vitest/spy@4.0.18
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @vitest/ui@4.0.18
+Γöé Γö£ΓöÇΓö¼ @vitest/utils@4.0.18
+Γöé Γöé Γö£ΓöÇΓöÇ @vitest/pretty-format@4.0.18 deduped
+Γöé Γöé ΓööΓöÇΓöÇ tinyrainbow@3.0.3 deduped
+Γöé Γö£ΓöÇΓöÇ es-module-lexer@1.7.0
+Γöé Γö£ΓöÇΓöÇ expect-type@1.3.0
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY happy-dom@*
+Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY jsdom@*
+Γöé Γö£ΓöÇΓö¼ magic-string@0.30.21
+Γöé Γöé ΓööΓöÇΓöÇ @jridgewell/sourcemap-codec@1.5.5
+Γöé Γö£ΓöÇΓöÇ obug@2.1.1
+Γöé Γö£ΓöÇΓöÇ pathe@2.0.3
+Γöé Γö£ΓöÇΓöÇ picomatch@4.0.3
+Γöé Γö£ΓöÇΓöÇ std-env@3.10.0
+Γöé Γö£ΓöÇΓöÇ tinybench@2.9.0
+Γöé Γö£ΓöÇΓöÇ tinyexec@1.0.2
+Γöé Γö£ΓöÇΓö¼ tinyglobby@0.2.15
+Γöé Γöé Γö£ΓöÇΓö¼ fdir@6.5.0
+Γöé Γöé Γöé ΓööΓöÇΓöÇ picomatch@4.0.3 deduped
+Γöé Γöé ΓööΓöÇΓöÇ picomatch@4.0.3
+Γöé Γö£ΓöÇΓöÇ tinyrainbow@3.0.3
+Γöé Γö£ΓöÇΓö¼ vite@6.4.1
+Γöé Γöé Γö£ΓöÇΓöÇ @types/node@25.2.3 deduped
+Γöé Γöé Γö£ΓöÇΓö¼ esbuild@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/aix-ppc64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/android-arm@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/android-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/android-x64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/darwin-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/darwin-x64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/freebsd-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/freebsd-x64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-arm@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-ia32@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-loong64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-mips64el@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-ppc64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-riscv64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-s390x@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/linux-x64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/netbsd-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/netbsd-x64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/openbsd-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/openbsd-x64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/openharmony-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/sunos-x64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/win32-arm64@0.25.12
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @esbuild/win32-ia32@0.25.12
+Γöé Γöé Γöé ΓööΓöÇΓöÇ @esbuild/win32-x64@0.25.12
+Γöé Γöé Γö£ΓöÇΓö¼ fdir@6.5.0
+Γöé Γöé Γöé ΓööΓöÇΓöÇ picomatch@4.0.3 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY fsevents@~2.3.3
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY jiti@>=1.21.0
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY less@*
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY lightningcss@^1.21.0
+Γöé Γöé Γö£ΓöÇΓöÇ picomatch@4.0.3
+Γöé Γöé Γö£ΓöÇΓö¼ postcss@8.5.6
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ nanoid@3.3.11
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ picocolors@1.1.1
+Γöé Γöé Γöé ΓööΓöÇΓöÇ source-map-js@1.2.1
+Γöé Γöé Γö£ΓöÇΓö¼ rollup@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-android-arm-eabi@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-android-arm64@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-darwin-arm64@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-darwin-x64@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-freebsd-arm64@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-freebsd-x64@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-arm-gnueabihf@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-arm-musleabihf@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-arm64-gnu@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-arm64-musl@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-loong64-gnu@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-loong64-musl@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-ppc64-gnu@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-ppc64-musl@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-riscv64-gnu@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-riscv64-musl@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-s390x-gnu@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-x64-gnu@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-linux-x64-musl@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-openbsd-x64@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-openharmony-arm64@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-win32-arm64-msvc@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY @rollup/rollup-win32-ia32-msvc@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ @rollup/rollup-win32-x64-gnu@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ @rollup/rollup-win32-x64-msvc@4.57.1
+Γöé Γöé Γöé Γö£ΓöÇΓöÇ @types/estree@1.0.8 deduped
+Γöé Γöé Γöé ΓööΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY fsevents@~2.3.2
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY sass-embedded@*
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY sass@*
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY stylus@*
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY sugarss@*
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY terser@^5.16.0
+Γöé Γöé Γö£ΓöÇΓöÇ tinyglobby@0.2.15 deduped
+Γöé Γöé Γö£ΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY tsx@^4.8.1
+Γöé Γöé ΓööΓöÇΓöÇ UNMET OPTIONAL DEPENDENCY yaml@^2.4.2
+Γöé ΓööΓöÇΓö¼ why-is-node-running@2.3.0
+Γöé   Γö£ΓöÇΓöÇ siginfo@2.0.0
+Γöé   ΓööΓöÇΓöÇ stackback@0.0.2
+ΓööΓöÇΓöÇ zod@4.3.6
+

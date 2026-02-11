@@ -1,393 +1,195 @@
-# Security Audit Task Checklist & Tracking
+# Tasks: 004-Security-Audit
 
-**Feature**: 004-Security-Audit  
-**Branch**: `004-security-audit`  
-**Status**: Ready for execution  
-**Created**: February 11, 2026  
-**Updated**: [To be updated during execution]
+**Input**: Design documents from `/specs/004-security-audit/`
+**Prerequisites**: plan.md, spec.md, quickstart.md (available), data-model.md (not present), research.md (not present), contracts/ (empty)
 
-This checklist tracks concrete tasks during execution. Check off items as they are completed.
+**Tests**: No new tests requested. Use existing `npm test` suite for verification per spec.md.
 
----
+**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
-## PHASE 1: DISCOVERY
+## Format: `[ID] [P?] [Story] Description`
 
-### Subtask 1.1: Run Initial npm Audit Scan
+- **[P]**: Can run in parallel (different files, no dependencies)
+- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
+- Include exact file paths in descriptions
 
-- [ ] **1.1.1**: Navigate to `a:\council\server`
-- [ ] **1.1.2**: Run `npm audit --json` and save to `audit-initial.json`
-- [ ] **1.1.3**: Review human-readable output of `npm audit`
-- [ ] **1.1.4**: Count and categorize CVEs by severity
-  - [ ] Critical: ____ (count)
-  - [ ] High: ____ (count)
-  - [ ] Medium: ____ (count)
-  - [ ] Low: ____ (count)
-- [ ] **1.1.5**: Identify all transitive dependency CVEs
-- [ ] **1.1.6**: Document any packages already at latest version (unfixable by update)
-- [ ] **1.1.7**: Save audit report for comparison later
+## Phase 1: Setup (Shared Infrastructure)
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+**Purpose**: Project initialization and basic audit structure
+
+- [x] T001 Create audit artifacts index in specs/004-security-audit/artifacts/README.md
+- [x] T002 Create audit tracking log in specs/004-security-audit/audit-log.md
+- [x] T003 [P] Create GitHub issue tracker log in specs/004-security-audit/issue-links.md
 
 ---
 
-### Subtask 1.2: Document Node.js Base Image CVEs
+## Phase 2: Foundational (Blocking Prerequisites)
 
-- [ ] **1.2.1**: Query Docker Hub for node:25-bookworm-slim digest
-- [ ] **1.2.2**: Run: `docker inspect node:25-bookworm-slim --format='{{.RepoDigests}}'`
-- [ ] **1.2.3**: Record base image digest: ___________________________
-- [ ] **1.2.4**: Research known CVEs in node:25-bookworm-slim:
-  - [ ] Check Docker Hub release notes
-  - [ ] Check Debian security advisories (base layer)
-- [ ] **1.2.5**: List identified OS-level CVEs:
-  - [ ] CVE ID: ____ | Severity: ____ | Affected Pkg: ____
-  - [ ] CVE ID: ____ | Severity: ____ | Affected Pkg: ____
-  - [ ] [Additional rows as needed]
-- [ ] **1.2.6**: Confirm decision: OS CVEs will be documented but NOT remediated (per clarification)
-- [ ] **1.2.7**: Plan for monitoring future node:25-* versions
+**Purpose**: Baseline evidence required before any user story work
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+- [x] T004 Capture baseline test results in specs/004-security-audit/baseline-test-results.md
+- [x] T005 Capture dependency tree snapshot in specs/004-security-audit/dependency-tree.txt
+
+**Checkpoint**: Foundation ready - user story implementation can now begin
 
 ---
 
-### Subtask 1.3: Generate Initial Vulnerability Inventory Report
+## Phase 3: User Story 1 - Identify All CVE Vulnerabilities in Dependencies (Priority: P1) 🎯 MVP
 
-- [ ] **1.3.1**: Consolidate findings from Tasks 1.1 and 1.2
-- [ ] **1.3.2**: Create temporary inventory summary:
-  - [ ] Total packages scanned: ____
-  - [ ] Total npm CVEs: ____
-  - [ ] Total OS CVEs: ____
-- [ ] **1.3.3**: List packages with multiple vulnerabilities:
-  - [ ] Package: ____ | CVE Count: ____
-  - [ ] Package: ____ | CVE Count: ____
-- [ ] **1.3.4**: Identify which CVEs are critical/high priority
-- [ ] **1.3.5**: Flag transitive dependencies requiring attention
-- [ ] **1.3.6**: Save inventory for Phase 2 remediation planning
+**Goal**: Discover all npm and base-image CVEs with severity classification
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+**Independent Test**: Run npm audit and base image review, then confirm discovery summary is complete and consistent with outputs.
 
-**PHASE 1 COMPLETE**: [ ] Yes - Ready to proceed to Phase 2
+### Implementation for User Story 1
+
+- [x] T006 [P] [US1] Save npm audit JSON output to specs/004-security-audit/audit-initial.json
+- [x] T007 [P] [US1] Save human-readable npm audit output to specs/004-security-audit/audit-initial.txt
+- [x] T008 [P] [US1] Record base image digest and OS CVEs in specs/004-security-audit/os-cve-inventory.md
+- [x] T009 [US1] Summarize CVE counts in specs/004-security-audit/discovery-summary.md
+- [x] T010 [US1] Update specs/004-security-audit/audit-log.md with discovery totals and notes
+
+**Checkpoint**: User Story 1 is complete and independently verifiable
 
 ---
 
-## PHASE 2: REMEDIATION
+## Phase 4: User Story 2 - Prioritize and Fix Critical/High Vulnerabilities (Priority: P1)
 
-### Subtask 2.1: Analyze Remediation Paths
+**Goal**: Remediate all critical/high npm CVEs that are fixable without breaking behavior
 
-- [ ] **2.1.1**: For each critical CVE from Phase 1:
-  - [ ] CVE ID: ____ | Package: ____
-  - [ ] Current Version: ____ | Available Fix Version: ____
-  - [ ] Compatible? (Y/N): ____
-  - [ ] Required Code Changes: ____
-  - [ ] Alternative Package? (Y/N): ____ (if yes, name: ______)
-  - [ ] Decision: [ ] Update [ ] Alternative [ ] Unfixable
-- [ ] **2.1.2**: Repeat for each high-severity CVE
-- [ ] **2.1.3**: Identify any conflicting version requirements
-- [ ] **2.1.4**: Classify as "remediable" or "unfixable" for each CVE
-- [ ] **2.1.5**: Document any blocking issues
-- [ ] **2.1.6**: List unfixable CVEs with reason (will document in Phase 3)
+**Independent Test**: Package updates applied, build/test succeed, and audit-after-patches shows no remediable critical/high CVEs.
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+### Implementation for User Story 2
 
----
+- [x] T011 [US2] Draft remediation decisions in specs/004-security-audit/remediation-plan.md
+- [x] T012 [US2] Update vulnerable dependencies in server/package.json
+- [x] T013 [US2] Regenerate lockfile in server/package-lock.json after updates
+- [x] T014 [US2] Record update notes and conflicts in specs/004-security-audit/remediation-log.md
+- [x] T015 [P] [US2] Capture build output in specs/004-security-audit/build-after-patches.md
+- [x] T016 [P] [US2] Capture test results in specs/004-security-audit/test-results-after-patches.md
+- [x] T017 [P] [US2] Capture Docker rebuild results in specs/004-security-audit/docker-build-after-patches.md
+- [x] T018 [US2] Save post-remediation audit JSON to specs/004-security-audit/audit-after-patches.json
+- [x] T019 [US2] Update specs/004-security-audit/audit-log.md with remediation outcomes
 
-### Subtask 2.2: Apply Patches to package.json
-
-- [ ] **2.2.1**: Update package.json with first patch:
-  - [ ] Package: ____ | Old: ____ → New: ____
-- [ ] **2.2.2**: Run `npm install` to update package-lock.json
-- [ ] **2.2.3**: Check for npm install errors: [ ] None [ ] Conflicts (describe): ____
-- [ ] **2.2.4**: If conflicts, resolve using version ranges
-- [ ] **2.2.5**: Commit changes: `git add package*.json && git commit -m "..."`
-- [ ] **2.2.6**: Repeat 2.2.1-2.2.5 for each additional patch
-- [ ] **2.2.7**: Final commit summary of all patches applied
-
-**Patches Applied**:
-- [ ] ____ → ____ (Fixes CVE-____)
-- [ ] ____ → ____ (Fixes CVE-____)
-- [ ] ____ → ____ (Fixes CVE-____)
-- [ ] [Additional patches as needed]
-
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+**Checkpoint**: User Story 2 is complete and independently verifiable
 
 ---
 
-### Subtask 2.3: Run Test Suite for Regressions
+## Phase 5: User Story 3 - Document Unfixable Vulnerabilities with Impact Analysis (Priority: P2)
 
-- [ ] **2.3.1**: Build TypeScript: `npm run build:ts`
-  - [ ] Result: [ ] Success [ ] Failed (error: ______)
-- [ ] **2.3.2**: Run test suite: `npm test`
-  - [ ] Tests Passed: 207/207 [ ] Yes [ ] No (count: ____)
-- [ ] **2.3.3**: If tests failed, debug each failure:
-  - [ ] Test Name: ____ | Cause: [ ] Security patch [ ] Bug [ ] Other: ____
-  - [ ] Test Name: ____ | Cause: [ ] Security patch [ ] Bug [ ] Other: ____
-- [ ] **2.3.4**: For each "security patch incompatibility":
-  - [ ] Package: ____ | Version: ____ | Reason unfixable: ____
-  - [ ] Add to unfixable list (Phase 3)
-- [ ] **2.3.5**: Fix remaining test failures (if needed)
-- [ ] **2.3.6**: Confirm final result: 207/207 tests pass [ ] Yes
+**Goal**: Document unfixable npm and OS CVEs with justification and impact analysis
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+**Independent Test**: docs/SECURITY_FINDINGS.md lists all unfixable CVEs with reasons, impact, and issue links.
+
+### Implementation for User Story 3
+
+- [x] T020 [US3] Compile unfixable CVE analysis in specs/004-security-audit/unfixable-analysis.md
+- [x] T021 [US3] Draft compliance findings in docs/SECURITY_FINDINGS.md
+- [x] T022 [US3] Add mitigation and impact analysis to docs/SECURITY_FINDINGS.md
+- [x] T023 [P] [US3] Record GitHub issue URLs in specs/004-security-audit/issue-links.md
+- [x] T024 [US3] Update specs/004-security-audit/audit-log.md with documentation completion
+
+**Checkpoint**: User Story 3 is complete and independently verifiable
 
 ---
 
-### Subtask 2.4: Test Docker Build Process
+## Phase 6: User Story 4 - Verify Clean Security State Post-Remediation (Priority: P1)
 
-- [ ] **2.4.1**: Run: `cd a:\council && .\rebuild-docker.ps1`
-  - [ ] Result: [ ] Success [ ] Failed (error: ______)
-- [ ] **2.4.2**: Verify health check passes
-  - [ ] First attempt? [ ] Yes [ ] No (attempts: ____)
-- [ ] **2.4.3**: Verify server is responsive
-  - [ ] HTTP endpoint working? [ ] Yes
-  - [ ] HTTPS endpoint working? [ ] Yes
-  - [ ] MCP server registered? [ ] Yes
-- [ ] **2.4.4**: Confirm Docker image ready for deployment
+**Goal**: Confirm zero critical/high npm CVEs and produce final audit report
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+**Independent Test**: Final audit JSON, build, test, and Docker outputs confirm compliance and are linked in docs/SECURITY_AUDIT.md.
 
----
+### Implementation for User Story 4
 
-### Subtask 2.5: First Verification Scan
+- [x] T025 [US4] Save final npm audit JSON to specs/004-security-audit/audit-final.json
+- [x] T026 [P] [US4] Capture final build output in specs/004-security-audit/build-final.md
+- [x] T027 [P] [US4] Capture final test results in specs/004-security-audit/test-results-final.md
+- [x] T028 [P] [US4] Capture final Docker rebuild results in specs/004-security-audit/docker-build-final.md
+- [x] T029 [US4] Create docs/SECURITY_AUDIT.md with methodology, evidence, and links
+- [x] T030 [US4] Update specs/004-security-audit/audit-log.md with final verification status
 
-- [ ] **2.5.1**: Run: `npm audit --json > audit-after-patches.json`
-- [ ] **2.5.2**: Compare to initial audit:
-  - [ ] Critical CVEs: ____ → ____ (reduced by: ____)
-  - [ ] High CVEs: ____ → ____ (reduced by: ____)
-- [ ] **2.5.3**: Verify all critical/high npm CVEs are either:
-  - [ ] Resolved (no longer in audit report)
-  - [ ] Marked as unfixable (documented)
-- [ ] **2.5.4**: Note any new medium/low CVEs (should not grow)
-- [ ] **2.5.5**: Document: Are we at zero critical/high CVEs? [ ] Yes [ ] No
-- [ ] **2.5.6**: Save audit report for compliance file
-
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
-
-**PHASE 2 COMPLETE**: [ ] Yes - Ready to proceed to Phase 3
+**Checkpoint**: User Story 4 is complete and independently verifiable
 
 ---
 
-## PHASE 3: DOCUMENTATION
+## Phase 7: Polish & Cross-Cutting Concerns
 
-### Subtask 3.1: Analyze Unfixable Vulnerabilities
+**Purpose**: Cross-story cleanup, link integrity, and final indexing
 
-- [ ] **3.1.1**: Compile list of all unfixable CVEs from Phase 2
-- [ ] **3.1.2**: For each unfixable CVE:
-  - [ ] CVE ID: ____ | Package: ____ | Current Version: ____
-- [ ] **3.1.3**: Verify each meets unfixable criteria:
-  - [ ] No patch available? [ ] Yes [ ] No
-  - [ ] No alternative package? [ ] Yes [ ] No
-  - [ ] Cannot mitigate in code? [ ] Yes [ ] No
-  - [ ] OR Fix breaks API (risk accepted)? [ ] Yes [ ] No
-- [ ] **3.1.4**: For each unfixable CVE, estimate attack surface:
-  - [ ] CVE ID: ____ | Is this exposed to external input? [ ] Yes [ ] No [ ] Unknown
-  - [ ] Mitigation strategies available? [ ] Network isolation [ ] Input validation [ ] None
-- [ ] **3.1.5**: List OS-level CVEs from Phase 1.2
-- [ ] **3.1.6**: Confirm all unfixable CVEs documented
-
-**Unfixable CVEs Summary**:
-- [ ] npm Package unfixable CVEs: ____ (count)
-- [ ] OS-level unfixable CVEs: ____ (count)
-- [ ] Total unfixable: ____
-
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+- [x] T031 [P] Update specs/004-security-audit/artifacts/README.md with links to all audit artifacts
+- [x] T032 Update docs/SECURITY_AUDIT.md and docs/SECURITY_FINDINGS.md with cross-links to specs/004-security-audit/issue-links.md
+- [x] T033 Update specs/004-security-audit/audit-log.md with final checklist and sign-off
 
 ---
 
-### Subtask 3.2: Create GitHub Issues for Unfixable Vulnerabilities
+## Dependencies & Execution Order
 
-- [ ] **3.2.1**: For each unfixable npm CVE, create GitHub Issue:
-  - [ ] Issue Title: "CVE-____: [Package] - UNFIXABLE"
-  - [ ] Labels: "security/unfixable", "cve"
-  - [ ] Issue #: ____
-  - [ ] Issue #: ____
-- [ ] **3.2.2**: For each OS-level CVE, create GitHub Issue:
-  - [ ] Issue Title: "OS-CVE-____: [node:25-bookworm-slim] - OUT OF SCOPE"
-  - [ ] Labels: "security/os-level", "cve", "out-of-scope"
-  - [ ] Issue #: ____
-  - [ ] Issue #: ____
-- [ ] **3.2.3**: Create rolling maintenance review Issue:
-  - [ ] Title: "Security: Review unfixable CVEs in next maintenance cycle"
-  - [ ] Label: "security", "maintenance"
-  - [ ] Issue #: ____
-- [ ] **3.2.4**: Link all issues and label appropriately
+### Phase Dependencies
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+- **Setup (Phase 1)**: No dependencies - can start immediately
+- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
+- **User Stories (Phase 3+)**: Depend on Foundational completion and proceed in priority order (P1 → P2 → P1)
+- **Polish (Final Phase)**: Depends on all user stories being complete
+
+### User Story Dependencies
+
+- **User Story 1 (P1)**: Starts after Foundational
+- **User Story 2 (P1)**: Depends on User Story 1 discovery outputs
+- **User Story 3 (P2)**: Depends on User Story 2 remediation outcomes
+- **User Story 4 (P1)**: Depends on User Stories 1-3 to verify final state
 
 ---
 
-### Subtask 3.3: Create docs/SECURITY_FINDINGS.md
+## Parallel Execution Examples
 
-- [ ] **3.3.1**: Create file: `docs/SECURITY_FINDINGS.md`
-- [ ] **3.3.2**: Add sections:
-  - [ ] Audit Summary (date, tools, scope)
-  - [ ] Executive Summary (counts)
-  - [ ] Unfixable npm Vulnerabilities (table)
-  - [ ] OS-Level CVEs (table)
-  - [ ] Remediation Timeline
-  - [ ] Testing Results
-  - [ ] Risk Assessment
-  - [ ] Next Steps
-- [ ] **3.3.3**: Each unfixable CVE includes:
-  - [ ] CVE ID
-  - [ ] Affected package and version
-  - [ ] Severity
-  - [ ] Reason unfixable
-  - [ ] Mitigation strategies (if any)
-  - [ ] Link to GitHub Issue
-- [ ] **3.3.4**: Format is compliance-audit ready
-- [ ] **3.3.5**: Save file to version control: `git add docs/SECURITY_FINDINGS.md`
+### User Story 1
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+```text
+T006 Save npm audit JSON output to specs/004-security-audit/audit-initial.json
+T007 Save human-readable npm audit output to specs/004-security-audit/audit-initial.txt
+T008 Record base image digest and OS CVEs in specs/004-security-audit/os-cve-inventory.md
+```
 
-**PHASE 3 COMPLETE**: [ ] Yes - Ready to proceed to Phase 4
+### User Story 2
 
----
+```text
+T015 Capture build output in specs/004-security-audit/build-after-patches.md
+T016 Capture test results in specs/004-security-audit/test-results-after-patches.md
+T017 Capture Docker rebuild results in specs/004-security-audit/docker-build-after-patches.md
+```
 
-## PHASE 4: VERIFICATION & COMPLIANCE
+### User Story 3
 
-### Subtask 4.1: Run Final Comprehensive Audit
+```text
+T023 Record GitHub issue URLs in specs/004-security-audit/issue-links.md
+```
 
-- [ ] **4.1.1**: Clean install dependencies: `rm -rf node_modules package-lock.json && npm install`
-- [ ] **4.1.2**: Run: `npm audit --json > audit-final.json`
-- [ ] **4.1.3**: Review audit results:
-  - [ ] Critical CVEs (direct deps): ____ (target: 0)
-  - [ ] High CVEs (direct deps): ____ (target: 0)
-- [ ] **4.1.4**: Rebuild and test:
-  - [ ] `npm run build:ts` completed: [ ] Success
-  - [ ] `npm test` result: [ ] 207/207 pass
-  - [ ] Docker rebuild: [ ] Success
-- [ ] **4.1.5**: Compare audit timeline:
-  - [ ] Initial audit CVEs: ____
-  - [ ] After patches CVEs: ____
-  - [ ] Final audit CVEs: ____
-- [ ] **4.1.6**: Document all improvements
+### User Story 4
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+```text
+T026 Capture final build output in specs/004-security-audit/build-final.md
+T027 Capture final test results in specs/004-security-audit/test-results-final.md
+T028 Capture final Docker rebuild results in specs/004-security-audit/docker-build-final.md
+```
 
 ---
 
-### Subtask 4.2: Create docs/SECURITY_AUDIT.md (Compliance Report)
+## Implementation Strategy
 
-- [ ] **4.2.1**: Create file: `docs/SECURITY_AUDIT.md`
-- [ ] **4.2.2**: Add sections:
-  - [ ] Audit Metadata (date, tools, scope)
-  - [ ] Summary Statistics (CVEs found/fixed/unfixable)
-  - [ ] Detailed Findings
-  - [ ] Remediation Actions Taken
-  - [ ] Test Results (207/207 pass)
-  - [ ] Compliance & Reproducibility steps
-  - [ ] Linked Resources
-- [ ] **4.2.3**: Include reproducibility steps:
-  - [ ] How to re-run audit: `npm audit --json`
-  - [ ] How to re-run tests: `npm test`
-  - [ ] How to rebuild Docker: `.\rebuild-docker.ps1`
-- [ ] **4.2.4**: Verify audit is fully reproducible
-- [ ] **4.2.5**: Save file to version control: `git add docs/SECURITY_AUDIT.md`
+### MVP First (User Story 1 Only)
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
+1. Complete Phase 1: Setup
+2. Complete Phase 2: Foundational
+3. Complete Phase 3: User Story 1
+4. Validate discovery artifacts and stop for review
 
----
+### Incremental Delivery
 
-### Subtask 4.3: Link GitHub Issues to Remediation
+1. Setup + Foundational → Baseline evidence ready
+2. User Story 1 → Discovery complete
+3. User Story 2 → Remediation complete
+4. User Story 3 → Documentation complete
+5. User Story 4 → Verification complete
 
-- [ ] **4.3.1**: For each fixed CVE, create/update GitHub Issue:
-  - [ ] Title: "CVE-____: [Package] - FIXED in v____"
-  - [ ] Labels: "security/fixed", "cve"
-  - [ ] Link to commit/PR that fixed it
-  - [ ] Close with comment linking to PR
-- [ ] **4.3.2**: Verify unfixable CVEs are properly labeled:
-  - [ ] Label: "security/unfixable"
-  - [ ] Do NOT close (leave for rolling review)
-- [ ] **4.3.3**: Create summary issue: "Security Audit 2026-02-11 - Summary"
-  - [ ] Label: "security", "audit"
-  - [ ] Links to all CVE issues
-  - [ ] Links to compliance reports
-- [ ] **4.3.4**: Verify issue trail is complete
+### Parallel Team Strategy
 
-**Task Owner**: ____________________  
-**Completed Date**: __________________  
-**Notes**: ________________________________________________
-
----
-
-### Subtask 4.4: Validate Success Criteria
-
-- [ ] **4.4.1**: Verify Success Criteria (from spec):
-  - [ ] **SC-001**: Zero critical-severity CVEs in npm ✓
-  - [ ] **SC-002**: Zero high-severity CVEs in npm ✓
-  - [ ] **SC-003**: OS CVEs documented ✓
-  - [ ] **SC-004**: High-severity npm vulnerabilities resolved ✓
-  - [ ] **SC-005**: 100% of remediable critical/high CVEs updated ✓
-  - [ ] **SC-006**: 207/207 tests pass ✓
-  - [ ] **SC-007**: Docker image builds successfully ✓
-  - [ ] **SC-008**: Unfixable CVEs documented ✓
-  - [ ] **SC-009**: Audit reproducible ✓
-  - [ ] **SC-010**: Completed within 2 iterations ✓
-  - [ ] **SC-011**: Medium/low CVE count stable ✓
-- [ ] **4.4.2**: Sign-off on completion:
-  - [ ] All success criteria met by: ____________________
-  - [ ] Date: __________________
-  - [ ] Comments: ________________________________________________
-
-**PHASE 4 COMPLETE**: [ ] Yes - Audit feature complete and ready for review
-
----
-
-## FINAL SIGN-OFF
-
-**Feature Completion Checklist**:
-
-- [ ] All 4 phases completed
-- [ ] All deliverables created and saved
-- [ ] docs/SECURITY_AUDIT.md created
-- [ ] docs/SECURITY_FINDINGS.md created
-- [ ] GitHub Issues created and linked
-- [ ] Changes committed to branch `004-security-audit`
-- [ ] All 11 success criteria verified
-- [ ] Ready for stakeholder review
-
-**Completed by**: ____________________  
-**Date**: __________________  
-**Review comments**: ________________________________________________
-
----
-
-## Execution Notes
-
-**Start Date**: __________________  
-**End Date**: __________________  
-**Total Hours**: __________________  
-
-**Key Blockers Encountered**:
-- ________________________________________________
-
-**Key Successes**:
-- ________________________________________________
-
-**Recommendations for Future Audits**:
-- ________________________________________________
+Once User Story 1 is complete, documentation tasks (User Story 3) can proceed in parallel with remediation verification tasks if staffing allows.
