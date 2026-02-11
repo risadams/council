@@ -12,6 +12,100 @@ Environment variables:
 - `HTTPS_PORT`: default `8000`
 - `CERT_DIR`: directory for `cert.pem` and `key.pem` (auto-generated if missing)
 
+## Configuring with VS Code
+
+To use the Clarity Council MCP server with VS Code, you need to add it to your VS Code settings. There are two approaches:
+
+### Option 1: Manual Configuration (Recommended for Development)
+
+1. Open VS Code Settings:
+   - macOS: `Cmd+,`
+   - Windows/Linux: `Ctrl+,`
+
+2. Search for "modelContextProtocol" or navigate to the raw JSON settings
+
+3. Click "Edit in settings.json" (or open Command Palette → Preferences: Open User Settings (JSON))
+
+4. Add the Clarity Council server to your `modelContextProtocol` settings:
+
+```json
+{
+  "modelContextProtocol": {
+    "servers": {
+      "clarity-council": {
+        "command": "node",
+        "args": ["-e", "require('http').request({hostname:'localhost',port:8080,path:'/',method:'GET'},(r)=>console.log(r.statusCode===200?'ready':'error')).end()"],
+        "disabled": false,
+        "alwaysAllow": []
+      }
+    }
+  }
+}
+```
+
+Or, for HTTPS (self-signed certificate):
+
+```json
+{
+  "modelContextProtocol": {
+    "servers": {
+      "clarity-council": {
+        "command": "node",
+        "args": ["-e", "require('https').request({hostname:'localhost',port:8000,path:'/',method:'GET',rejectUnauthorized:false},(r)=>console.log(r.statusCode===200?'ready':'error')).end()"],
+        "disabled": false,
+        "alwaysAllow": []
+      }
+    }
+  }
+}
+```
+
+### Option 2: Docker MCP Toolkit (Production Setup)
+
+If you have Docker Desktop with MCP Toolkit installed, you can use the automated registration:
+
+1. Run the rebuild script with MCP support enabled:
+   
+   **macOS/Linux**:
+   ```bash
+   ./rebuild-docker.sh
+   ```
+   
+   **Windows**:
+   ```powershell
+   .\rebuild-docker.ps1
+   ```
+
+2. The script will:
+   - Build and start the Docker container
+   - Create a catalog entry for the server
+   - Register it with Docker MCP Toolkit
+   - Optionally connect VS Code
+
+3. VS Code should auto-detect the server. If not, reload the window (Cmd+R on macOS, Ctrl+Shift+F5 on Windows/Linux)
+
+### Verifying the Connection
+
+1. Open the VS Code Command Palette (Cmd+Shift+P / Ctrl+Shift+P)
+2. Look for MCP-related commands or check the notification area
+3. Test by using Claude features that should now have access to the Clarity Council tools
+
+### Troubleshooting
+
+**Server not detected in VS Code:**
+- Ensure the MCP server is running: `docker compose ps` should show `clarity-council-mcp` as healthy
+- Check the health endpoint manually: `curl http://localhost:8080/`
+- Reload VS Code window (Cmd+R / Ctrl+Shift+F5)
+
+**Certificate errors (HTTPS):**
+- If using HTTPS and you see certificate warnings, this is expected with self-signed certificates
+- Add `"rejectUnauthorized": false` to the server config (development only)
+- Or accept the certificate in your browser first: `https://localhost:8000`
+
+**Port already in use:**
+- Check what's running on ports 8080 and 8000: `lsof -i :8080` (macOS/Linux)
+- Update the port numbers in `docker-compose.yml` or use environment variables
+
 Health check:
 
 Send a GET to `/`:
